@@ -30,13 +30,9 @@
         x-bind:class="openMenu ? 'visible' : 'invisible h-0' " x-cloak>
           <!-- Vertical UL Links -->
          <ul class="nav navbar-nav justify-center position-relative flex flex-col w-full p-[10px]">
-            <li class="li-backdrop nav-item my-1 text-[18px]">
-              <a class="nav-link" href="https://cfrc.ca/services">Services</a>
-            </li>
             <li class="m-2"><a class="text-black text-base" href="/">Schedule</a></li>
             <li class="m-2"><a class="text-black text-base" href="/programs">Programs</a></li>
             <li class="m-2"><a class="text-black text-base" href="/archives">Archives</a></li>
-            <li class="m-2"><a class="text-black text-base" href="https://podcast.cfrc.ca">Podcasts</a></li>
             <%= if @current_user do%>
               <li class=" m-2">   
                 <a class="text-black text-base" href="/admin">Admin</a>

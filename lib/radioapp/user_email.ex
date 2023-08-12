@@ -4,7 +4,7 @@ defmodule Radioapp.UserEmail do
   def welcome() do
     new()
     |> to({"Arni", "arni@northernvillage.com"})
-    |> from({"CFRC", "cfrc@northernvillage.net"})
+    |> from({"RadioApp", "radioapp@northernvillage.net"})
     |> subject("Hello, Avengers!")
     |> html_body("<h1>Hello Arni</h1>")
     |> text_body("Hello Arni\n")

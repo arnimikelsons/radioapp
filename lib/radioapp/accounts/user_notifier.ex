@@ -8,7 +8,7 @@ defmodule Radioapp.Accounts.UserNotifier do
     email =
       new()
       |> to(recipient)
-      |> from({"Radioapp", "cfrc@northernvillage.net"})
+      |> from({"Radioapp", "radioapp@northernvillage.net"})
       |> subject(subject)
       |> text_body(body)
 
@@ -78,7 +78,7 @@ defmodule Radioapp.Accounts.UserNotifier do
     """)
   end
   def deliver_invitation_instructions(user, url) do
-    deliver(user.email, "Invitation to CFRC Radio App", """
+    deliver(user.email, "Invitation to Radio App", """
 
     ==============================
 
@@ -88,7 +88,7 @@ defmodule Radioapp.Accounts.UserNotifier do
 
     #{url}
 
-    Please contact <a href="mailto:logs@cfrc.ca">logs@cfrc.ca</a> if you have any questions.
+    Please contact <a href="mailto:radioapp@northernvillage.net">radioapp@northernvillage.net</a> if you have any questions.
 
     ==============================
     """)

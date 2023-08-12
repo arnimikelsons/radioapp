@@ -706,7 +706,7 @@ defmodule Radioapp.Station do
 
   def create_image_from_plug_upload(%Program{} = program, %Plug.Upload{} = upload) do
     uuid = Ecto.UUID.generate()
-    remote_path = "images/#{uuid}-#{upload.filename}"
+    remote_path = "images/radioapp/#{uuid}-#{upload.filename}"
 
     with {:ok, uploaded_image} <- send_upload_to_s3(remote_path, upload) do
       program
@@ -731,7 +731,7 @@ defmodule Radioapp.Station do
 
   def update_image_from_plug(%Image{} = image, %Plug.Upload{} = upload) do
     id = Ecto.UUID.generate()
-    remote_path = "images/#{id}-#{upload.filename}"
+    remote_path = "images/radioapp/#{id}-#{upload.filename}"
 
     with {:ok, uploaded_image} <- send_upload_to_s3(remote_path, upload) do
       image
