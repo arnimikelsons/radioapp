@@ -1,0 +1,27 @@
+<.header>
+  Listing Timeslots
+</.header>
+
+<.table id="timeslots" rows={@timeslots} row_click={&JS.navigate(~p"/programs/#(&1.program_id)/timeslots/#{&1}")}>
+  <:col :let={timeslot} label="Day"><%= Timex.day_name(timeslot.day) %></:col>
+  <:col :let={timeslot} label="Start Time"><%= timeslot.starttime %></:col>
+  <:col :let={timeslot} label="Run Time"><%= timeslot.runtime %></:col>
+  <:col :let={timeslot} label="End Time"><%= timeslot.endtime %></:col>
+  <:col :let={timeslot} label="Program"><%= timeslot.program.name %></:col>
+  <:col :let={timeslot} label="Description"><%= timeslot.program.description %></:col>
+  <:col :let={timeslot} label="Genre"><%= timeslot.program.genre %></:col>
+  <:action :let={timeslot}>
+    <div class="sr-only">
+      <.link navigate={~p"/programs/#{timeslot.program}/timeslots/#{timeslot}"}>Show</.link>
+    </div>
+    <.link navigate={~p"/programs/#{timeslot.program}/timeslots/#{timeslot}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={timeslot}>
+    <.link navigate={~p"/programs/#{timeslot.program}"}>Program</.link>
+  </:action>
+  <:action :let={timeslot}>
+    <.link href={~p"/programs/#{timeslot.program}/timeslots/#{timeslot}"} method="delete" data-confirm="Are you sure?">
+      Delete
+    </.link>
+  </:action>
+</.table>

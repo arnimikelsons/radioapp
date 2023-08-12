@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="csrf-token" content={get_csrf_token()} />
+    <.live_title suffix=" · Radioapp">
+      <%= assigns[:page_title] || " " %>
+    </.live_title>
+    <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
+    <link rel="icon" type="image/png" href={~p"/images/cfrc_favicon.png"} />
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+    <script
+			  src="https://code.jquery.com/jquery-3.6.4.min.js"
+			  integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8="
+			  crossorigin="anonymous"></script>
+    <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-7TQSCEZS08"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-7TQSCEZS08');
+    </script>
+  
+  
+  </head>
+  <body class="bg-white antialiased"
+    x-data="{ openMenu : false }" x-bind:class="openMenu ? 'overflow-hidden' : 'overflow-visible' "
+  >
+  <style>
+  [x-cloak] {
+      display: none !important;
+    }
+  </style>
+    <div class="relative bg-[#f9f2df] h-12 md:h-0">
+      <div class="inline-block mx-auto md:absolute top-0 md:right-0">
+        <ul class="bg-[#2E5266] py-2 px-4">
+          <%= if @current_user do %>
+            <li class="text-center text-white">
+              <.link href={~p"/admin"} class="text-white hover:text-[#f9f2df]"><%= @current_user.short_name %></.link> | <.link href={~p"/users/log_out"} method="delete" class="text-white hover:text-[#E6C229]">Log out</.link>
+            </li>
+          <% else %>
+            <li class="text-center text-white">
+              <.link href={~p"/users/log_in"} class="text-white hover:text-[#f9f2df]">Log in</.link>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+    <%= @inner_content %>
+  </body>
+</html>

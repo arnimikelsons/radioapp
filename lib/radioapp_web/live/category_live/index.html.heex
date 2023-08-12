@@ -1,0 +1,42 @@
+<div class="max-w-2xl mx-auto">
+  <.header>
+    Listing Categories
+    <:actions>
+      <.link patch={~p"/admin/categories/new"}>
+        <.button>New Category</.button>
+      </.link>
+    </:actions>
+  </.header>
+
+  <.table id="categories" rows={@categories} row_click={&JS.navigate(~p"/admin/categories/#{&1}")}>
+    <:col :let={category} label="CRTC Code"><%= category.code %></:col>
+    <:col :let={category} label="Name"><%= category.name %></:col>
+    <:action :let={category}>
+      <div class="sr-only">
+        <.link navigate={~p"/admin/categories/#{category}"}>Show</.link>
+      </div>
+      <.link patch={~p"/admin/categories/#{category}/edit"}>Edit</.link>
+    </:action>
+    <:action :let={category}>
+      <.link phx-click={JS.push("delete", value: %{id: category.id})} data-confirm="Are you sure?">
+        Delete
+      </.link>
+    </:action>
+  </.table>
+</div>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="category-modal"
+  show
+  on_cancel={JS.navigate(~p"/admin/categories")}
+>
+  <.live_component
+    module={RadioappWeb.CategoryLive.FormComponent}
+    id={@category.id || :new}
+    title={@page_title}
+    action={@live_action}
+    category={@category}
+    navigate={~p"/admin/categories"}
+  />
+</.modal>

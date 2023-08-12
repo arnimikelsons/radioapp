@@ -1,0 +1,19 @@
+<%= live_render(@conn, RadioappWeb.PlayerLive) %>
+
+<%!-- <h1 class="text-xl font-medium text-black">Now Playing</h1> --%>
+
+<%!-- <p> <%= "Day now: #{Timex.day_name(Timex.weekday(Timex.now))}" %></p>
+<p> <%= "Time now: #{DateTime.to_time(Timex.now("America/Toronto"))}" %></p> --%>
+<%!-- <p> <%= "Show name: #{@show_name}" %></p> --%>
+
+
+
+
+<%= #interval = Timex.Interval.new(from: ~N[2016-03-10 01:23:45], until: ~N[2016-03-10 02:23:45]) %>
+
+
+<%= #dt = %DateTime{year: 2000, month: 2, day: 29, zone_abbr: "CET", hour: 23, minute: 0, second: 7, microsecond: {0, 0}, utc_offset: 3600, std_offset: 0, time_zone: "Europe/Warsaw"}} %>
+<%= #DateTime.to_date(dt) %>
+
+
+

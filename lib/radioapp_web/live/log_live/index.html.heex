@@ -1,0 +1,58 @@
+  <.header>
+    <.link navigate={~p"/programs/#{@program}"}><%= @program.name %></.link>
+
+
+    <:actions>
+      <.link patch={~p"/programs/#{@program}/logs/new"}>
+        <.button>Add Log</.button>
+      </.link>
+    </:actions>
+  </.header>
+  <h2>Genre: <%= @program.genre %></h2>
+  <h3>Show Description</h3>
+  <p><%= @program.description %></p>
+
+ <h2 class="pt-5">Listing Logs</h2>
+
+ <.table id="logs" rows={@logs} row_click={&JS.navigate(~p"/programs/#{@program}/logs/#{&1}/segments")}>
+    <:col :let={log} label="Show Date"><%= log.date %></:col>
+    <:col :let={log} label="Host"><%= log.host_name %></:col>
+    <:col :let={log} label="Start Time"><%= log.start_time %></:col>
+    <:col :let={log} label="End Time"><%= log.end_time %></:col>
+    <:col :let={log} label="Category"><%= log.category %></:col>
+    <:col :let={log} label="Notes"><%= log.notes %></:col>
+    
+    <:action :let={log}>
+      <.link navigate={~p"/programs/#{@program}/logs/#{log}/segments"}>View Log</.link>
+      </:action>
+    <:action :let={log}>
+      <.link patch={~p"/programs/#{@program}/logs/#{log}/edit"}>Edit Log</.link>
+    </:action>
+    <:action :let={segment}>
+      <%= if @current_user.role == :admin do %>
+        <.link phx-click={JS.push("delete", value: %{id: segment.id})} data-confirm="Are you sure?">
+          Delete
+        </.link>
+      <% end %>
+    </:action>
+</.table>
+<div class="mt-9">
+  <p >For support submitting your logs, please email <a href={"mailto:logs@cfrc.ca?subject=Logs for #{@program.name} on [add date]"}>logs@cfrc.ca</a></p>
+</div>
+
+ <.modal
+    :if={@live_action in [:new, :edit]}
+    id="segment-modal"
+    show
+    on_cancel={JS.navigate(~p"/programs/#{@program}/logs")}
+  >
+    <.live_component
+      module={RadioappWeb.LogLive.FormComponent}
+      id={@log.id || :new}
+      title={@page_title}
+      action={@live_action}
+      program={@program}
+      log={@log}
+      navigate={~p"/programs/#{@program}/logs"}
+    />
+ </.modal>

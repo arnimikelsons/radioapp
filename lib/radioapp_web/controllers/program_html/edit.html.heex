@@ -1,0 +1,47 @@
+<div class="max-w-2xl mx-auto">
+  <.header>
+    Edit Program <%= @program.id %>
+    <:subtitle>Use this form to manage program records in your database.</:subtitle>
+  </.header>
+
+  <.simple_form :let={f} for={@changeset} method="put" action={~p"/programs/#{@program}"}>
+    <.error :if={@changeset.action}>
+      Oops, something went wrong! Please check the errors below.
+    </.error>
+    <.input field={{f, :name}} type="text" label="Name" />
+    <.input field={{f, :short_description}} type="text" label="Short Description" />
+    <.input field={{f, :description}} type="textarea" label="Description" />
+    <!--<p class="text-tip">Use <a href="https://www.markdownguide.org/cheat-sheet">markdown coding</a> for better styling</p>-->
+    <.input field={{f, :genre}} type="text" label="Genre" />  
+    <.input field={{f, :hide}} type="checkbox" label="Hide" />
+    <div class="row">
+      <div class="sm:w-1/4 p-2">
+        <.input field={{f, :link1_id}} type="select" label="Select link type 1" options={@list_links} />
+      </div>
+      <div class="sm:w-1/2 p-2">
+          <.input field={{f, :link1_url}} type="text" label="Link 1 URL" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="sm:w-1/4 p-2">
+        <.input field={{f, :link2_id}} type="select" label="Select link type 2" options={@list_links} />
+      </div>
+    
+      <div class="sm:w-1/2 p-2">
+        <.input field={{f, :link2_url}} type="text" label="Link 2 URL" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="sm:w-1/4 p-2">
+        <.input field={{f, :link3_id}} type="select" label="Select link type 3" options={@list_links} />
+      </div> 
+      <div class="sm:w-1/2 p-2">
+        <.input field={{f, :link3_url}} type="text" label="Link 3 URL" />
+      </div>
+    </div>
+    <:actions>
+      <.button>Save Program</.button>
+    </:actions>
+  </.simple_form>
+  <.back navigate={~p"/programs"}>Back to programs</.back>
+</div>

@@ -1,0 +1,28 @@
+<div class="max-w-2xl mx-auto">
+  <.header>
+    Category <%= @category.id %>
+    <:subtitle>This is a category record from your database.</:subtitle>
+    <:actions>
+      <.link patch={~p"/admin/categories/#{@category}/show/edit"} phx-click={JS.push_focus()}>
+        <.button>Edit Category</.button>
+      </.link>
+    </:actions>
+  </.header>
+
+  <.list>
+    <:item title="CRTC Code"><%= @category.code %></:item>
+    <:item title="Name"><%= @category.name %></:item>
+  </.list>
+
+  <.back navigate={~p"/admin/categories"}>Back to categories</.back>
+</div>
+<.modal :if={@live_action == :edit} id="category-modal" show on_cancel={JS.patch(~p"/admin/categories/#{@category}")}>
+  <.live_component
+    module={RadioappWeb.CategoryLive.FormComponent}
+    id={@category.id}
+    title={@page_title}
+    action={@live_action}
+    category={@category}
+    navigate={~p"/admin/categories/#{@category}"}
+  />
+</.modal>

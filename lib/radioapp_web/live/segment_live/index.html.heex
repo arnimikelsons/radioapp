@@ -1,0 +1,63 @@
+<.header>
+Show Segments for <.link navigate={~p"/programs/#{@program}"}><%= @program.name %></.link> on <.link navigate={~p"/programs/#{@program}/logs/#{@log}"}><%= Date.to_string(@log.date) %></.link>
+</.header>
+
+<.table id="segments" rows={@segments}> 
+  <:col :let={segment} label="Start Time"><%= segment.start_time %></:col>
+  <:col :let={segment} label="End Time"><%= segment.end_time %></:col>
+  <:col :let={segment} label="Artist"><%= segment.artist %></:col>
+  <:col :let={segment} label="Song Title"><%= segment.song_title %></:col>
+  <:col :let={segment} label="Category"><%= if segment.category != nil do %><%= segment.category.code %><% end %></:col>
+  <:col :let={segment} label="Catalogue #"><%= segment.catalogue_number %></:col>
+  <:col :let={segment} label="New"><%= if segment.new_music do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+  <:col :let={segment} label="Inst"><%= if segment.instrumental do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+  <:col :let={segment} label="Can"><%= if segment.can_con do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+  <:col :let={segment} label="Hit"><%= if segment.hit do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+  <:action :let={segment}>
+    <div class="sr-only">
+      <.link navigate={~p"/programs/#{@program}/logs/#{@log}/segments/#{segment}"}>Show</.link>
+    </div>
+    <.link patch={~p"/programs/#{@program}/logs/#{@log}/segments/#{segment}/edit"}>Edit Segment</.link>
+  </:action>
+  <:action :let={segment}>
+    <%= if @current_user.role == :admin do %>
+      <.link phx-click={JS.push("delete", value: %{id: segment.id})} data-confirm="Are you sure?">
+        Delete
+      </.link>
+    <% end %>
+  </:action>
+</.table>
+<div class="mt-4 text-right">
+  <.link patch={~p"/programs/#{@program}/logs/#{@log}/segments/new"}>
+    <.button>New Segment</.button>
+  </.link>
+</div>
+
+<div class="pt-5">
+  <div class="row justify-around">
+    <p>Talking Segments: <%= @talking %></p>
+    <p>New Music: <%= @new_music %>%</p>
+    <p>Instrumental Music: <%= @instrumental_music %>%</p>
+    <p>Canadian Content: <%= @can_con_music %>%</p>
+    <p>Hit Music: <%= @hit_music %>%</p>
+  </div>
+</div>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="segment-modal"
+  show
+  on_cancel={JS.navigate(~p"/programs/#{@program}/logs/#{@log}/segments")}
+>
+  <.live_component
+    module={RadioappWeb.SegmentLive.FormComponent}
+    id={@segment.id || :new}
+    title={@page_title}
+    action={@live_action}
+    program={@program}
+    log={@log}
+    list_categories={@list_categories}
+    segment={@segment}
+    navigate={~p"/programs/#{@program}/logs/#{@log}/segments"}
+  />
+</.modal>

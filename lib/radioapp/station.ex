@@ -1,0 +1,812 @@
+defmodule Radioapp.Station do
+  @moduledoc """
+  The Station context.
+  """
+
+  import Ecto.Query, warn: false
+  alias Radioapp.Repo
+
+  alias Radioapp.Station.{Program, Timeslot, Segment, Log, Image}
+
+  @doc """
+  Returns the list of programs.
+
+  ## Examples
+
+      iex> list_programs()
+      [%Program{}, ...]
+
+  """
+  def list_programs do
+    from(p in Program, where: p.hide == false or is_nil(p.hide), order_by: [asc: :name])
+    |> Repo.all()
+    |> Repo.preload([
+      :timeslots,
+      :images,
+      :link1,
+      :link2,
+      :link3
+    ])
+  end
+
+  def list_all_programs do
+    from(p in Program, order_by: [asc: :name])
+    |> Repo.all()
+    |> Repo.preload([
+      :timeslots,
+      :images,
+      :link1,
+      :link2,
+      :link3
+    ])
+  end
+
+  @doc """
+  Gets a single program.
+
+  Raises `Ecto.NoResultsError` if the Program does not exist.
+
+  ## Examples
+
+      iex> get_program!(123)
+      %Program{}
+
+      iex> get_program!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_program!(id) do
+    Program
+    |> Repo.get!(id)
+    |> Repo.preload([
+      :timeslots,
+      :images,
+      :link1,
+      :link2,
+      :link3
+    ])
+  end
+
+  def get_program_from_time(weekday, time_now) do
+    from(t in Timeslot,
+      join: p in assoc(t, :program),
+      where: t.day == ^weekday,
+      where: t.starttime <= ^time_now,
+      where: t.endtime > ^time_now,
+      select: p.name
+    )
+    |> Repo.all()
+  end
+
+  def get_program_now_start_time(weekday, time_now) do
+    from(t in Timeslot,
+      join: p in assoc(t, :program),
+      where: t.day == ^weekday,
+      where: t.starttime <= ^time_now,
+      where: t.endtime >= ^time_now,
+      select: t.starttimereadable
+    )
+    |> Repo.all()
+  end
+
+  @doc """
+  Creates a program.
+
+  ## Examples
+
+      iex> create_program(%{field: value})
+      {:ok, %Program{}}
+
+      iex> create_program(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+
+  def create_program(attrs \\ %{}) do
+    %Program{}
+    |> Program.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a program.
+
+  ## Examples
+
+      iex> update_program(program, %{field: new_value})
+      {:ok, %Program{}}
+
+      iex> update_program(program, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_program(%Program{} = program, attrs) do
+    program
+    |> Program.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a program.
+
+  ## Examples
+
+      iex> delete_program(program)
+      {:ok, %Program{}}
+
+      iex> delete_program(program)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_program(%Program{} = program) do
+    Repo.delete(program)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking program changes.
+
+  ## Examples
+
+      iex> change_program(program)
+      %Ecto.Changeset{data: %Program{}}
+
+  """
+  def change_program(%Program{} = program, attrs \\ %{}) do
+    Program.changeset(program, attrs)
+  end
+
+  @doc """
+  Returns the list of timeslots.
+
+  ## Examples
+
+      iex> list_timeslots()
+      [%Timeslot{}, ...]
+
+  """
+
+  def list_timeslots do
+    # from(p in Timeslot, order_by: [asc: :name])
+    from(t in Timeslot, order_by: [asc: :day, asc: :starttime])
+    |> Repo.all()
+    |> Repo.preload(
+      program: [
+        link1: [],
+        link2: [],
+        link3: []
+      ]
+    )
+  end
+
+  def list_timeslots_for_program(program) do
+    from(t in Timeslot, where: [program_id: ^program.id], order_by: [asc: :day])
+    |> Repo.all()
+    |> Repo.preload(program: [link1: [], link2: [], link3: []])
+  end
+
+  def list_timeslots_by_day(day) do
+    from(t in Timeslot, where: t.day == ^day, order_by: [asc: :starttime])
+    |> Repo.all()
+    |> Repo.preload(program: [link1: [], link2: [], link3: []])
+  end
+
+  @doc """
+  Gets a single timeslot.
+
+  Raises `Ecto.NoResultsError` if the Timeslot does not exist.
+
+  ## Examples
+
+      iex> get_timeslot!(123)
+      %Timeslot{}
+
+      iex> get_timeslot!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_timeslot!(id) do
+    Timeslot
+    |> Repo.get!(id)
+    |> Repo.preload(:program)
+  end
+
+  @doc """
+  Creates a timeslot.
+
+  ## Examples
+
+      iex> create_timeslot(%{field: value})
+      {:ok, %Timeslot{}}
+
+      iex> create_timeslot(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_timeslot(%Program{} = program, attrs \\ %{}) do
+    program
+    |> Ecto.build_assoc(:timeslots)
+    |> Timeslot.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a timeslot.
+
+  ## Examples
+
+      iex> update_timeslot(timeslot, %{field: new_value})
+      {:ok, %Timeslot{}}
+
+      iex> update_timeslot(timeslot, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_timeslot(%Timeslot{} = timeslot, attrs) do
+    timeslot
+    |> Timeslot.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a timeslot.
+
+  ## Examples
+
+      iex> delete_timeslot(timeslot)
+      {:ok, %Timeslot{}}
+
+      iex> delete_timeslot(timeslot)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_timeslot(%Timeslot{} = timeslot) do
+    Repo.delete(timeslot)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking timeslot changes.
+
+  ## Examples
+
+      iex> change_timeslot(timeslot)
+      %Ecto.Changeset{data: %Timeslot{}}
+
+  """
+  def change_timeslot(%Timeslot{} = timeslot, attrs \\ %{}) do
+    Timeslot.changeset(timeslot, attrs)
+  end
+
+  @doc """
+  Returns the list of logs.
+
+  ## Examples
+
+      iex> list_logs()
+      Log{}, ...]
+
+  """
+  def list_logs do
+    Log
+    |> Repo.all()
+    |> Repo.preload(:program)
+  end
+
+  def list_logs_for_program(program) do
+    from(l in Log, where: [program_id: ^program.id], order_by: [asc: :date])
+    |> Repo.all()
+    |> Repo.preload(:program)
+  end
+
+  def list_full_logs(params) do
+    from(s in Segment,
+      join: l in assoc(s, :log),
+      join: p in assoc(l, :program),
+      where: l.date >= ^params.start_date,
+      where: l.date <= ^params.end_date,
+      order_by: [asc: l.date]
+    )
+    |> Repo.all()
+    |> Repo.preload(log: [:program], category: [])
+  end
+
+  def previous_month(%Date{day: day} = date) do
+    days = max(day, Date.add(date, -day).day)
+    Date.add(date, -days)
+  end
+
+  def previous_week(date) do
+    Date.add(date, -7)
+  end
+
+  @doc """
+  Gets a single log.
+
+  Raises `Ecto.NoResultsError` if the Log does not exist.
+
+  ## Examples
+
+      iex> get_log!(123)
+      %Log{}
+
+      iex> get_log!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+
+  def get_log!(id) do
+    Log
+    |> Repo.get!(id)
+    |> Repo.preload(:program)
+  end
+
+  @doc """
+  Creates a log.
+
+  ## Examples
+
+      iex> create_log(%{field: value})
+      {:ok, %Log{}}
+
+      iex> create_log(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+
+  def create_log(%Program{} = program, attrs \\ %{}) do
+    program
+    |> Ecto.build_assoc(:logs)
+    |> Log.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a log.
+
+  ## Examples
+
+      iex> update_log(log, %{field: new_value})
+      {:ok, %Log{}}
+
+      iex> update_log(log, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_log(%Log{} = log, attrs) do
+    log
+    |> Log.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a log.
+
+  ## Examples
+
+      iex> delete_log(log)
+      {:ok, %Log{}}
+
+      iex> delete_log(log)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_log(%Log{} = log) do
+    Repo.delete(log)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking log changes.
+
+  ## Examples
+
+      iex> change_log(log)
+      %Ecto.Changeset{data: %Log{}}
+
+  """
+  def change_log(%Log{} = log, attrs \\ %{}) do
+    Log.changeset(log, attrs)
+  end
+
+  @doc """
+  Returns the list of segments.
+
+  ## Examples
+
+      iex> list_segments()
+      [%Segment{}, ...]
+
+  """
+  def list_segments do
+    Repo.all(Segment)
+    |> Repo.preload([:category, log: [:program]])
+  end
+
+  def list_segments_for_date(%{"start_date" => start_date, "end_date" => end_date}) do
+    from(s in Segment,
+      join: l in assoc(s, :log),
+      left_join: c in assoc(s, :category),
+      join: p in assoc(l, :program),
+      where: l.date >= ^start_date,
+      where: l.date <= ^end_date,
+      order_by: [asc: :start_time],
+      select: %{
+        program_name: p.name,
+        host_name: l.host_name,
+        log_category: l.category,
+        date: l.date,
+        log_start_time: l.start_time,
+        log_end_time: l.end_time,
+        language: l.language,
+        start_time: s.start_time,
+        end_time: s.end_time,
+        category: [c.code, "-", c.name],
+        artist: s.artist,
+        song_title: s.song_title,
+        catalogue_number: s.catalogue_number,
+        new_music: s.new_music,
+        instrumental: s.instrumental,
+        can_con: s.can_con,
+        hit: s.hit
+      }
+    )
+    |> Repo.all()
+  end
+
+  def list_segments_for_log(log) do
+    from(s in Segment, where: [log_id: ^log.id], order_by: [asc: :start_time])
+    |> Repo.all()
+    |> Repo.preload([:category, log: [:program]])
+  end
+
+  def start_time_of_next_segment(log) do
+    query =
+      from s in Segment,
+        where: [log_id: ^log.id],
+        select: max(s.end_time)
+
+    Repo.one(query) || log.start_time
+  end
+
+  def talking_segments(log) do
+    query =
+      from(s in Segment,
+        left_join: c in assoc(s, :category),
+        where: c.code >= "10",
+        where: c.code <= "19",
+        where: [log_id: ^log.id],
+        select: %{
+          duration: sum(s.end_time - s.start_time)
+        }
+      )
+
+    case Repo.one(query) do
+      %{duration: %{secs: seconds}} ->
+        seconds
+
+      %{duration: nil} ->
+        0
+    end
+  end
+
+  def formatted_length(length) do
+    "#{div(length, 60)}:#{formatted_seconds(rem(length, 60))}"
+  end
+
+  defp formatted_seconds(s) when s == 0, do: "00"
+  defp formatted_seconds(s) when s < 10, do: "0#{s}"
+  defp formatted_seconds(s), do: "#{s}"
+
+  def track_minutes(log) do
+    [count_music_tracks] =
+      from(s in Segment,
+        left_join: c in assoc(s, :category),
+        where: [log_id: ^log.id],
+        where: c.code >= "20",
+        where: c.code <= "39",
+        select: count(s.id)
+      )
+      |> Repo.all()
+
+    [new_music_tracks] =
+      from(s in Segment,
+        left_join: c in assoc(s, :category),
+        where: [log_id: ^log.id],
+        where: s.new_music == true,
+        where: c.code >= "20",
+        where: c.code <= "39",
+        select: count(s.id)
+      )
+      |> Repo.all()
+
+    new_music =
+      case count_music_tracks do
+        0 -> 0
+        _ -> Decimal.round(Decimal.from_float(new_music_tracks / count_music_tracks * 100))
+      end
+
+    [can_con_tracks] =
+      from(s in Segment,
+        left_join: c in assoc(s, :category),
+        where: [log_id: ^log.id],
+        where: s.can_con == true,
+        where: c.code >= "20",
+        where: c.code <= "39",
+        select: count(s.id)
+      )
+      |> Repo.all()
+
+    can_con_music =
+      case count_music_tracks do
+        0 -> 0
+        _ -> Decimal.round(Decimal.from_float(can_con_tracks / count_music_tracks * 100))
+      end
+
+    [instrumental_tracks] =
+      from(s in Segment,
+        left_join: c in assoc(s, :category),
+        where: [log_id: ^log.id],
+        where: s.instrumental == true,
+        where: c.code >= "20",
+        where: c.code <= "39",
+        select: count(s.id)
+      )
+      |> Repo.all()
+
+    instrumental_music =
+      case count_music_tracks do
+        0 -> 0
+        _ -> Decimal.round(Decimal.from_float(instrumental_tracks / count_music_tracks * 100))
+      end
+
+    [hit_tracks] =
+      from(s in Segment,
+        left_join: c in assoc(s, :category),
+        where: [log_id: ^log.id],
+        where: s.hit == true,
+        where: c.code >= "20",
+        where: c.code <= "39",
+        select: count(s.id)
+      )
+      |> Repo.all()
+
+    hit_music =
+      case count_music_tracks do
+        0 -> 0
+        _ -> Decimal.round(Decimal.from_float(hit_tracks / count_music_tracks * 100))
+      end
+
+    [new_music, can_con_music, instrumental_music, hit_music]
+  end
+
+  @doc """
+  Gets a single segment.
+
+  Raises `Ecto.NoResultsError` if the Segment does not exist.
+
+  ## Examples
+
+      iex> get_segment!(123)
+      %Segment{}
+
+      iex> get_segment!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_segment!(id) do
+    Segment
+    |> Repo.get!(id)
+    |> Repo.preload([:category, log: [:program]])
+  end
+
+  @doc """
+  Creates a segment.
+
+  ## Examples
+
+      iex> create_segment(%{field: value})
+      {:ok, %Segment{}}
+
+      iex> create_segment(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_segment(%Log{} = log, attrs \\ %{}) do
+    log
+    |> Ecto.build_assoc(:segments)
+    |> Segment.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a segment.
+
+  ## Examples
+
+      iex> update_segment(segment, %{field: new_value})
+      {:ok, %Segment{}}
+
+      iex> update_segment(segment, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_segment(%Segment{} = segment, attrs) do
+    segment
+    |> Segment.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a segment.
+
+  ## Examples
+
+      iex> delete_segment(segment)
+      {:ok, %Segment{}}
+
+      iex> delete_segment(segment)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_segment(%Segment{} = segment) do
+    Repo.delete(segment)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking segment changes.
+
+  ## Examples
+
+      iex> change_segment(segment)
+      %Ecto.Changeset{data: %Segment{}}
+
+  """
+  def change_segment(%Segment{} = segment, attrs \\ %{}) do
+    Segment.changeset(segment, attrs)
+  end
+
+  @doc """
+  Returns the list of images.
+  ## Examples
+      iex> list_images()
+      [%Image{}, ...]
+  """
+  def list_images() do
+    Image
+    |> Repo.all()
+    |> Repo.preload(:program)
+  end
+
+  @doc """
+  Gets a single image.
+  Raises `Ecto.NoResultsError` if the Image does not exist.
+  ## Examples
+      iex> get_image!(123)
+      %Image{}
+      iex> get_image!(456)
+      ** (Ecto.NoResultsError)
+  """
+  def get_image!(id) do
+    Image
+    |> Repo.get!(id)
+    |> Repo.preload(:program)
+  end
+
+  @doc """
+  Creates a image.
+  ## Examples
+      iex> create_image(%{field: value})
+      {:ok, %Image{}}
+      iex> create_image(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+  """
+  def create_image(attrs \\ %{}) do
+    %Image{}
+    |> Image.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def create_image_from_plug_upload(%Program{} = program, %Plug.Upload{} = upload) do
+    uuid = Ecto.UUID.generate()
+    remote_path = "images/#{uuid}-#{upload.filename}"
+
+    with {:ok, uploaded_image} <- send_upload_to_s3(remote_path, upload) do
+      program
+      |> Ecto.build_assoc(:images)
+      |> Image.changeset(uploaded_image)
+      |> Repo.insert()
+    else
+      {:error, reason} ->
+        {:error, reason}
+    end
+  end
+
+  def download_from_s3(filename) do
+    s3_bucket = "nvradio"
+
+    resp =
+      ExAws.S3.get_object(s3_bucket, filename)
+      |> ExAws.request!(region: "ca-central-1")
+
+    resp.body
+  end
+
+  def update_image_from_plug(%Image{} = image, %Plug.Upload{} = upload) do
+    id = Ecto.UUID.generate()
+    remote_path = "images/#{id}-#{upload.filename}"
+
+    with {:ok, uploaded_image} <- send_upload_to_s3(remote_path, upload) do
+      image
+      |> Image.changeset(uploaded_image)
+      |> Repo.update()
+    else
+      {:error, reason} ->
+        {:error, reason}
+    end
+  end
+
+  defp send_upload_to_s3(
+         s3_filename,
+         %{
+           path: path,
+           filename: filename,
+           content_type: content_type
+         }
+       )
+       when is_binary(path) and is_binary(filename) and is_binary(content_type) do
+    hash =
+      File.stream!(path, [], 2048)
+      |> Image.sha256()
+
+    with {:ok, %File.Stat{size: size}} <- File.stat(path),
+         {:ok, %{status_code: 200}} <- upload_file_to_s3(path, s3_filename) do
+      image_attrs = %{
+        filename: filename,
+        remote_filename: s3_filename,
+        content_type: content_type,
+        hash: hash,
+        size: size
+      }
+
+      {:ok, image_attrs}
+    else
+      {:ok, %{status_code: code}} ->
+        {:error, "Failed to upload image: #{code}"}
+
+      {:error, reason} ->
+        {:error, reason}
+    end
+  end
+
+  defp send_upload_to_s3(_s3_filename, upload) do
+    {:error, "Invalid upload: #{inspect(upload)}"}
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking image changes.
+  ## Examples
+      iex> change_image(image)
+      %Ecto.Changeset{source: %Image{}}
+  """
+  def change_image(%Image{} = image) do
+    Image.changeset(image, %{})
+  end
+
+  def upload_file_to_s3(tmp_path, s3_filename) do
+    s3_bucket = "nvradio"
+    file_binary = File.read!(tmp_path)
+
+    ExAws.S3.put_object(s3_bucket, s3_filename, file_binary)
+    |> ExAws.request(region: "ca-central-1")
+  end
+
+  @doc """
+  Deletes a image.
+  ## Examples
+      iex> delete_image(image)
+      {:ok, %Image{}}
+      iex> delete_image(image)
+      {:error, %Ecto.Changeset{}}
+  """
+  def delete_image(%Image{} = image) do
+    Repo.delete(image)
+  end
+end
