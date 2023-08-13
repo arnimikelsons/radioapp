@@ -4,12 +4,14 @@ defmodule Radioapp.AdminTest do
   alias Radioapp.Admin.{Category, Link}
   alias Radioapp.Admin
 
+  @tenant "sample"
+
   describe "links" do
     @invalid_attrs %{icon: nil, type: nil, url: nil}
 
     test "list_links/0 returns all links" do
       link = Factory.insert(:link)
-      assert Admin.list_links() == [link]
+      assert Admin.list_links(@tenant) == [link]
     end
 
     test "get_link!/1 returns the link with given id" do

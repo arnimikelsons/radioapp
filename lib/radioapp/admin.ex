@@ -17,8 +17,8 @@ defmodule Radioapp.Admin do
       [%Link{}, ...]
 
   """
-  def list_links do
-    Repo.all(Link)
+  def list_links(tenant) do
+    Repo.all(Link, prefix: Triplex.to_prefix(tenant))
   end
 
   @doc """
@@ -36,12 +36,12 @@ defmodule Radioapp.Admin do
 
   """
 
-  def list_links_dropdown() do
-    links_query = from(l in Link, order_by: [asc: :type], select: {l.type, l.id})
-    Repo.all(links_query)
-  end
+  def get_link!(id, tenant), do: Repo.get!(Link, id, Triplex.to_prefix(tenant))
 
-  def get_link!(id), do: Repo.get!(Link, id)
+  def list_links_dropdown(tenant) do
+    links_query = from(l in Link, order_by: [asc: :type], select: {l.type, l.id})
+    Repo.all(links_query, prefix: Triplex.to_prefix(tenant))
+  end
 
   @doc """
   Creates a link.
@@ -55,10 +55,10 @@ defmodule Radioapp.Admin do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_link(attrs \\ %{}) do
+  def create_link(attrs \\ %{}, tenant) do
     %Link{}
     |> Link.changeset(attrs)
-    |> Repo.insert()
+    |> Repo.insert(Triplex.to_prefix(tenant))
   end
 
   @doc """
@@ -117,16 +117,16 @@ defmodule Radioapp.Admin do
       [%Category{}, ...]
 
   """
-  def list_categories do
+  def list_categories(tenant) do
     from(p in Category, order_by: [asc: :code])
-    |> Repo.all()
+    |> Repo.all(Triplex.to_prefix(tenant))
     |> Repo.preload(:segments)
   end
 
-  def list_categories_dropdown() do
+  def list_categories_dropdown(tenant) do
     categories_query = from(c in Category, order_by: [asc: :code], select: {[c.code, "-", c.name], c.id})
 
-    Repo.all(categories_query)
+    Repo.all(categories_query, Triplex.to_prefix(tenant))
 
   end
 
@@ -144,9 +144,9 @@ defmodule Radioapp.Admin do
       ** (Ecto.NoResultsError)
 
   """
-  def get_category!(id) do
+  def get_category!(id, tenant) do
     Category
-    |> Repo.get!(id)
+    |> Repo.get!(id, Triplex.to_prefix(tenant))
     |> Repo.preload(:segments) 
   end
 
@@ -162,10 +162,10 @@ defmodule Radioapp.Admin do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_category(attrs \\ %{}) do
+  def create_category(attrs \\ %{}, tenant) do
     %Category{}
     |> Category.changeset(attrs)
-    |> Repo.insert()
+    |> Repo.insert(Triplex.to_prefix(tenant))
   end
 
   @doc """

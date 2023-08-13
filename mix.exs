@@ -62,6 +62,7 @@ defmodule Radioapp.MixProject do
       {:ex_aws, "~> 2.1"},
       {:ex_aws_s3, "~> 2.0"},
       {:sweet_xml, "~> 0.6"},
+      {:triplex, "~> 1.3.0"},
       {:appsignal, "~> 2.0"},
       {:appsignal_phoenix, "~> 2.0"}
     ]

@@ -77,6 +77,10 @@ config :ex_aws,
   access_key_id: {:system, "AWS_ACCESS_KEY_ID"},
   secret_access_key_id: {:system, "AWS_SECRET_ACCESS_KEY_ID"}
 
+config :triplex, 
+  repo: Radioapp.Repo,
+  tenant_prefix: "org_"
+
 config :appsignal, :config,
   otp_app: :radioapp,
   name: "radioapp",
