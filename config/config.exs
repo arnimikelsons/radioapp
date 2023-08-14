@@ -67,7 +67,7 @@ config :phoenix, :json_library, Jason
 
 # Configure the CORS plugin
 config :cors_plug,
-  origin: ["http://localhost:4000/", "https://radioapp.fly.dev/"],
+  origin: ["http://localhost:4000/", "https://demo.radioapp.ca/"],
   max_age: 86400,
   methods: ["GET"],
   send_preflight_response?: false
