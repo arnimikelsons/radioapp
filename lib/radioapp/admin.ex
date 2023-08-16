@@ -36,7 +36,9 @@ defmodule Radioapp.Admin do
 
   """
 
-  def get_link!(id, tenant), do: Repo.get!(Link, id, Triplex.to_prefix(tenant))
+  def get_link!(id, tenant) do
+    Repo.get!(Link, id, prefix: Triplex.to_prefix(tenant))
+  end
 
   def list_links_dropdown(tenant) do
     links_query = from(l in Link, order_by: [asc: :type], select: {l.type, l.id})
@@ -58,7 +60,7 @@ defmodule Radioapp.Admin do
   def create_link(attrs \\ %{}, tenant) do
     %Link{}
     |> Link.changeset(attrs)
-    |> Repo.insert(Triplex.to_prefix(tenant))
+    |> Repo.insert(prefix: Triplex.to_prefix(tenant))
   end
 
   @doc """
@@ -119,14 +121,14 @@ defmodule Radioapp.Admin do
   """
   def list_categories(tenant) do
     from(p in Category, order_by: [asc: :code])
-    |> Repo.all(Triplex.to_prefix(tenant))
+    |> Repo.all(prefix: Triplex.to_prefix(tenant))
     |> Repo.preload(:segments)
   end
 
   def list_categories_dropdown(tenant) do
     categories_query = from(c in Category, order_by: [asc: :code], select: {[c.code, "-", c.name], c.id})
 
-    Repo.all(categories_query, Triplex.to_prefix(tenant))
+    Repo.all(categories_query, prefix: Triplex.to_prefix(tenant))
 
   end
 
@@ -146,7 +148,7 @@ defmodule Radioapp.Admin do
   """
   def get_category!(id, tenant) do
     Category
-    |> Repo.get!(id, Triplex.to_prefix(tenant))
+    |> Repo.get!(id, prefix: Triplex.to_prefix(tenant))
     |> Repo.preload(:segments) 
   end
 
@@ -165,7 +167,7 @@ defmodule Radioapp.Admin do
   def create_category(attrs \\ %{}, tenant) do
     %Category{}
     |> Category.changeset(attrs)
-    |> Repo.insert(Triplex.to_prefix(tenant))
+    |> Repo.insert(prefix: Triplex.to_prefix(tenant))
   end
 
   @doc """

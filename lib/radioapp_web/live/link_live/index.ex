@@ -8,6 +8,8 @@ defmodule RadioappWeb.LinkLive.Index do
 
   @impl true
   def mount(_params, session, socket) do
+    IO.inspect(session, label: "SESSION")
+    IO.inspect(socket, label: "SOCKET")
     socket =
       assign_defaults(session, socket)
 
