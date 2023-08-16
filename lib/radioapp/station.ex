@@ -17,9 +17,9 @@ defmodule Radioapp.Station do
       [%Program{}, ...]
 
   """
-  def list_programs do
+  def list_programs(tenant) do
     from(p in Program, where: p.hide == false or is_nil(p.hide), order_by: [asc: :name])
-    |> Repo.all()
+    |> Repo.all(prefix: Triplex.to_prefix(tenant))
     |> Repo.preload([
       :timeslots,
       :images,
@@ -29,9 +29,9 @@ defmodule Radioapp.Station do
     ])
   end
 
-  def list_all_programs do
+  def list_all_programs(tenant) do
     from(p in Program, order_by: [asc: :name])
-    |> Repo.all()
+    |> Repo.all(prefix: Triplex.to_prefix(tenant))
     |> Repo.preload([
       :timeslots,
       :images,
@@ -55,9 +55,9 @@ defmodule Radioapp.Station do
       ** (Ecto.NoResultsError)
 
   """
-  def get_program!(id) do
+  def get_program!(id, tenant) do
     Program
-    |> Repo.get!(id)
+    |> Repo.get!(id, prefix: Triplex.to_prefix(tenant))
     |> Repo.preload([
       :timeslots,
       :images,
@@ -102,10 +102,10 @@ defmodule Radioapp.Station do
 
   """
 
-  def create_program(attrs \\ %{}) do
+  def create_program(attrs \\ %{}, tenant) do
     %Program{}
     |> Program.changeset(attrs)
-    |> Repo.insert()
+    |> Repo.insert(prefix: Triplex.to_prefix(tenant))
   end
 
   @doc """
@@ -165,10 +165,10 @@ defmodule Radioapp.Station do
 
   """
 
-  def list_timeslots do
+  def list_timeslots(tenant) do
     # from(p in Timeslot, order_by: [asc: :name])
     from(t in Timeslot, order_by: [asc: :day, asc: :starttime])
-    |> Repo.all()
+    |> Repo.all(prefix: Triplex.to_prefix(tenant))
     |> Repo.preload(
       program: [
         link1: [],
@@ -178,15 +178,15 @@ defmodule Radioapp.Station do
     )
   end
 
-  def list_timeslots_for_program(program) do
+  def list_timeslots_for_program(program, tenant) do
     from(t in Timeslot, where: [program_id: ^program.id], order_by: [asc: :day])
-    |> Repo.all()
+    |> Repo.all(prefix: Triplex.to_prefix(tenant))
     |> Repo.preload(program: [link1: [], link2: [], link3: []])
   end
 
-  def list_timeslots_by_day(day) do
+  def list_timeslots_by_day(day, tenant) do
     from(t in Timeslot, where: t.day == ^day, order_by: [asc: :starttime])
-    |> Repo.all()
+    |> Repo.all(prefix: Triplex.to_prefix(tenant))
     |> Repo.preload(program: [link1: [], link2: [], link3: []])
   end
 
@@ -204,9 +204,9 @@ defmodule Radioapp.Station do
       ** (Ecto.NoResultsError)
 
   """
-  def get_timeslot!(id) do
+  def get_timeslot!(id, tenant) do
     Timeslot
-    |> Repo.get!(id)
+    |> Repo.get!(id, prefix: Triplex.to_prefix(tenant))
     |> Repo.preload(:program)
   end
 
@@ -222,11 +222,11 @@ defmodule Radioapp.Station do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_timeslot(%Program{} = program, attrs \\ %{}) do
+  def create_timeslot(%Program{} = program, attrs \\ %{}, tenant) do
     program
     |> Ecto.build_assoc(:timeslots)
     |> Timeslot.changeset(attrs)
-    |> Repo.insert()
+    |> Repo.insert(prefix: Triplex.to_prefix(tenant))
   end
 
   @doc """
@@ -285,19 +285,19 @@ defmodule Radioapp.Station do
       Log{}, ...]
 
   """
-  def list_logs do
+  def list_logs(tenant) do
     Log
-    |> Repo.all()
+    |> Repo.all(prefix: Triplex.to_prefix(tenant))
     |> Repo.preload(:program)
   end
 
-  def list_logs_for_program(program) do
+  def list_logs_for_program(program, tenant) do
     from(l in Log, where: [program_id: ^program.id], order_by: [asc: :date])
-    |> Repo.all()
+    |> Repo.all(prefix: Triplex.to_prefix(tenant))
     |> Repo.preload(:program)
   end
 
-  def list_full_logs(params) do
+  def list_full_logs(params, tenant) do
     from(s in Segment,
       join: l in assoc(s, :log),
       join: p in assoc(l, :program),
@@ -305,7 +305,7 @@ defmodule Radioapp.Station do
       where: l.date <= ^params.end_date,
       order_by: [asc: l.date]
     )
-    |> Repo.all()
+    |> Repo.all(prefix: Triplex.to_prefix(tenant))
     |> Repo.preload(log: [:program], category: [])
   end
 
@@ -333,9 +333,9 @@ defmodule Radioapp.Station do
 
   """
 
-  def get_log!(id) do
+  def get_log!(id, tenant) do
     Log
-    |> Repo.get!(id)
+    |> Repo.get!(id, prefix: Triplex.to_prefix(tenant))
     |> Repo.preload(:program)
   end
 
@@ -352,11 +352,11 @@ defmodule Radioapp.Station do
 
   """
 
-  def create_log(%Program{} = program, attrs \\ %{}) do
+  def create_log(%Program{} = program, attrs \\ %{}, tenant) do
     program
     |> Ecto.build_assoc(:logs)
     |> Log.changeset(attrs)
-    |> Repo.insert()
+    |> Repo.insert(prefix: Triplex.to_prefix(tenant))
   end
 
   @doc """
@@ -415,12 +415,12 @@ defmodule Radioapp.Station do
       [%Segment{}, ...]
 
   """
-  def list_segments do
-    Repo.all(Segment)
+  def list_segments(tenant) do
+    Repo.all(Segment, prefix: Triplex.to_prefix(tenant))
     |> Repo.preload([:category, log: [:program]])
   end
 
-  def list_segments_for_date(%{"start_date" => start_date, "end_date" => end_date}) do
+  def list_segments_for_date(%{"start_date" => start_date, "end_date" => end_date}, tenant) do
     from(s in Segment,
       join: l in assoc(s, :log),
       left_join: c in assoc(s, :category),
@@ -448,25 +448,25 @@ defmodule Radioapp.Station do
         hit: s.hit
       }
     )
-    |> Repo.all()
+    |> Repo.all(prefix: Triplex.to_prefix(tenant))
   end
 
-  def list_segments_for_log(log) do
+  def list_segments_for_log(log, tenant) do
     from(s in Segment, where: [log_id: ^log.id], order_by: [asc: :start_time])
-    |> Repo.all()
+    |> Repo.all(prefix: Triplex.to_prefix(tenant))
     |> Repo.preload([:category, log: [:program]])
   end
 
-  def start_time_of_next_segment(log) do
+  def start_time_of_next_segment(log, tenant) do
     query =
       from s in Segment,
         where: [log_id: ^log.id],
         select: max(s.end_time)
 
-    Repo.one(query) || log.start_time
+    Repo.one(query, prefix: Triplex.to_prefix(tenant)) || log.start_time
   end
 
-  def talking_segments(log) do
+  def talking_segments(log, tenant) do
     query =
       from(s in Segment,
         left_join: c in assoc(s, :category),
@@ -478,7 +478,7 @@ defmodule Radioapp.Station do
         }
       )
 
-    case Repo.one(query) do
+    case Repo.one(query, prefix: Triplex.to_prefix(tenant)) do
       %{duration: %{secs: seconds}} ->
         seconds
 
@@ -487,7 +487,7 @@ defmodule Radioapp.Station do
     end
   end
 
-  def formatted_length(length) do
+  def formatted_length(length, tenant) do
     "#{div(length, 60)}:#{formatted_seconds(rem(length, 60))}"
   end
 
@@ -495,7 +495,7 @@ defmodule Radioapp.Station do
   defp formatted_seconds(s) when s < 10, do: "0#{s}"
   defp formatted_seconds(s), do: "#{s}"
 
-  def track_minutes(log) do
+  def track_minutes(log, tenant) do
     [count_music_tracks] =
       from(s in Segment,
         left_join: c in assoc(s, :category),
@@ -504,7 +504,7 @@ defmodule Radioapp.Station do
         where: c.code <= "39",
         select: count(s.id)
       )
-      |> Repo.all()
+      |> Repo.all(prefix: Triplex.to_prefix(tenant))
 
     [new_music_tracks] =
       from(s in Segment,
@@ -515,7 +515,7 @@ defmodule Radioapp.Station do
         where: c.code <= "39",
         select: count(s.id)
       )
-      |> Repo.all()
+      |> Repo.all(prefix: Triplex.to_prefix(tenant))
 
     new_music =
       case count_music_tracks do
@@ -532,7 +532,7 @@ defmodule Radioapp.Station do
         where: c.code <= "39",
         select: count(s.id)
       )
-      |> Repo.all()
+      |> Repo.all(prefix: Triplex.to_prefix(tenant))
 
     can_con_music =
       case count_music_tracks do
@@ -549,7 +549,7 @@ defmodule Radioapp.Station do
         where: c.code <= "39",
         select: count(s.id)
       )
-      |> Repo.all()
+      |> Repo.all(prefix: Triplex.to_prefix(tenant))
 
     instrumental_music =
       case count_music_tracks do
@@ -566,7 +566,7 @@ defmodule Radioapp.Station do
         where: c.code <= "39",
         select: count(s.id)
       )
-      |> Repo.all()
+      |> Repo.all(prefix: Triplex.to_prefix(tenant))
 
     hit_music =
       case count_music_tracks do
@@ -591,9 +591,9 @@ defmodule Radioapp.Station do
       ** (Ecto.NoResultsError)
 
   """
-  def get_segment!(id) do
+  def get_segment!(id, tenant) do
     Segment
-    |> Repo.get!(id)
+    |> Repo.get!(id, prefix: Triplex.to_prefix(tenant))
     |> Repo.preload([:category, log: [:program]])
   end
 
@@ -609,11 +609,11 @@ defmodule Radioapp.Station do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_segment(%Log{} = log, attrs \\ %{}) do
+  def create_segment(%Log{} = log, attrs \\ %{}, tenant) do
     log
     |> Ecto.build_assoc(:segments)
     |> Segment.changeset(attrs)
-    |> Repo.insert()
+    |> Repo.insert(prefix: Triplex.to_prefix(tenant))
   end
 
   @doc """
@@ -669,9 +669,9 @@ defmodule Radioapp.Station do
       iex> list_images()
       [%Image{}, ...]
   """
-  def list_images() do
+  def list_images(tenant) do
     Image
-    |> Repo.all()
+    |> Repo.all(prefix: Triplex.to_prefix(tenant))
     |> Repo.preload(:program)
   end
 
@@ -684,9 +684,9 @@ defmodule Radioapp.Station do
       iex> get_image!(456)
       ** (Ecto.NoResultsError)
   """
-  def get_image!(id) do
+  def get_image!(id, tenant) do
     Image
-    |> Repo.get!(id)
+    |> Repo.get!(id, prefix: Triplex.to_prefix(tenant))
     |> Repo.preload(:program)
   end
 
@@ -698,13 +698,13 @@ defmodule Radioapp.Station do
       iex> create_image(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
   """
-  def create_image(attrs \\ %{}) do
+  def create_image(attrs \\ %{}, tenant) do
     %Image{}
     |> Image.changeset(attrs)
-    |> Repo.insert()
+    |> Repo.insert(prefix: Triplex.to_prefix(tenant))
   end
 
-  def create_image_from_plug_upload(%Program{} = program, %Plug.Upload{} = upload) do
+  def create_image_from_plug_upload(%Program{} = program, %Plug.Upload{} = upload, tenant) do
     uuid = Ecto.UUID.generate()
     remote_path = "images/radioapp/#{uuid}-#{upload.filename}"
 
@@ -712,7 +712,7 @@ defmodule Radioapp.Station do
       program
       |> Ecto.build_assoc(:images)
       |> Image.changeset(uploaded_image)
-      |> Repo.insert()
+      |> Repo.insert(prefix: Triplex.to_prefix(tenant))
     else
       {:error, reason} ->
         {:error, reason}
