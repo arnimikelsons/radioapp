@@ -48,5 +48,6 @@ defmodule RadioappWeb.Endpoint do
   plug Plug.Head
   plug Plug.Session, @session_options
   plug CORSPlug
+  plug RadioappWeb.Plugs.Subdomain
   plug RadioappWeb.Router
 end

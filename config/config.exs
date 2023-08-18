@@ -12,7 +12,7 @@ config :radioapp,
 
 # Configures the endpoint
 config :radioapp, RadioappWeb.Endpoint,
-  url: [host: "localhost"],
+  url: [host: "nvlocal.net"],
   render_errors: [
     formats: [html: RadioappWeb.ErrorHTML, json: RadioappWeb.ErrorJSON],
     layout: false

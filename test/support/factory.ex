@@ -1,7 +1,7 @@
 defmodule Radioapp.Factory do
   use ExMachina.Ecto, repo: Radioapp.Repo
 
-  def unique_user_email, do: "user#{System.unique_integer()}@example.com"
+  def unique_user_email, do: "user#{System.unique_integer()}@nvlocal.net"
   def valid_user_password, do: "hello world!"
 
 def user_factory do

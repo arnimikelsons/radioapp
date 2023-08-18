@@ -5,30 +5,32 @@ defmodule RadioappWeb.TimeslotControllerTest do
   alias Radioapp.Repo
   alias Radioapp.Station.Timeslot
 
+  @tenant "sample"
+  @prefix Triplex.to_prefix(@tenant)
+
   @invalid_attrs %{day: nil, endtime: nil, runtime: nil, starttime: nil}
 
   describe "index" do
 
     test "lists all timeslots by day", %{conn: conn} do
-      program =Factory.insert(:program)
-      timeslot1 = Factory.insert(:timeslot, program: program, day: 1)
-      _timeslot2 = Factory.insert(:timeslot, day: 2)
+      program =Factory.insert(:program, [], prefix: @prefix)
+      timeslot1 = Factory.insert(:timeslot, [program: program, day: 1], prefix: @prefix)
+      _timeslot2 = Factory.insert(:timeslot, [day: 2], prefix: @prefix)
 
       conn = get(conn, ~p"/schedule/1")
       assert html_response(conn, 200) =~ timeslot1.program.name
     end
 
     test "lists all timeslots by day for today", %{conn: conn} do
-      program =Factory.insert(:program)
+      program =Factory.insert(:program, [], prefix: @prefix)
       now = DateTime.to_naive(Timex.now("America/Toronto"))
       day = Timex.weekday(now)
 
-      timeslot = Factory.insert(:timeslot, program: program, day: day)
+      timeslot = Factory.insert(:timeslot, [program: program, day: day], prefix: @prefix)
 
       conn = get(conn, ~p"/")
       assert html_response(conn, 200) =~ timeslot.program.name
     end
-
   end
 
 
@@ -43,7 +45,7 @@ defmodule RadioappWeb.TimeslotControllerTest do
       assert html_response(conn, 200) =~ "Listing Timeslots"
     end
     test "renders form", %{conn: conn} do
-      program = Factory.insert(:program)
+      program = Factory.insert(:program, [], prefix: @prefix)
       conn = get(conn, ~p"/programs/#{program.id}/timeslots/new")
       assert redirected_to(conn) == ~p"/"
     end
@@ -65,14 +67,14 @@ defmodule RadioappWeb.TimeslotControllerTest do
     
     test "renders form", %{conn: conn} do
 
-      program = Factory.insert(:program)
+      program = Factory.insert(:program, [], prefix: @prefix)
       conn = get(conn, ~p"/programs/#{program.id}/timeslots/new")
       assert html_response(conn, 200) =~ "New Time Slot"
     end
 
     test "redirects to show when data is valid for New", %{conn: conn} do
       # Given a program
-      program = Factory.insert(:program)
+      program = Factory.insert(:program, [], prefix: @prefix)
 
       # When we create a timeslot with valid attributes
       attrs =
@@ -103,15 +105,15 @@ defmodule RadioappWeb.TimeslotControllerTest do
     end
 
     test "renders errors when data is invalid for new", %{conn: conn} do
-      program = Factory.insert(:program)
+      program = Factory.insert(:program, [], prefix: @prefix)
       conn = post(conn, ~p"/programs/#{program.id}/timeslots", timeslot: @invalid_attrs)
       assert html_response(conn, 200) =~ "New Time Slot"
     end
 
 
     test "renders form for editing chosen timeslot", %{conn: conn} do
-      program = Factory.insert(:program)
-      timeslot = Factory.insert(:timeslot, program: program)
+      program = Factory.insert(:program, [], prefix: @prefix)
+      timeslot = Factory.insert(:timeslot, [program: program], prefix: @prefix)
 
       conn = get(conn, ~p"/programs/#{program}/timeslots/#{timeslot}/edit")
 
@@ -119,15 +121,16 @@ defmodule RadioappWeb.TimeslotControllerTest do
     end
 
     test "redirects when data is valid for update", %{conn: conn} do
-      program = Factory.insert(:program)
+      program = Factory.insert(:program, [], prefix: @prefix)
 
       timeslot =
         Factory.insert(:timeslot,
-          program: program,
+          [program: program,
           day: 2,
           starttime: ~T[04:00:00],
           runtime: 30,
-          endtime: ~T[04:30:00]
+          endtime: ~T[04:30:00]], 
+          prefix: @prefix
         )
 
       conn =
@@ -141,23 +144,23 @@ defmodule RadioappWeb.TimeslotControllerTest do
       assert html_response(conn, 200)
       assert html_response(conn, 200) =~ "#{timeslot.day}"
 
-      timeslot = Repo.get!(Timeslot, timeslot.id)
+      timeslot = Repo.get!(Timeslot, timeslot.id, prefix: @prefix)
       assert timeslot.day == 3
       assert timeslot.endtime == ~T[04:30:00]
       assert timeslot.starttimereadable == "4:00 am"
     end
 
     test "renders errors when data is invalid for update", %{conn: conn} do
-      program = Factory.insert(:program)
-      timeslot = Factory.insert(:timeslot, program: program)
+      program = Factory.insert(:program, [], prefix: @prefix)
+      timeslot = Factory.insert(:timeslot, [program: program], prefix: @prefix)
 
       conn = put(conn, ~p"/programs/#{program}/timeslots/#{timeslot}", timeslot: @invalid_attrs)
       assert html_response(conn, 200) =~ "Edit Time Slot"
     end
 
     test "deletes chosen timeslot", %{conn: conn} do
-      program = Factory.insert(:program)
-      timeslot = Factory.insert(:timeslot, program: program)
+      program = Factory.insert(:program, [], prefix: @prefix)
+      timeslot = Factory.insert(:timeslot, [program: program], prefix: @prefix)
 
       conn = delete(conn, ~p"/programs/#{program}/timeslots/#{timeslot}")
       assert redirected_to(conn) == ~p"/programs/#{program}"
