@@ -9,16 +9,12 @@ defmodule RadioappWeb.ProgramControllerTest do
   @create_attrs %{description: "some description", genre: "some genre", name: "some name", short_description: "some short description"}
   @update_attrs %{description: "some updated description", genre: "some updated genre", name: "some updated name", short_description: "some updated short description"}
   @invalid_attrs %{description: nil, genre: nil, name: nil}
-  
-  
 
   describe "index" do
     test "lists all programs", %{conn: conn} do
-      _program = Factory.insert(:program, [], prefix: @prefix)
       conn = get(conn, ~p"/programs")
       assert html_response(conn, 200) =~ "RadioApp Programs"
     end
-
   end
 
   describe "manage programs" do

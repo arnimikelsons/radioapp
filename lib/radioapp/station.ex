@@ -67,7 +67,7 @@ defmodule Radioapp.Station do
     ])
   end
 
-  def get_program_from_time(weekday, time_now) do
+  def get_program_from_time(weekday, time_now, tenant) do
     from(t in Timeslot,
       join: p in assoc(t, :program),
       where: t.day == ^weekday,
@@ -75,10 +75,10 @@ defmodule Radioapp.Station do
       where: t.endtime > ^time_now,
       select: p.name
     )
-    |> Repo.all()
+    |> Repo.all(prefix: Triplex.to_prefix(tenant))
   end
 
-  def get_program_now_start_time(weekday, time_now) do
+  def get_program_now_start_time(weekday, time_now, tenant) do
     from(t in Timeslot,
       join: p in assoc(t, :program),
       where: t.day == ^weekday,
@@ -86,7 +86,7 @@ defmodule Radioapp.Station do
       where: t.endtime >= ^time_now,
       select: t.starttimereadable
     )
-    |> Repo.all()
+    |> Repo.all(prefix: Triplex.to_prefix(tenant))
   end
 
   @doc """
