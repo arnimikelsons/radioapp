@@ -99,14 +99,4 @@ end
     }
   end
 
-  # def orgsettings_factory do
-  #   %Radioapp.Admin.Orgsettings{
-  #     from_email: unique_user_email(),
-  #     from_email_name: "Some Full Name",
-  #     org_name: Faker.Company.name() |> String.replace("'", ""),
-  #     support_email: unique_user_email(),
-  #     url: Faker.Internet.domain_name()
-  #   }
-  # end
-
 end
