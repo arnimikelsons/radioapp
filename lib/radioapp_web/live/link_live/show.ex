@@ -5,19 +5,23 @@ defmodule RadioappWeb.LinkLive.Show do
   import RadioappWeb.LiveHelpers
 
   @impl true
-  def mount(params, session, socket) do
+  def mount(_params, session, socket) do
+    tenant = socket.private.connect_info.assigns.current_tenant
+
     socket =
       assign_defaults(session, socket)
+      |> assign(:tenant, tenant)
 
     {:ok, socket}
   end
 
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
+    tenant = socket.assigns.tenant
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:link, Admin.get_link!(id))}
+     |> assign(:link, Admin.get_link!(id, tenant))}
   end
 
   defp page_title(:show), do: "Show Link"
