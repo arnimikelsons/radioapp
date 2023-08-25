@@ -68,7 +68,9 @@ defmodule RadioappWeb.LinkLive.FormComponent do
   end
 
   defp save_link(socket, :new, link_params) do
-    case Admin.create_link(link_params) do
+    IO.inspect(socket, label: "SOCKET")
+    tenant = socket.assigns.tenant
+    case Admin.create_link(link_params, tenant) do
       {:ok, _link} ->
         {:noreply,
          socket

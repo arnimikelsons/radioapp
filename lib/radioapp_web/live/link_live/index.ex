@@ -13,7 +13,6 @@ defmodule RadioappWeb.LinkLive.Index do
       assign_defaults(session, socket)
       |> assign(:tenant, tenant)
       |> assign(:links, list_links(tenant))
-
     {:ok, socket}
   end
 
@@ -31,6 +30,8 @@ defmodule RadioappWeb.LinkLive.Index do
   end
 
   defp apply_action(socket, :new, _params) do
+    tenant = socket.assigns.tenant
+    IO.inspect(tenant, label: "TENANT")
     socket
     |> assign(:page_title, "New Link")
     |> assign(:link, %Link{})
