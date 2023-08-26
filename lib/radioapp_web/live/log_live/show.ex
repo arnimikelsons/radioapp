@@ -36,7 +36,7 @@ defmodule RadioappWeb.LogLive.Show do
       socket
       |> assign(:page_title, page_title(socket.assigns.live_action))
       |> assign(:log, log)
-      |> assign(:segments, Station.list_segments_for_log(log))
+      |> assign(:segments, Station.list_segments_for_log(log, tenant))
     }
   end
 

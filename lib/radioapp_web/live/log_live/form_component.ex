@@ -74,8 +74,9 @@ defmodule RadioappWeb.LogLive.FormComponent do
   end
 
   defp save_log(socket, :new, log_params) do
+    tenant = socket.assigns.tenant
     program = socket.assigns.program
-    case Station.create_log(program, log_params) do
+    case Station.create_log(program, log_params, tenant) do
       {:ok, _log} ->
         {:noreply,
          socket

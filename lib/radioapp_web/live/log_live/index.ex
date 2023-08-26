@@ -14,7 +14,7 @@ defmodule RadioappWeb.LogLive.Index do
     socket =
       assign_defaults(session, socket)
       |> assign(:tenant, tenant)
-
+    
     program = Station.get_program!(program_id, tenant)
     {:ok,
       socket
@@ -30,6 +30,7 @@ defmodule RadioappWeb.LogLive.Index do
   defp apply_action(socket, :new, %{
     "program_id" => program_id
   }) do
+    
     tenant = socket.assigns.tenant
     program = Station.get_program!(program_id, tenant)
 
@@ -37,6 +38,8 @@ defmodule RadioappWeb.LogLive.Index do
     |> assign(:page_title, "New Log")
     |> assign(:program, program)
     |> assign(:log, %Log{})
+
+
   end
 
   defp apply_action(socket, :edit, %{
@@ -73,6 +76,10 @@ defmodule RadioappWeb.LogLive.Index do
     program = Station.get_program!(log.program_id, tenant)
     if socket.assigns.current_user.role == :admin do
       {:ok, _} = Station.delete_log(log)
+    else 
+      socket
+      |> put_flash(:error, "Unauthorised")
+      |> redirect(to: ~p"/programs/#{program}/logs")
     end
     {:noreply, assign(socket, :logs, list_logs_for_program(program, tenant))}
 
