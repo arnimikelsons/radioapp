@@ -12,7 +12,7 @@ defmodule RadioappWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :fetch_current_user
-    plug Triplex.SessionPlug, session: :subdomain
+    
     plug RadioappWeb.AllowIFramePlug
   end
 
@@ -26,6 +26,10 @@ defmodule RadioappWeb.Router do
 
   pipeline :admin do
     plug EnsureRolePlug, :admin
+  end
+
+  pipeline :tenant_in_session do
+    plug RadioappWeb.Plugs.SessionTenant
   end
 
   # Other scopes may use custom stacks.
@@ -142,6 +146,16 @@ defmodule RadioappWeb.Router do
   end
 
   scope "/", RadioappWeb do
+    pipe_through [:browser, :require_authenticated_user, :admin, :tenant_in_session] 
+      live "/admin/links", LinkLive.Index, :index
+      live "/admin/links/new", LinkLive.Index, :new
+      live "/admin/links/:id/edit", LinkLive.Index, :edit
+
+      live "/admin/links/:id", LinkLive.Show, :show
+      live "/admin/links/:id/show/edit", LinkLive.Show, :edit
+  end
+
+  scope "/", RadioappWeb do
     pipe_through [:browser, :require_authenticated_user, :admin]
 
     delete "/programs/:id", ProgramController, :delete
@@ -154,13 +168,6 @@ defmodule RadioappWeb.Router do
     patch "/programs/:program_id/timeslots/:id", TimeslotController, :update
     put "/programs/:program_id/timeslots/:id", TimeslotController, :update
     delete "/programs/:program_id/timeslots/:id", TimeslotController, :delete
-
-    live "/admin/links", LinkLive.Index, :index
-    live "/admin/links/new", LinkLive.Index, :new
-    live "/admin/links/:id/edit", LinkLive.Index, :edit
-
-    live "/admin/links/:id", LinkLive.Show, :show
-    live "/admin/links/:id/show/edit", LinkLive.Show, :edit
 
     live "/admin/categories", CategoryLive.Index, :index
     live "/admin/categories/new", CategoryLive.Index, :new

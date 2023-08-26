@@ -1,0 +1,27 @@
+defmodule RadioappWeb.Plugs.SessionTenant do
+
+  @behaviour Plug # see this for more on behaviours: https://elixir-lang.org/getting-started/typespecs-and-behaviours.html#behaviours
+
+  import Plug.Conn
+
+  def init(_opts) do
+    %{ root_host: RadioappWeb.Endpoint.config(:url)[:host] }
+  end
+
+  def call(%Plug.Conn{host: host} = conn, %{root_host: root_host} = _opts) do
+    case extract_subdomain(host, root_host) do
+      subdomain when byte_size(subdomain) > 0 ->
+        conn
+        |> put_session(:subdomain, subdomain)
+      _ ->
+        conn
+    end
+  end
+
+  defp extract_subdomain(host, root_host) do
+    #String.replace(host, ~r/.?#{root_host}/, "")
+    host
+    |> String.split(".")
+    |> List.first()
+  end
+end

@@ -5,8 +5,8 @@ defmodule RadioappWeb.LinkLive.Show do
   import RadioappWeb.LiveHelpers
 
   @impl true
-  def mount(_params, session, socket) do
-    tenant = socket.private.connect_info.assigns.current_tenant
+  def mount(params, session, socket) do
+    tenant = Map.fetch!(session, "subdomain")
 
     socket =
       assign_defaults(session, socket)
@@ -16,8 +16,8 @@ defmodule RadioappWeb.LinkLive.Show do
   end
 
   @impl true
-  def handle_params(%{"id" => id}, _, socket) do
-    tenant = socket.assigns.tenant
+  def handle_params(%{"id" => id}, session, socket) do
+    tenant = Map.fetch!(session, "subdomain")
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))

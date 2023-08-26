@@ -36,7 +36,7 @@ defmodule RadioappWeb.ConnCase do
 
     conn =
       Phoenix.ConnTest.build_conn()
-      |> Map.put(:host, "sample.whatevertesting.com")
+      |> Map.put(:host, "sample.radioapp.ca")
 
     {:ok, conn: conn}
   end

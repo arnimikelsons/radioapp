@@ -12,7 +12,6 @@ defmodule RadioappWeb.PageController do
   end
 
   def podcasts(conn, _params) do
-    IO.inspect(conn, label: "CONN")
     render(conn, :podcasts)
   end
 

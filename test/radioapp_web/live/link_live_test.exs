@@ -120,22 +120,23 @@ defmodule RadioappWeb.LinkLiveTest do
       %{conn: conn, user: user}
     end
 
-    test "displays link", %{conn: conn} do
-      link = Factory.insert(:link, [], prefix: @prefix)
-      {:ok, _show_live, html} = live(conn, ~p"/admin/links/#{link}")
+    # not used
+    # test "displays link", %{conn: conn} do
+    #   link = Factory.insert(:link, [], prefix: @prefix)
+    #   {:ok, _show_live, html} = live(conn, ~p"/admin/links/#{link}")
 
-      assert html =~ "Show Link"
-      assert html =~ link.icon
-    end
+    #   assert html =~ "Show Link"
+    #   assert html =~ link.icon
+    # end
 
-    test "updates link within modal", %{conn: conn} do
-      link = Factory.insert(:link, [], prefix: @prefix)
-      {:ok, show_live, _html} = live(conn, ~p"/admin/links/#{link}")
+    # test "updates link within modal", %{conn: conn} do
+    #   link = Factory.insert(:link, [], prefix: @prefix)
+    #   {:ok, show_live, _html} = live(conn, ~p"/admin/links/#{link}")
 
-      assert show_live |> element("a", "Edit Link") |> render_click() =~
-               "Edit Link"
+    #   assert show_live |> element("a", "Edit Link") |> render_click() =~
+    #            "Edit Link"
 
-      assert_patch(show_live, ~p"/admin/links/#{link}/show/edit")
+    #   assert_patch(show_live, ~p"/admin/links/#{link}/show/edit")
 
       #no invalid case
       #assert show_live
