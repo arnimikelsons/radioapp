@@ -1,8 +1,11 @@
 defmodule RadioappWeb.LogLiveTest do
   use RadioappWeb.ConnCase, async: true
-  alias Radioapp.Factory
 
+  alias Radioapp.Factory
   import Phoenix.LiveViewTest
+
+  @tenant "sample"
+  @prefix Triplex.to_prefix(@tenant)
 
   @create_attrs %{
   host_name: "some host name",
@@ -44,16 +47,30 @@ defmodule RadioappWeb.LogLiveTest do
     end
   end
 
-  describe "Index" do
+  describe "Don't allow users to access functions" do
     setup %{conn: conn} do
-      user = Factory.insert(:user)
+      user = Factory.insert(:user, role: "user")
       conn = log_in_user(conn, user)
       %{conn: conn, user: user}
     end
-    
+
+    test "Does not list all logs for non-admin user", %{conn: conn} do
+      Factory.insert(:link, [], prefix: @prefix)
+      assert {:error, redirect} = live(conn, ~p"/admin/logs")
+      assert {:redirect, %{to: path, flash: flash}} = redirect
+      assert path == ~p"/"
+      assert %{"error" => "Unauthorised"} = flash
+    end
+  end
+  describe "Index" do
+    setup %{conn: conn} do
+      user = Factory.insert(:user, role: "admin")
+      conn = log_in_user(conn, user)
+      %{conn: conn, user: user}
+    end   
     test "lists all logs", %{conn: conn} do
-      program = Factory.insert(:program)
-      log = Factory.insert(:log, program: program)
+      program = Factory.insert(:program, [], prefix: @prefix)
+      log = Factory.insert(:log, [program: program], prefix: @prefix)
       {:ok, _index_live, html} = live(conn, ~p"/programs/#{program}/logs")
 
       assert html =~ "Listing Logs"
@@ -61,7 +78,8 @@ defmodule RadioappWeb.LogLiveTest do
     end
 
     test "saves new log", %{conn: conn} do
-      program = Factory.insert(:program)
+      
+      program = Factory.insert(:program, [], prefix: @prefix)
 
       {:ok, index_live, _html} = live(conn, ~p"/programs/#{program}/logs")
 
@@ -87,8 +105,8 @@ defmodule RadioappWeb.LogLiveTest do
     end
 
     test "updates log in listing", %{conn: conn} do
-      program = Factory.insert(:program)
-      log = Factory.insert(:log, program: program)
+      program = Factory.insert(:program, [], prefix: @prefix)
+      log = Factory.insert(:log, [program: program], prefix: @prefix)
 
       {:ok, index_live, _html} = live(conn, ~p"/programs/#{program}/logs")
 
@@ -114,13 +132,14 @@ defmodule RadioappWeb.LogLiveTest do
     end
 
     test "deletes log in listing", %{conn: conn} do
-      program = Factory.insert(:program)
+      program = Factory.insert(:program, [], prefix: @prefix)
 
-      #log = Factory.insert(:log, program_id: program.id)
+      _log = Factory.insert(:log, [program_id: program.id], prefix: @prefix)
 
-      {:ok, _index_live, html} = live(conn, ~p"/programs/#{program}/logs")
-
-      refute html =~ "Delete"
+      assert {:error, redirect}  = live(conn, ~p"/programs/#{program}/logs")
+      assert {:redirect, %{to: path, flash: flash}} = redirect
+      assert path == ~p"/"
+      assert %{"error" => "Unauthorised"} = flash
     end
   end
 
@@ -132,9 +151,9 @@ defmodule RadioappWeb.LogLiveTest do
     end
 
     test "deletes log in listing", %{conn: conn} do
-      program = Factory.insert(:program)
+      program = Factory.insert(:program, [], prefix: @prefix)
 
-      log = Factory.insert(:log, program_id: program.id)
+      log = Factory.insert(:log, [program_id: program.id], prefix: @prefix)
 
       {:ok, index_live, _html} = live(conn, ~p"/programs/#{program}/logs")
 
@@ -152,8 +171,8 @@ defmodule RadioappWeb.LogLiveTest do
     end
 
     test "displays log", %{conn: conn} do
-      program = Factory.insert(:program)
-      log = Factory.insert(:log, program: program)
+      program = Factory.insert(:program, [], prefix: @prefix)
+      log = Factory.insert(:log, [program: program], prefix: @prefix)
 
       {:ok, _show_live, html} = live(conn, ~p"/programs/#{program}/logs/#{log}")
 
@@ -162,8 +181,8 @@ defmodule RadioappWeb.LogLiveTest do
     end
 
     test "updates log within modal", %{conn: conn} do
-      program = Factory.insert(:program)
-      log = Factory.insert(:log, program: program)
+      program = Factory.insert(:program, [], prefix: @prefix)
+      log = Factory.insert(:log, [program: program], prefix: @prefix)
 
       {:ok, show_live, _html} = live(conn, ~p"/programs/#{program}/logs/#{log}")
 

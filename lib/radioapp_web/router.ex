@@ -126,14 +126,6 @@ defmodule RadioappWeb.Router do
 
     get "/images", ImageController, :index
 
-    live "/programs/:program_id/logs/", LogLive.Index, :index
-    live "/programs/:program_id/logs/new", LogLive.Index, :new
-    live "/programs/:program_id/logs/:id/edit", LogLive.Index, :edit
-
-    live "/programs/:program_id/logs/:id", LogLive.Show, :show
-    live "/programs/:program_id/logs/:id/show/edit", LogLive.Show, :edit
-
-
     #live "/segments", SegmentLive.Index, :index
     live "/programs/:program_id/logs/:log_id/segments", SegmentLive.Index, :index
     live "/programs/:program_id/logs/:log_id/segments/new", SegmentLive.Index, :new
@@ -153,7 +145,17 @@ defmodule RadioappWeb.Router do
 
       live "/admin/links/:id", LinkLive.Show, :show
       live "/admin/links/:id/show/edit", LinkLive.Show, :edit
+
+      live "/programs/:program_id/logs/", LogLive.Index, :index
+      live "/programs/:program_id/logs/new", LogLive.Index, :new
+      live "/programs/:program_id/logs/:id/edit", LogLive.Index, :edit
+  
+      live "/programs/:program_id/logs/:id", LogLive.Show, :show
+      live "/programs/:program_id/logs/:id/show/edit", LogLive.Show, :edit
+  
   end
+
+
 
   scope "/", RadioappWeb do
     pipe_through [:browser, :require_authenticated_user, :admin]
@@ -175,6 +177,10 @@ defmodule RadioappWeb.Router do
 
     live "/admin/categories/:id", CategoryLive.Show, :show
     live "/admin/categories/:id/show/edit", CategoryLive.Show, :edit
+  end
+
+  scope "/", RadioappWeb do
+    pipe_through [:browser, :require_authenticated_user, :admin, :tenant_in_session]
 
     get "/admin/logs", LogController, :index
     post "/admin/logs/search", LogController, :search

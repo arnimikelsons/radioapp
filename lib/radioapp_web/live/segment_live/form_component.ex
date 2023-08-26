@@ -48,8 +48,9 @@ defmodule RadioappWeb.SegmentLive.FormComponent do
 
   @impl true
   def update(%{segment: segment} = assigns, socket) do
+    tenant = socket.assigns.tenant
     if assigns.action == :new do
-      start_time = Station.start_time_of_next_segment(assigns.log)
+      start_time = Station.start_time_of_next_segment(assigns.log, tenant)
       changeset = Station.change_segment(segment, %{start_time: start_time})
 
       {:ok,
@@ -108,9 +109,10 @@ defmodule RadioappWeb.SegmentLive.FormComponent do
   end
 
   defp save_segment(socket, :new, segment_params) do
+    tenant = socket.assigns.tenant
     log = socket.assigns.log
 
-    case Station.create_segment(log, segment_params) do
+    case Station.create_segment(log, segment_params, tenant) do
       {:ok, _segment} ->
         {:noreply,
          socket

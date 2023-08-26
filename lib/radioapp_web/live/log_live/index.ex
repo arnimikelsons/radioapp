@@ -9,14 +9,16 @@ defmodule RadioappWeb.LogLive.Index do
   def mount(%{
     "program_id" => program_id
     }, session, socket) do
+    tenant = Map.fetch!(session, "subdomain")
 
     socket =
       assign_defaults(session, socket)
+      |> assign(:tenant, tenant)
 
-    program = Station.get_program!(program_id)
+    program = Station.get_program!(program_id, tenant)
     {:ok,
       socket
-      |> assign(:logs, list_logs_for_program(program))}
+      |> assign(:logs, list_logs_for_program(program, tenant))}
 
   end
 
@@ -28,7 +30,8 @@ defmodule RadioappWeb.LogLive.Index do
   defp apply_action(socket, :new, %{
     "program_id" => program_id
   }) do
-    program = Station.get_program!(program_id)
+    tenant = socket.assigns.tenant
+    program = Station.get_program!(program_id, tenant)
 
     socket
     |> assign(:page_title, "New Log")
@@ -40,13 +43,13 @@ defmodule RadioappWeb.LogLive.Index do
     "id" => id,
     "program_id" => program_id
     }) do
-
-    program = Station.get_program!(program_id)
+    tenant = socket.assigns.tenant
+    program = Station.get_program!(program_id, tenant)
 
     socket
     |> assign(:page_title, "Edit Log")
     |> assign(:program, program)
-    |> assign(:log, Station.get_log!(id))
+    |> assign(:log, Station.get_log!(id, tenant))
   end
 
 
@@ -54,7 +57,8 @@ defmodule RadioappWeb.LogLive.Index do
   defp apply_action(socket, :index, %{
     "program_id" => program_id
   }) do
-    program = Station.get_program!(program_id)
+    tenant = socket.assigns.tenant
+    program = Station.get_program!(program_id, tenant)
 
     socket
     |> assign(:page_title, "Logs")
@@ -64,17 +68,18 @@ defmodule RadioappWeb.LogLive.Index do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    log = Station.get_log!(id)
-    program = Station.get_program!(log.program_id)
+    tenant = socket.assigns.tenant
+    log = Station.get_log!(id, tenant)
+    program = Station.get_program!(log.program_id, tenant)
     if socket.assigns.current_user.role == :admin do
       {:ok, _} = Station.delete_log(log)
     end
-    {:noreply, assign(socket, :logs, list_logs_for_program(program))}
+    {:noreply, assign(socket, :logs, list_logs_for_program(program, tenant))}
 
   end
 
-  defp list_logs_for_program(program) do
-    Station.list_logs_for_program(program)
+  defp list_logs_for_program(program, tenant) do
+    Station.list_logs_for_program(program, tenant)
   end
 
 end
