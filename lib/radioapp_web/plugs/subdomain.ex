@@ -11,7 +11,6 @@ defmodule RadioappWeb.Plugs.Subdomain do
   def call(%Plug.Conn{host: host} = conn, %{root_host: root_host} = _opts) do
     case extract_subdomain(host, root_host) do
       subdomain when byte_size(subdomain) > 0 ->
-        
         conn
         |> put_private(:subdomain, subdomain)
         |> assign(:current_tenant, subdomain)

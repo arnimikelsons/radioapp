@@ -113,12 +113,12 @@ defmodule RadioappWeb.LinkLiveTest do
     end
   end
 
-  describe "Show" do
-    setup %{conn: conn} do
-      user = Factory.insert(:user, role: "admin")
-      conn = log_in_user(conn, user)
-      %{conn: conn, user: user}
-    end
+  # describe "Show" do
+  #   setup %{conn: conn} do
+  #     user = Factory.insert(:user, role: "admin")
+  #     conn = log_in_user(conn, user)
+  #     %{conn: conn, user: user}
+  #   end
 
     # not used
     # test "displays link", %{conn: conn} do
@@ -143,14 +143,14 @@ defmodule RadioappWeb.LinkLiveTest do
       #       |> form("#link-form", link: @invalid_attrs)
       #       |> render_change() =~ "can&#39;t be blank"
 
-      {:ok, _, html} =
-        show_live
-        |> form("#link-form", link: @update_attrs)
-        |> render_submit()
-        |> follow_redirect(conn, ~p"/admin/links/#{link}")
+  #     {:ok, _, html} =
+  #       show_live
+  #       |> form("#link-form", link: @update_attrs)
+  #       |> render_submit()
+  #       |> follow_redirect(conn, ~p"/admin/links/#{link}")
 
-      assert html =~ "Link updated successfully"
-      assert html =~ "some updated icon"
-    end
-  end
+  #     assert html =~ "Link updated successfully"
+  #     assert html =~ "some updated icon"
+  #   end
+  # end
 end

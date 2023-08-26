@@ -5,23 +5,11 @@ defmodule RadioappWeb.Plugs.SessionTenant do
   import Plug.Conn
 
   def init(_opts) do
-    %{ root_host: RadioappWeb.Endpoint.config(:url)[:host] }
+    _opts
   end
 
-  def call(%Plug.Conn{host: host} = conn, %{root_host: root_host} = _opts) do
-    case extract_subdomain(host, root_host) do
-      subdomain when byte_size(subdomain) > 0 ->
-        conn
-        |> put_session(:subdomain, subdomain)
-      _ ->
-        conn
-    end
-  end
-
-  defp extract_subdomain(host, root_host) do
-    #String.replace(host, ~r/.?#{root_host}/, "")
-    host
-    |> String.split(".")
-    |> List.first()
+  def call(conn, _opts) do
+    conn
+    |> put_session(:subdomain, conn.assigns.current_tenant)
   end
 end
