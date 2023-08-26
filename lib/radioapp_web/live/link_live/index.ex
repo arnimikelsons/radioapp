@@ -7,11 +7,6 @@ defmodule RadioappWeb.LinkLive.Index do
 
   @impl true
   def mount(_params, session, socket) do
-    
-      # "_csrf_token" => "4N32SNEiII5on0WYiA4ay8Kz",
-      # "live_socket_id" => "users_sessions:AVnI1Knzh13T16ocM_Lptpp7uAXmS3DZcqnySQ5MQh0=",
-      # "subdomain" => "demo",session.subdomain
-      IO.inspect(session, label: "SESSION")
     tenant = Map.fetch!(session, "subdomain")
 
     socket =
