@@ -49,7 +49,7 @@ defmodule RadioappWeb.LogLive.Show do
       {:ok, _} = Station.delete_segment(segment)
     end
 
-    {:noreply, assign(socket, :segments, Station.list_segments_for_log(socket.assigns.log))}
+    {:noreply, assign(socket, :segments, Station.list_segments_for_log(socket.assigns.log, tenant))}
   end
 
   defp page_title(:show), do: "Log"

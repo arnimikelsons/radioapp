@@ -189,9 +189,12 @@ defmodule RadioappWeb.Router do
   end
 
   scope "/", RadioappWeb do
-    pipe_through [:browser, :require_authenticated_user, :admin, :tenant_in_session]
-
-
+    pipe_through [:browser, :tenant_in_session]
+    get "/feed", FeedController, :index
+    
+    # Route for pop-out player
+    live "/player", PlayerLive, :pop, container: {:main, class: "px-20 sm:px-6 lg:px-8 popup-container"}
+  
   end
 
   scope "/", RadioappWeb do
@@ -209,10 +212,8 @@ defmodule RadioappWeb.Router do
     get "/archives", PageController, :archives
     get "/podcasts", PageController, :podcasts
 
-    get "/feed", FeedController, :index
 
-    # Route for pop-out player
-    live "/player", PlayerLive, :pop, container: {:main, class: "px-20 sm:px-6 lg:px-8 popup-container"}
-  end
+
+ end
 
 end

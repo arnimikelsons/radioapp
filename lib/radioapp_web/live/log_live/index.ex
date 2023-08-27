@@ -74,15 +74,10 @@ defmodule RadioappWeb.LogLive.Index do
     tenant = socket.assigns.tenant
     log = Station.get_log!(id, tenant)
     program = Station.get_program!(log.program_id, tenant)
-    if socket.assigns.current_user.role == :admin do
-      {:ok, _} = Station.delete_log(log)
-    else 
-      socket
-      |> put_flash(:error, "Unauthorised")
-      |> redirect(to: ~p"/programs/#{program}/logs")
-    end
-    {:noreply, assign(socket, :logs, list_logs_for_program(program, tenant))}
 
+    {:ok, _} = Station.delete_log(log)
+
+    {:noreply, assign(socket, :logs, list_logs_for_program(program, tenant))}
   end
 
   defp list_logs_for_program(program, tenant) do

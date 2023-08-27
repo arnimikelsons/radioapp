@@ -5,7 +5,7 @@ defmodule RadioappWeb.LinkLive.Show do
   import RadioappWeb.LiveHelpers
 
   @impl true
-  def mount(params, session, socket) do
+  def mount(_params, session, socket) do
     tenant = Map.fetch!(session, "subdomain")
 
     socket =

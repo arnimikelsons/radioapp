@@ -70,11 +70,12 @@ defmodule RadioappWeb.ImageController do
   }) do
     tenant = RadioappWeb.get_tenant(conn)
 
-    image = Station.get_image!(image_id)
+    image = Station.get_image!(image_id, tenant)
 
     case Station.update_image_from_plug(
           image,
-          image_upload
+          image_upload, 
+          tenant
         ) do
       {:ok, _image} ->
         conn

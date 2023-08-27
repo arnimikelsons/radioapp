@@ -46,10 +46,10 @@ defmodule RadioappWeb.LogController do
 
   def search(conn, %{"search_params" => params}) do
     search = SearchParams.new(params)
-
+    tenant = RadioappWeb.get_tenant(conn)
     logs =
       if search.valid? do
-        Station.list_full_logs(SearchParams.apply(search))
+        Station.list_full_logs(SearchParams.apply(search), tenant)
       else
         []
       end
@@ -58,7 +58,8 @@ defmodule RadioappWeb.LogController do
   end
 
   def export(conn, %{"search_params" => params}) do
-    logs = Station.list_segments_for_date(params)
+    tenant = RadioappWeb.get_tenant(conn)
+    logs = Station.list_segments_for_date(params, tenant)
 
     csv =
       Builder.to_csv2(

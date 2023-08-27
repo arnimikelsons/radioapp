@@ -4,12 +4,12 @@ defmodule RadioappWeb.Plugs.Subdomain do
 
   import Plug.Conn
 
-  def init(_opts) do
+  def init(opts) do
     %{ root_host: RadioappWeb.Endpoint.config(:url)[:host] }
   end
 
-  def call(%Plug.Conn{host: host} = conn, %{root_host: root_host} = _opts) do
-    case extract_subdomain(host, root_host) do
+  def call(%Plug.Conn{host: host} = conn, %{root_host: root_host} = opts) do
+    case extract_subdomain(host) do
       subdomain when byte_size(subdomain) > 0 ->
         conn
         |> put_private(:subdomain, subdomain)
@@ -19,8 +19,7 @@ defmodule RadioappWeb.Plugs.Subdomain do
     end
   end
 
-  defp extract_subdomain(host, root_host) do
-    #String.replace(host, ~r/.?#{root_host}/, "")
+  defp extract_subdomain(host) do
     host
     |> String.split(".")
     |> List.first()

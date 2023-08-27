@@ -8,10 +8,13 @@ defmodule RadioappWeb.CategoryLive.Index do
 
   @impl true
   def mount(_params, session, socket) do
+    tenant = Map.fetch!(session, "subdomain")
     socket =
       assign_defaults(session, socket)
+      |> assign(:tenant, tenant)
+    
 
-    {:ok, assign(socket, :categories, list_categories())}
+    {:ok, assign(socket, :categories, list_categories(tenant))}
   end
 
   @impl true
@@ -20,9 +23,10 @@ defmodule RadioappWeb.CategoryLive.Index do
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
+    tenant = socket.assigns.tenant
     socket
     |> assign(:page_title, "Edit Category")
-    |> assign(:category, Admin.get_category!(id))
+    |> assign(:category, Admin.get_category!(id, tenant))
   end
 
   defp apply_action(socket, :new, _params) do
@@ -39,13 +43,14 @@ defmodule RadioappWeb.CategoryLive.Index do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    category = Admin.get_category!(id)
+    tenant = socket.assigns.tenant
+    category = Admin.get_category!(id, tenant)
     {:ok, _} = Admin.delete_category(category)
 
-    {:noreply, assign(socket, :categories, list_categories())}
+    {:noreply, assign(socket, :categories, list_categories(tenant))}
   end
 
-  defp list_categories do
-    Admin.list_categories()
+  defp list_categories(tenant) do
+    Admin.list_categories(tenant)
   end
 end

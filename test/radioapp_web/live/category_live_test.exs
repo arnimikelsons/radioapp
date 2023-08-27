@@ -4,6 +4,9 @@ defmodule RadioappWeb.CategoryLiveTest do
   import Phoenix.LiveViewTest
   alias Radioapp.Factory
 
+  @tenant "sample"
+  @prefix Triplex.to_prefix(@tenant)
+
   @create_attrs %{code: "some code", name: "some name"}
   @update_attrs %{code: "some updated code", name: "some updated name"}
   @invalid_attrs %{code: nil, name: nil}
@@ -33,7 +36,7 @@ defmodule RadioappWeb.CategoryLiveTest do
     end
 
     test "Does not list all categories", %{conn: conn} do
-      Factory.insert(:category)
+      Factory.insert(:category, [], prefix: @prefix)
       assert {:error, redirect} = live(conn, ~p"/admin/categories")
       assert {:redirect, %{to: path, flash: flash}} = redirect
       assert path == ~p"/"
@@ -52,7 +55,7 @@ defmodule RadioappWeb.CategoryLiveTest do
 
 
     test "lists all categories", %{conn: conn} do
-      category = Factory.insert(:category)
+      category = Factory.insert(:category, [], prefix: @prefix)
       {:ok, _index_live, html} = live(conn, ~p"/admin/categories")
 
       assert html =~ "Listing Categories"
@@ -82,7 +85,7 @@ defmodule RadioappWeb.CategoryLiveTest do
     end
 
     test "updates category in listing", %{conn: conn} do
-      category = Factory.insert(:category)
+      category = Factory.insert(:category, [], prefix: @prefix)
       {:ok, index_live, _html} = live(conn, ~p"/admin/categories")
 
       assert index_live |> element("#categories-#{category.id} a", "Edit") |> render_click() =~
@@ -105,7 +108,7 @@ defmodule RadioappWeb.CategoryLiveTest do
     end
 
     test "deletes category in listing", %{conn: conn} do
-      category = Factory.insert(:category)
+      category = Factory.insert(:category, [], prefix: @prefix)
       {:ok, index_live, _html} = live(conn, ~p"/admin/categories")
 
       assert index_live |> element("#categories-#{category.id} a", "Delete") |> render_click()
@@ -122,7 +125,7 @@ defmodule RadioappWeb.CategoryLiveTest do
 
 
     test "displays category", %{conn: conn} do
-      category = Factory.insert(:category)
+      category = Factory.insert(:category, [], prefix: @prefix)
       {:ok, _show_live, html} = live(conn, ~p"/admin/categories/#{category}")
 
       assert html =~ "Show Category"
@@ -130,7 +133,7 @@ defmodule RadioappWeb.CategoryLiveTest do
     end
 
     test "updates category within modal", %{conn: conn} do
-      category = Factory.insert(:category)
+      category = Factory.insert(:category, [], prefix: @prefix)
       {:ok, show_live, _html} = live(conn, ~p"/admin/categories/#{category}")
 
       assert show_live |> element("a", "Edit Category") |> render_click() =~

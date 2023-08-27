@@ -24,7 +24,7 @@ defmodule RadioappWeb.SegmentLive.Index do
 
     log = Station.get_log!(log_id, tenant)
     talking_seconds = Station.talking_segments(log, tenant)
-    talking = Station.formatted_length(talking_seconds, tenant)
+    talking = Station.formatted_length(talking_seconds)
     segments = Station.list_segments_for_log(log, tenant)
     [new_music, can_con_music, instrumental_music, hit_music] = Station.track_minutes(log, tenant)
 
@@ -61,7 +61,6 @@ defmodule RadioappWeb.SegmentLive.Index do
     |> assign(:page_title, "New Segment")
     |> assign(:program, program)
     |> assign(:log, log)
-    |> assign(:tenant, tenant)
     |> assign(:list_categories, list_categories)
     |> assign(:segment, %Segment{})
   end

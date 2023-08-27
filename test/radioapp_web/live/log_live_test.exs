@@ -134,9 +134,11 @@ defmodule RadioappWeb.LogLiveTest do
     test "deletes log in listing", %{conn: conn} do
       program = Factory.insert(:program, [], prefix: @prefix)
 
-      _log = Factory.insert(:log, [program_id: program.id], prefix: @prefix)
-
-      assert {:error, redirect}  = live(conn, ~p"/programs/#{program}/logs")
+      log = Factory.insert(:log, [program_id: program.id], prefix: @prefix)
+      {:ok, index_live, _html} = live(conn, ~p"/programs/#{program}/logs")
+      
+      assert {:error, redirect}  = index_live |> element("#logs-#{log.id} a", "Delete") |> render_click()
+     
       assert {:redirect, %{to: path, flash: flash}} = redirect
       assert path == ~p"/"
       assert %{"error" => "Unauthorised"} = flash

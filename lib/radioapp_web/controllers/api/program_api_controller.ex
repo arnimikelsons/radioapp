@@ -6,7 +6,8 @@ defmodule RadioappWeb.Api.ProgramApiController do
   action_fallback RadioappWeb.FallbackController
 
   def index(conn, _params) do
-    programs = Station.list_programs()
+    tenant = RadioappWeb.get_tenant(conn)
+    programs = Station.list_programs(tenant)
     render(conn, :index, programs: programs)
   end
 

@@ -30,7 +30,6 @@ defmodule RadioappWeb.LinkLive.Index do
   end
 
   defp apply_action(socket, :new, _params) do
-    tenant = socket.assigns.tenant
     socket
     |> assign(:page_title, "New Link")
     |> assign(:link, %Link{})

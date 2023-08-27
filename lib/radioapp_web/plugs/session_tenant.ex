@@ -4,8 +4,8 @@ defmodule RadioappWeb.Plugs.SessionTenant do
 
   import Plug.Conn
 
-  def init(_opts) do
-    _opts
+  def init(opts) do
+    opts
   end
 
   def call(conn, _opts) do

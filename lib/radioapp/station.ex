@@ -487,7 +487,7 @@ defmodule Radioapp.Station do
     end
   end
 
-  def formatted_length(length, tenant) do
+  def formatted_length(length) do
     "#{div(length, 60)}:#{formatted_seconds(rem(length, 60))}"
   end
 
@@ -705,8 +705,9 @@ defmodule Radioapp.Station do
   end
 
   def create_image_from_plug_upload(%Program{} = program, %Plug.Upload{} = upload, tenant) do
+    
     uuid = Ecto.UUID.generate()
-    remote_path = "images/radioapp/#{uuid}-#{upload.filename}"
+    remote_path = "radioapp/#{tenant}/#{uuid}-#{upload.filename}"
 
     with {:ok, uploaded_image} <- send_upload_to_s3(remote_path, upload) do
       program
@@ -729,9 +730,9 @@ defmodule Radioapp.Station do
     resp.body
   end
 
-  def update_image_from_plug(%Image{} = image, %Plug.Upload{} = upload) do
-    id = Ecto.UUID.generate()
-    remote_path = "images/radioapp/#{id}-#{upload.filename}"
+  def update_image_from_plug(%Image{} = image, %Plug.Upload{} = upload, tenant) do
+    uuid = Ecto.UUID.generate()
+    remote_path = "radioapp/#{tenant}/#{uuid}-#{upload.filename}"
 
     with {:ok, uploaded_image} <- send_upload_to_s3(remote_path, upload) do
       image

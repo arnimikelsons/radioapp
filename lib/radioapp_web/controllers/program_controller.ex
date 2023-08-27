@@ -8,7 +8,9 @@ defmodule RadioappWeb.ProgramController do
   def index(conn, _params) do
     tenant = RadioappWeb.get_tenant(conn)
     programs = Station.list_programs(tenant)
+    IO.inspect(programs, label: "PROGRAMS")
     all_programs = Station.list_all_programs(tenant)
+    IO.inspect(all_programs, label: "ALL PROGRAMS")
     current_user = conn.assigns.current_user
     render(conn, :index, programs: programs, all_programs: all_programs, current_user: current_user)
   end

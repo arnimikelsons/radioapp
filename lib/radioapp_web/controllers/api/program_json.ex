@@ -13,6 +13,7 @@ defmodule RadioappWeb.Api.ProgramApiJSON do
   Renders the current program.
   """
   def show(_program) do
+
     now = DateTime.to_naive(Timex.now("America/Toronto"))
     time_now = DateTime.to_time(Timex.now("America/Toronto"))
     weekday = Timex.weekday(now)
