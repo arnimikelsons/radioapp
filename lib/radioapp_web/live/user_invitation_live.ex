@@ -42,7 +42,8 @@ defmodule RadioappWeb.UserInvitationLive do
   end
 
   def mount(_params, session, socket) do
-
+    tenant = Map.fetch!(session, "subdomain")
+    IO.inspect(tenant, label: "TENANT")
     socket =
       assign_defaults(session, socket)
 

@@ -132,6 +132,15 @@ defmodule Radioapp.Accounts do
     |> Repo.update()
   end
 
+  def update_user_in_tenant(%User{} = user, attrs, role, tenant) do
+    roles = user.roles |> Map.put(tenant, role)
+
+    user
+    |> User.edit_changeset(attrs)
+    |> Ecto.Changeset.change(%{roles: roles})
+    |> Repo.update()
+  end
+
   @doc """
   Emulates that the email will change without actually changing
   it in the database.
