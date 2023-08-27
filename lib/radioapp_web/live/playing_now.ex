@@ -7,11 +7,12 @@ defmodule RadioappWeb.PlayingNow do
       <span></span>
     """
   end
-  def playing_now(assigns) do
+  def playing_now(assigns, tenant) do
+    
     now = DateTime.to_naive(Timex.now("America/Toronto"))
     time_now = DateTime.to_time(Timex.now("America/Toronto"))
     weekday = Timex.weekday(now)
-    assigns = assign(assigns, :show_name, Station.get_program_from_time(weekday, time_now))
+    assigns = assign(assigns, :show_name, Station.get_program_from_time(weekday, time_now, tenant))
   ~H"""
     <span><%= @show_name %></span>
     <%!-- <span>Test</span> --%>

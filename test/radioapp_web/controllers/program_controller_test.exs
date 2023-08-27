@@ -3,17 +3,18 @@ defmodule RadioappWeb.ProgramControllerTest do
 
   alias Radioapp.Factory
 
+  @tenant "sample"
+  @prefix Triplex.to_prefix(@tenant)
+
   @create_attrs %{description: "some description", genre: "some genre", name: "some name", short_description: "some short description"}
   @update_attrs %{description: "some updated description", genre: "some updated genre", name: "some updated name", short_description: "some updated short description"}
   @invalid_attrs %{description: nil, genre: nil, name: nil}
-  
+
   describe "index" do
     test "lists all programs", %{conn: conn} do
-      _program = Factory.insert(:program)
       conn = get(conn, ~p"/programs")
-      assert html_response(conn, 200) =~ "CFRC Programs"
+      assert html_response(conn, 200) =~ "RadioApp Programs"
     end
-
   end
 
   describe "manage programs" do
@@ -48,13 +49,13 @@ defmodule RadioappWeb.ProgramControllerTest do
     end
 
     test "renders form for editing chosen program", %{conn: conn} do
-      program = Factory.insert(:program)
+      program = Factory.insert(:program, [], prefix: @prefix)
       conn = get(conn, ~p"/programs/#{program}/edit")
       assert html_response(conn, 200) =~ "Edit Program"
     end
 
     test "redirects when data is valid", %{conn: conn} do
-      program = Factory.insert(:program)
+      program = Factory.insert(:program, [], prefix: @prefix)
 
       conn = put(conn, ~p"/programs/#{program}", program: @update_attrs)
       assert redirected_to(conn) == ~p"/programs/#{program}"
@@ -64,14 +65,14 @@ defmodule RadioappWeb.ProgramControllerTest do
     end
 
     test "renders errors when data is invalid for Edit", %{conn: conn} do
-      program = Factory.insert(:program)
+      program = Factory.insert(:program, [], prefix: @prefix)
 
       conn = put(conn, ~p"/programs/#{program}", program: @invalid_attrs)
       assert html_response(conn, 200) =~ "Edit Program"
     end
 
     test "deletes chosen program", %{conn: conn} do
-      program = Factory.insert(:program)
+      program = Factory.insert(:program, [], prefix: @prefix)
       conn = delete(conn, ~p"/programs/#{program}")
       assert redirected_to(conn) == ~p"/"
 
@@ -88,7 +89,7 @@ defmodule RadioappWeb.ProgramControllerTest do
     end
 
     test "deletes chosen program", %{conn: conn} do
-      program = Factory.insert(:program)
+      program = Factory.insert(:program, [], prefix: @prefix)
       conn = delete(conn, ~p"/programs/#{program}")
       assert redirected_to(conn) == ~p"/programs"
 

@@ -67,7 +67,7 @@ defmodule Radioapp.Station do
     ])
   end
 
-  def get_program_from_time(weekday, time_now) do
+  def get_program_from_time(weekday, time_now, tenant) do
     from(t in Timeslot,
       join: p in assoc(t, :program),
       where: t.day == ^weekday,
@@ -75,10 +75,10 @@ defmodule Radioapp.Station do
       where: t.endtime > ^time_now,
       select: p.name
     )
-    |> Repo.all()
+    |> Repo.all(prefix: Triplex.to_prefix(tenant))
   end
 
-  def get_program_now_start_time(weekday, time_now) do
+  def get_program_now_start_time(weekday, time_now, tenant) do
     from(t in Timeslot,
       join: p in assoc(t, :program),
       where: t.day == ^weekday,
@@ -86,7 +86,7 @@ defmodule Radioapp.Station do
       where: t.endtime >= ^time_now,
       select: t.starttimereadable
     )
-    |> Repo.all()
+    |> Repo.all(prefix: Triplex.to_prefix(tenant))
   end
 
   @doc """
@@ -487,7 +487,7 @@ defmodule Radioapp.Station do
     end
   end
 
-  def formatted_length(length, tenant) do
+  def formatted_length(length) do
     "#{div(length, 60)}:#{formatted_seconds(rem(length, 60))}"
   end
 
@@ -705,8 +705,9 @@ defmodule Radioapp.Station do
   end
 
   def create_image_from_plug_upload(%Program{} = program, %Plug.Upload{} = upload, tenant) do
+    
     uuid = Ecto.UUID.generate()
-    remote_path = "images/radioapp/#{uuid}-#{upload.filename}"
+    remote_path = "radioapp/#{tenant}/#{uuid}-#{upload.filename}"
 
     with {:ok, uploaded_image} <- send_upload_to_s3(remote_path, upload) do
       program
@@ -729,9 +730,9 @@ defmodule Radioapp.Station do
     resp.body
   end
 
-  def update_image_from_plug(%Image{} = image, %Plug.Upload{} = upload) do
-    id = Ecto.UUID.generate()
-    remote_path = "images/radioapp/#{id}-#{upload.filename}"
+  def update_image_from_plug(%Image{} = image, %Plug.Upload{} = upload, tenant) do
+    uuid = Ecto.UUID.generate()
+    remote_path = "radioapp/#{tenant}/#{uuid}-#{upload.filename}"
 
     with {:ok, uploaded_image} <- send_upload_to_s3(remote_path, upload) do
       image

@@ -2,8 +2,11 @@ defmodule RadioappWeb.PlayerLive do
   use RadioappWeb, :live_player_view
   alias Radioapp.Station
 
-  def mount(_params, _session, socket) do
+  def mount(_params, session, socket) do
+    tenant = Map.fetch!(session, "subdomain")
 
+    socket = assign(socket, tenant: tenant)
+    
     if connected?(socket) do
       Process.send_after(self(), :tick, 60 * 1000) # In 1 minute
     end
@@ -17,6 +20,7 @@ defmodule RadioappWeb.PlayerLive do
       )
 
       socket = assign_show(socket)
+      
 
     if socket.assigns.live_action == :pop do
       socket = assign(socket, page_title: "Pop-Up Player")
@@ -48,12 +52,13 @@ defmodule RadioappWeb.PlayerLive do
   end
 
   defp assign_show(socket) do
+    tenant = socket.assigns.tenant
     now = DateTime.to_naive(Timex.now("America/Toronto"))
     time_now = DateTime.to_time(Timex.now("America/Toronto"))
     weekday = Timex.weekday(now)
 
-    showName = Station.get_program_from_time(weekday, time_now)
-    startTime = Station.get_program_now_start_time(weekday, time_now)
+    showName = Station.get_program_from_time(weekday, time_now, tenant)
+    startTime = Station.get_program_now_start_time(weekday, time_now, tenant)
 
     assign(socket,
       show_name: showName,

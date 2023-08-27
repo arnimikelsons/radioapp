@@ -68,7 +68,8 @@ defmodule RadioappWeb.CategoryLive.FormComponent do
   end
 
   defp save_category(socket, :new, category_params) do
-    case Admin.create_category(category_params) do
+    tenant = socket.assigns.tenant
+    case Admin.create_category(category_params, tenant) do
       {:ok, _category} ->
         {:noreply,
          socket

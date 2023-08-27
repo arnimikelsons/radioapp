@@ -1,27 +1,24 @@
 defmodule Radioapp.AdminTest do
   use Radioapp.DataCase
   alias Radioapp.Factory
-  alias Radioapp.Admin.{Category, Link}
+  alias Radioapp.Admin.{Category, Link, Orgsettings}
   alias Radioapp.Admin
 
   @tenant "sample"
+  @prefix Triplex.to_prefix(@tenant)
 
   describe "links" do
     @valid_attrs %{icon: "some icon", type: "some type"}
     @update_attrs %{icon: "some updated icon", type: "some updated type"}
     @invalid_attrs %{icon: nil, type: nil, url: nil}
 
-    def link_fixture(_attrs \\ %{}) do
-      _link = Factory.insert(:link, [], prefix: Triplex.to_prefix(@tenant))
-    end
-
     test "list_links/0 returns all links" do
-      link = link_fixture()
+      link = Factory.insert(:link, [], prefix: @prefix)
       assert Admin.list_links(@tenant) == [link]
     end
 
     test "get_link!/1 returns the link with given id" do
-      link = link_fixture()
+      link = Factory.insert(:link, [], prefix: @prefix)
       assert Admin.get_link!(link.id, @tenant) == link
     end
 
@@ -38,7 +35,7 @@ defmodule Radioapp.AdminTest do
     #end
 
     test "update_link/2 with valid data updates the link" do
-      link = link_fixture()
+      link = Factory.insert(:link, [], prefix: @prefix)
 
       assert {:ok, %Link{} = link} = Admin.update_link(link, @update_attrs)
       assert link.icon == "some updated icon"
@@ -47,19 +44,19 @@ defmodule Radioapp.AdminTest do
 
     #no invalid attrs
     #test "update_link/2 with invalid data returns error changeset" do
-    #  link = link_fixture()
+    #  link = Factory.insert(:link, [], prefix: @prefix)
     #  assert {:error, %Ecto.Changeset{}} = Admin.update_link(link, @invalid_attrs)
     #  assert link == Admin.get_link!(link.id)
     #end
 
     test "delete_link/1 deletes the link" do
-      link = link_fixture()
+      link = Factory.insert(:link, [], prefix: @prefix)
       assert {:ok, %Link{}} = Admin.delete_link(link)
       assert_raise Ecto.NoResultsError, fn -> Admin.get_link!(link.id, @tenant) end
     end
 
     test "change_link/1 returns a link changeset" do
-      link = link_fixture()
+      link = Factory.insert(:link, [], prefix: @prefix)
       assert %Ecto.Changeset{} = Admin.change_link(link)
     end
   end
@@ -69,17 +66,13 @@ defmodule Radioapp.AdminTest do
     @update_attrs %{code: "some updated code", name: "some updated name"}
     @invalid_attrs %{code: nil, name: nil}
 
-    def category_fixture(_attrs \\ %{}) do
-      _category = Factory.insert(:category, [], prefix: Triplex.to_prefix(@tenant))
-    end
-
     test "list_categories/0 returns all categories" do
-      category = category_fixture()
+      category = Factory.insert(:category, [], prefix: @prefix)
       assert Admin.list_categories(@tenant) == [category]
     end
 
     test "get_category!/1 returns the category with given id" do
-      category = category_fixture()
+      category = Factory.insert(:category, [], prefix: @prefix)
       assert Admin.get_category!(category.id, @tenant) == category
     end
 
@@ -94,7 +87,7 @@ defmodule Radioapp.AdminTest do
     end
 
     test "update_category/2 with valid data updates the category" do
-      category = category_fixture()
+      category = Factory.insert(:category, [], prefix: @prefix)
       
       assert {:ok, %Category{} = category} = Admin.update_category(category, @update_attrs)
       assert category.code == "some updated code"
@@ -102,19 +95,19 @@ defmodule Radioapp.AdminTest do
     end
 
     test "update_category/2 with invalid data returns error changeset" do
-      category = category_fixture()
+      category = Factory.insert(:category, [], prefix: @prefix)
       assert {:error, %Ecto.Changeset{}} = Admin.update_category(category, @invalid_attrs)
       assert category == Admin.get_category!(category.id, @tenant)
     end
 
     test "delete_category/1 deletes the category" do
-      category = category_fixture()
+      category = Factory.insert(:category, [], prefix: @prefix)
       assert {:ok, %Category{}} = Admin.delete_category(category)
       assert_raise Ecto.NoResultsError, fn -> Admin.get_category!(category.id, @tenant) end
     end
 
     test "change_category/1 returns a category changeset" do
-      category = category_fixture()
+      category = Factory.insert(:category, [], prefix: @prefix)
       assert %Ecto.Changeset{} = Admin.change_category(category)
     end
   end

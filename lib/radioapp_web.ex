@@ -114,6 +114,11 @@ defmodule RadioappWeb do
     end
   end
 
+  def get_tenant(conn) do
+    conn.assigns.current_tenant
+    #"sample"
+  end
+
   @doc """
   When used, dispatch to the appropriate controller/view/etc.
   """

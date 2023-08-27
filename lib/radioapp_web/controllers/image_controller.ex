@@ -5,12 +5,14 @@ defmodule RadioappWeb.ImageController do
   alias Radioapp.Station.Image
 
   def index(conn, _params) do
-    images = Station.list_images()
+    tenant = RadioappWeb.get_tenant(conn)
+    images = Station.list_images(tenant)
     render(conn, "index.html", images: images)
   end
 
   def show(conn, %{"id" => id}) do
-    image = Station.get_image!(id)
+    tenant = RadioappWeb.get_tenant(conn)
+    image = Station.get_image!(id, tenant)
     image_data = Station.download_from_s3(image.remote_filename)
 
     send_download(conn, {:binary, image_data}, 
@@ -19,7 +21,8 @@ defmodule RadioappWeb.ImageController do
   end
 
   def new(conn, %{"program_id" => program_id}) do
-    program = Station.get_program!(program_id)
+    tenant = RadioappWeb.get_tenant(conn)
+    program = Station.get_program!(program_id, tenant)
 
     changeset = Station.change_image(%Image{})
 
@@ -33,12 +36,14 @@ defmodule RadioappWeb.ImageController do
         "program_id" => program_id,
         "image" => %Plug.Upload{} = image
       }) do
-
-    program = Station.get_program!(program_id)
+    
+    tenant = RadioappWeb.get_tenant(conn)
+    program = Station.get_program!(program_id, tenant)
 
     case Station.create_image_from_plug_upload(
            program,
-           image
+           image, 
+           tenant
          ) do
       {:ok, _image} ->
         conn
@@ -63,12 +68,14 @@ defmodule RadioappWeb.ImageController do
     "id" => image_id,
     "image" => %{"image" => %Plug.Upload{} = image_upload}
   }) do
+    tenant = RadioappWeb.get_tenant(conn)
 
-    image = Station.get_image!(image_id)
+    image = Station.get_image!(image_id, tenant)
 
     case Station.update_image_from_plug(
           image,
-          image_upload
+          image_upload, 
+          tenant
         ) do
       {:ok, _image} ->
         conn
@@ -89,8 +96,9 @@ defmodule RadioappWeb.ImageController do
   end
 
   def delete(conn, %{"id" => id}) do
-    image = Station.get_image!(id)
-    program = Station.get_program!(image.program_id)
+    tenant = RadioappWeb.get_tenant(conn)
+    image = Station.get_image!(id, tenant)
+    program = Station.get_program!(image.program_id, tenant)
     {:ok, _image} = Station.delete_image(image)
 
     conn

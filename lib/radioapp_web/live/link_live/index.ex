@@ -5,15 +5,15 @@ defmodule RadioappWeb.LinkLive.Index do
   alias Radioapp.Admin.Link
   import RadioappWeb.LiveHelpers
 
-
   @impl true
   def mount(_params, session, socket) do
-    IO.inspect(session, label: "SESSION")
-    IO.inspect(socket, label: "SOCKET")
+    tenant = Map.fetch!(session, "subdomain")
+
     socket =
       assign_defaults(session, socket)
-
-    {:ok, assign(socket, :links, list_links())}
+      |> assign(:tenant, tenant)
+      |> assign(:links, list_links(tenant))
+    {:ok, socket}
   end
 
   @impl true
@@ -22,9 +22,11 @@ defmodule RadioappWeb.LinkLive.Index do
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
+    tenant = socket.assigns.tenant
+
     socket
     |> assign(:page_title, "Edit Link")
-    |> assign(:link, Admin.get_link!(id))
+    |> assign(:link, Admin.get_link!(id, tenant))
   end
 
   defp apply_action(socket, :new, _params) do
@@ -41,13 +43,14 @@ defmodule RadioappWeb.LinkLive.Index do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    link = Admin.get_link!(id)
+    tenant = socket.assigns.tenant
+    link = Admin.get_link!(id, tenant)
     {:ok, _} = Admin.delete_link(link)
 
-    {:noreply, assign(socket, :links, list_links())}
+    {:noreply, assign(socket, :links, list_links(tenant))}
   end
 
-  defp list_links do
-    Admin.list_links()
+  defp list_links(tenant) do
+    Admin.list_links(tenant)
   end
 end

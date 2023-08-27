@@ -12,7 +12,7 @@ defmodule RadioappWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :fetch_current_user
-    plug Triplex.SessionPlug, session: :subdomain
+    
     plug RadioappWeb.AllowIFramePlug
   end
 
@@ -26,6 +26,10 @@ defmodule RadioappWeb.Router do
 
   pipeline :admin do
     plug EnsureRolePlug, :admin
+  end
+
+  pipeline :tenant_in_session do
+    plug RadioappWeb.Plugs.SessionTenant
   end
 
   # Other scopes may use custom stacks.
@@ -119,16 +123,18 @@ defmodule RadioappWeb.Router do
     put "/programs/:program_id/images/:id", ImageController, :update
     delete "/programs/:program_id/images/:id", ImageController, :delete
 
-
     get "/images", ImageController, :index
+  end
 
+  scope "/", RadioappWeb do
+    pipe_through [:browser, :require_authenticated_user, :user, :tenant_in_session]
+    
     live "/programs/:program_id/logs/", LogLive.Index, :index
     live "/programs/:program_id/logs/new", LogLive.Index, :new
     live "/programs/:program_id/logs/:id/edit", LogLive.Index, :edit
 
     live "/programs/:program_id/logs/:id", LogLive.Show, :show
     live "/programs/:program_id/logs/:id/show/edit", LogLive.Show, :edit
-
 
     #live "/segments", SegmentLive.Index, :index
     live "/programs/:program_id/logs/:log_id/segments", SegmentLive.Index, :index
@@ -140,6 +146,30 @@ defmodule RadioappWeb.Router do
 
     get "/admin", PageController, :admin
   end
+
+  
+  scope "/", RadioappWeb do
+    pipe_through [:browser, :require_authenticated_user, :admin, :tenant_in_session] 
+      live "/admin/links", LinkLive.Index, :index
+      live "/admin/links/new", LinkLive.Index, :new
+      live "/admin/links/:id/edit", LinkLive.Index, :edit
+
+      live "/admin/links/:id", LinkLive.Show, :show
+      live "/admin/links/:id/show/edit", LinkLive.Show, :edit
+
+      live "/admin/categories", CategoryLive.Index, :index
+      live "/admin/categories/new", CategoryLive.Index, :new
+      live "/admin/categories/:id/edit", CategoryLive.Index, :edit
+  
+      live "/admin/categories/:id", CategoryLive.Show, :show
+      live "/admin/categories/:id/show/edit", CategoryLive.Show, :edit
+
+      get "/admin/logs", LogController, :index
+      post "/admin/logs/search", LogController, :search
+      post "/admin/logs/export", LogController, :export
+  end
+
+
 
   scope "/", RadioappWeb do
     pipe_through [:browser, :require_authenticated_user, :admin]
@@ -155,23 +185,16 @@ defmodule RadioappWeb.Router do
     put "/programs/:program_id/timeslots/:id", TimeslotController, :update
     delete "/programs/:program_id/timeslots/:id", TimeslotController, :delete
 
-    live "/admin/links", LinkLive.Index, :index
-    live "/admin/links/new", LinkLive.Index, :new
-    live "/admin/links/:id/edit", LinkLive.Index, :edit
 
-    live "/admin/links/:id", LinkLive.Show, :show
-    live "/admin/links/:id/show/edit", LinkLive.Show, :edit
+  end
 
-    live "/admin/categories", CategoryLive.Index, :index
-    live "/admin/categories/new", CategoryLive.Index, :new
-    live "/admin/categories/:id/edit", CategoryLive.Index, :edit
-
-    live "/admin/categories/:id", CategoryLive.Show, :show
-    live "/admin/categories/:id/show/edit", CategoryLive.Show, :edit
-
-    get "/admin/logs", LogController, :index
-    post "/admin/logs/search", LogController, :search
-    post "/admin/logs/export", LogController, :export
+  scope "/", RadioappWeb do
+    pipe_through [:browser, :tenant_in_session]
+    get "/feed", FeedController, :index
+    
+    # Route for pop-out player
+    live "/player", PlayerLive, :pop, container: {:main, class: "px-20 sm:px-6 lg:px-8 popup-container"}
+  
   end
 
   scope "/", RadioappWeb do
@@ -189,10 +212,8 @@ defmodule RadioappWeb.Router do
     get "/archives", PageController, :archives
     get "/podcasts", PageController, :podcasts
 
-    get "/feed", FeedController, :index
 
-    # Route for pop-out player
-    live "/player", PlayerLive, :pop, container: {:main, class: "px-20 sm:px-6 lg:px-8 popup-container"}
-  end
+
+ end
 
 end

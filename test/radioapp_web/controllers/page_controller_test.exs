@@ -3,6 +3,6 @@ defmodule RadioappWeb.PageControllerTest do
 
   test "GET /", %{conn: conn} do
     conn = get(conn, ~p"/")
-    assert html_response(conn, 200) =~ "Listen to CFRC"
+    assert html_response(conn, 200) =~ "Community Radio Software"
   end
 end

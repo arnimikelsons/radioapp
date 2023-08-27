@@ -4,6 +4,9 @@ defmodule RadioappWeb.SegmentLiveTest do
 
   import Phoenix.LiveViewTest
 
+  @tenant "sample"
+  @prefix Triplex.to_prefix(@tenant)
+
   @create_attrs %{
     artist: "some artist",
     can_con: true,
@@ -61,10 +64,11 @@ defmodule RadioappWeb.SegmentLiveTest do
     end
 
     test "lists all segments", %{conn: conn} do
-      program = Factory.insert(:program)
-      log = Factory.insert(:log, program: program)
-      category = Factory.insert(:category)
-      segment = Factory.insert(:segment, log: log, category: category)
+      
+      program = Factory.insert(:program, [], prefix: @prefix)
+      log = Factory.insert(:log, [program: program], prefix: @prefix)
+      category = Factory.insert(:category, [], prefix: @prefix)
+      segment = Factory.insert(:segment, [log: log, category: category], prefix: @prefix)
       {:ok, _index_live, html} = live(conn, ~p"/programs/#{program}/logs/#{log}/segments")
 
       assert html =~ "Listing Segments"
@@ -72,9 +76,9 @@ defmodule RadioappWeb.SegmentLiveTest do
     end
 
     test "saves new segment", %{conn: conn} do
-      program = Factory.insert(:program)
-      log = Factory.insert(:log, program: program)
-      _valid_category = Factory.insert(:category, id: 1)
+      program = Factory.insert(:program, [], prefix: @prefix)
+      log = Factory.insert(:log, [program: program], prefix: @prefix)
+      _valid_category = Factory.insert(:category, [id: 1], prefix: @prefix)
 
       {:ok, index_live, _html}= live(conn, ~p"/programs/#{program}/logs/#{log}/segments")
 
@@ -98,10 +102,10 @@ defmodule RadioappWeb.SegmentLiveTest do
     end
 
     test "updates segment in listing", %{conn: conn} do
-      program = Factory.insert(:program)
-      log = Factory.insert(:log, program: program)
-      category = Factory.insert(:category)
-      segment = Factory.insert(:segment, log: log, category: category)
+      program = Factory.insert(:program, [], prefix: @prefix)
+      log = Factory.insert(:log, [program: program], prefix: @prefix)
+      category = Factory.insert(:category, [], prefix: @prefix)
+      segment = Factory.insert(:segment, [log: log, category: category], prefix: @prefix)
 
       {:ok, index_live, _html} = live(conn, ~p"/programs/#{program}/logs/#{log}/segments")
 
@@ -125,10 +129,10 @@ defmodule RadioappWeb.SegmentLiveTest do
     end
 
     test "deletes segment in listing", %{conn: conn} do
-      program = Factory.insert(:program)
-      log = Factory.insert(:log, program: program)
-      category = Factory.insert(:category)
-      _segment = Factory.insert(:segment, log: log, category: category)
+      program = Factory.insert(:program, [], prefix: @prefix)
+      log = Factory.insert(:log, [program: program], prefix: @prefix)
+      category = Factory.insert(:category, [], prefix: @prefix)
+      _segment = Factory.insert(:segment, [log: log, category: category], prefix: @prefix)
 
       {:ok, _index_live, html} = live(conn, ~p"/programs/#{program}/logs/#{log}/segments")
 
@@ -145,10 +149,10 @@ defmodule RadioappWeb.SegmentLiveTest do
     end
 
     test "deletes segment in listing", %{conn: conn} do
-      program = Factory.insert(:program)
-      log = Factory.insert(:log, program: program)
-      category = Factory.insert(:category)
-      segment = Factory.insert(:segment, log: log, category: category)
+      program = Factory.insert(:program, [], prefix: @prefix)
+      log = Factory.insert(:log, [program: program], prefix: @prefix)
+      category = Factory.insert(:category, [], prefix: @prefix)
+      segment = Factory.insert(:segment, [log: log, category: category], prefix: @prefix)
 
       {:ok, index_live, _html} = live(conn, ~p"/programs/#{program}/logs/#{log}/segments")
 
@@ -160,16 +164,16 @@ defmodule RadioappWeb.SegmentLiveTest do
 
   describe "Segment" do
     setup %{conn: conn} do
-      user = Factory.insert(:user)
+      user = Factory.insert(:user, role: "user")
       conn = log_in_user(conn, user)
       %{conn: conn, user: user}
     end
 
     test "updates segment within modal", %{conn: conn} do
-      program = Factory.insert(:program)
-      log = Factory.insert(:log, program: program)
-      category = Factory.insert(:category)
-      segment = Factory.insert(:segment, log: log, category: category)
+      program = Factory.insert(:program, [], prefix: @prefix)
+      log = Factory.insert(:log, [program: program], prefix: @prefix)
+      category = Factory.insert(:category, [], prefix: @prefix)
+      segment = Factory.insert(:segment, [log: log, category: category], prefix: @prefix)
 
       {:ok, show_live, _html} = live(conn, ~p"/programs/#{program}/logs/#{log}/segments")
 

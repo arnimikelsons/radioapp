@@ -5,6 +5,9 @@ defmodule RadioappWeb.ImageControllerTest do
   alias Radioapp.Station
   alias Radioapp.Station.Image
 
+  @tenant "sample"
+  @prefix Triplex.to_prefix(@tenant)
+
   @valid_attrs %Plug.Upload{
     content_type: "image/jpg",
     filename: "cat.jpg",
@@ -22,12 +25,13 @@ defmodule RadioappWeb.ImageControllerTest do
   }
 
   def image_fixture(_attrs \\ %{}) do
-    program = Factory.insert(:program)
+    program = Factory.insert(:program, [], prefix: @prefix)
 
     assert {:ok, %Image{} = image} =
              Station.create_image_from_plug_upload(
                program,
-               @valid_attrs
+               @valid_attrs, 
+               @tenant
              )
 
     image
@@ -54,7 +58,7 @@ defmodule RadioappWeb.ImageControllerTest do
 
 
     test "redirects to show when data is valid", %{conn: conn} do
-      program = Factory.insert(:program)
+      program = Factory.insert(:program, [], prefix: @prefix)
       conn = post(conn, ~p"/programs/#{program.id}/images", image: @valid_attrs)
 
       assert %{id: _id} = redirected_params(conn)
@@ -65,7 +69,7 @@ defmodule RadioappWeb.ImageControllerTest do
     end
 
     test "renders errors when data is invalid for New Program", %{conn: conn} do
-      program = Factory.insert(:program)
+      program = Factory.insert(:program, [], prefix: @prefix)
       conn = post(conn, ~p"/programs/#{program.id}/images", image: @invalid_attrs)
       assert redirected_to(conn) =~ ~p"/programs/#{program.id}"
     end

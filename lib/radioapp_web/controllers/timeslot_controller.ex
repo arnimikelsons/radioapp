@@ -5,23 +5,26 @@ defmodule RadioappWeb.TimeslotController do
   alias Radioapp.Station.{Timeslot}
 
   def index(conn, _params) do
-    timeslots = Station.list_timeslots()
+    tenant = RadioappWeb.get_tenant(conn)
+    timeslots = Station.list_timeslots(tenant)
     current_user = conn.assigns.current_user
     render(conn, :index, timeslots: timeslots, current_user: current_user)
   end
 
   def index_by_day(conn, %{"id" => id}) do
-    timeslots_by_day = Station.list_timeslots_by_day(id)
+    tenant = RadioappWeb.get_tenant(conn)
+    timeslots_by_day = Station.list_timeslots_by_day(id, tenant)
     day =  String.to_integer(id)
     current_user = conn.assigns.current_user
     render(conn, :schedule, timeslots_by_day: timeslots_by_day, day: day, current_user: current_user)
   end
 
   def index_by_day(conn, _params) do
+    tenant = RadioappWeb.get_tenant(conn)
     now = DateTime.to_naive(Timex.now("America/Toronto"))
     day = Timex.weekday(now)
 
-    timeslots_by_day = Station.list_timeslots_by_day(day)
+    timeslots_by_day = Station.list_timeslots_by_day(day, tenant)
     current_user = conn.assigns.current_user
     render(conn, :schedule_orig, timeslots_by_day: timeslots_by_day, day: day, current_user: current_user)
   end
@@ -29,16 +32,18 @@ defmodule RadioappWeb.TimeslotController do
 
 
   def new(conn, %{"program_id" => program_id}) do
-    program = Station.get_program!(program_id)
+    tenant = RadioappWeb.get_tenant(conn)
+    program = Station.get_program!(program_id, tenant)
 
     changeset = Station.change_timeslot(%Timeslot{})
     render(conn, :new, program: program, changeset: changeset)
   end
 
   def create(conn, %{"program_id" => program_id, "timeslot" => timeslot_params}) do
-    program = Station.get_program!(program_id)
+    tenant = RadioappWeb.get_tenant(conn)
+    program = Station.get_program!(program_id, tenant)
 
-    case Station.create_timeslot(program, timeslot_params) do
+    case Station.create_timeslot(program, timeslot_params, tenant) do
       {:ok, _timeslot} ->
         conn
         |> put_flash(:info, "Timeslot created successfully.")
@@ -50,21 +55,24 @@ defmodule RadioappWeb.TimeslotController do
   end
 
   def show(conn, %{"id" => id}) do
-    timeslot = Station.get_timeslot!(id)
-    program = Station.get_program!(timeslot.program_id)
+    tenant = RadioappWeb.get_tenant(conn)
+    timeslot = Station.get_timeslot!(id, tenant)
+    program = Station.get_program!(timeslot.program_id, tenant)
     render(conn, :show, timeslot: timeslot, program: program)
   end
 
   def edit(conn, %{"id" => id}) do
-    timeslot = Station.get_timeslot!(id)
-    program = Station.get_program!(timeslot.program_id)
+    tenant = RadioappWeb.get_tenant(conn)
+    timeslot = Station.get_timeslot!(id, tenant)
+    program = Station.get_program!(timeslot.program_id, tenant)
     changeset = Station.change_timeslot(timeslot)
     render(conn, :edit, program: program, timeslot: timeslot, changeset: changeset)
   end
 
   def update(conn, %{"id" => id, "timeslot" => timeslot_params}) do
-    timeslot = Station.get_timeslot!(id)
-    program = Station.get_program!(timeslot.program_id)
+    tenant = RadioappWeb.get_tenant(conn)
+    timeslot = Station.get_timeslot!(id, tenant)
+    program = Station.get_program!(timeslot.program_id, tenant)
 
     case Station.update_timeslot(timeslot, timeslot_params) do
       {:ok, _timeslot} ->
@@ -78,8 +86,9 @@ defmodule RadioappWeb.TimeslotController do
   end
 
   def delete(conn, %{"id" => id}) do
-    timeslot = Station.get_timeslot!(id)
-    program = Station.get_program!(timeslot.program_id)
+    tenant = RadioappWeb.get_tenant(conn)
+    timeslot = Station.get_timeslot!(id, tenant)
+    program = Station.get_program!(timeslot.program_id, tenant)
 
     {:ok, _timeslot} = Station.delete_timeslot(timeslot)
 

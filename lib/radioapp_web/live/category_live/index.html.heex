@@ -35,6 +35,7 @@
     module={RadioappWeb.CategoryLive.FormComponent}
     id={@category.id || :new}
     title={@page_title}
+    tenant={@tenant}
     action={@live_action}
     category={@category}
     navigate={~p"/admin/categories"}

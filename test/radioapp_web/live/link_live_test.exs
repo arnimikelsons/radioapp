@@ -4,6 +4,9 @@ defmodule RadioappWeb.LinkLiveTest do
   import Phoenix.LiveViewTest
   alias Radioapp.Factory
 
+  @tenant "sample"
+  @prefix Triplex.to_prefix(@tenant)
+
   @create_attrs %{icon: "some icon", type: "some type"}
   @update_attrs %{icon: "some updated icon", type: "some updated type"}
   @invalid_attrs %{icon: nil, type: nil}
@@ -33,7 +36,7 @@ defmodule RadioappWeb.LinkLiveTest do
     end
 
     test "Does not list all links for non-admin user", %{conn: conn} do
-      Factory.insert(:link)
+      Factory.insert(:link, [], prefix: @prefix)
       assert {:error, redirect} = live(conn, ~p"/admin/links")
       assert {:redirect, %{to: path, flash: flash}} = redirect
       assert path == ~p"/"
@@ -43,13 +46,13 @@ defmodule RadioappWeb.LinkLiveTest do
 
   describe "Index" do
     setup %{conn: conn} do
-      user = Factory.insert(:user, role: "admin")
+      user = Factory.insert(:user, [role: "admin"])
       conn = log_in_user(conn, user)
       %{conn: conn, user: user}
     end
 
     test "lists all links", %{conn: conn} do
-      link = Factory.insert(:link)
+      link = Factory.insert(:link, [], prefix: @prefix)
       {:ok, _index_live, html} = live(conn, ~p"/admin/links")
 
       assert html =~ "Listing Links"
@@ -79,7 +82,7 @@ defmodule RadioappWeb.LinkLiveTest do
     end
 
     test "updates link in listing", %{conn: conn} do
-      link = Factory.insert(:link)
+      link = Factory.insert(:link, [], prefix: @prefix)
       {:ok, index_live, _html} = live(conn, ~p"/admin/links")
 
       assert index_live |> element("#links-#{link.id} a", "Edit") |> render_click() =~
@@ -102,7 +105,7 @@ defmodule RadioappWeb.LinkLiveTest do
     end
 
     test "deletes link in listing", %{conn: conn} do
-      link = Factory.insert(:link)
+      link = Factory.insert(:link, [], prefix: @prefix)
       {:ok, index_live, _html} = live(conn, ~p"/admin/links")
 
       assert index_live |> element("#links-#{link.id} a", "Delete") |> render_click()
@@ -110,43 +113,44 @@ defmodule RadioappWeb.LinkLiveTest do
     end
   end
 
-  describe "Show" do
-    setup %{conn: conn} do
-      user = Factory.insert(:user, role: "admin")
-      conn = log_in_user(conn, user)
-      %{conn: conn, user: user}
-    end
+  # describe "Show" do
+  #   setup %{conn: conn} do
+  #     user = Factory.insert(:user, role: "admin")
+  #     conn = log_in_user(conn, user)
+  #     %{conn: conn, user: user}
+  #   end
 
-    test "displays link", %{conn: conn} do
-      link = Factory.insert(:link)
-      {:ok, _show_live, html} = live(conn, ~p"/admin/links/#{link}")
+    # not used
+    # test "displays link", %{conn: conn} do
+    #   link = Factory.insert(:link, [], prefix: @prefix)
+    #   {:ok, _show_live, html} = live(conn, ~p"/admin/links/#{link}")
 
-      assert html =~ "Show Link"
-      assert html =~ link.icon
-    end
+    #   assert html =~ "Show Link"
+    #   assert html =~ link.icon
+    # end
 
-    test "updates link within modal", %{conn: conn} do
-      link = Factory.insert(:link)
-      {:ok, show_live, _html} = live(conn, ~p"/admin/links/#{link}")
+    # test "updates link within modal", %{conn: conn} do
+    #   link = Factory.insert(:link, [], prefix: @prefix)
+    #   {:ok, show_live, _html} = live(conn, ~p"/admin/links/#{link}")
 
-      assert show_live |> element("a", "Edit Link") |> render_click() =~
-               "Edit Link"
+    #   assert show_live |> element("a", "Edit Link") |> render_click() =~
+    #            "Edit Link"
 
-      assert_patch(show_live, ~p"/admin/links/#{link}/show/edit")
+    #   assert_patch(show_live, ~p"/admin/links/#{link}/show/edit")
 
       #no invalid case
       #assert show_live
       #       |> form("#link-form", link: @invalid_attrs)
       #       |> render_change() =~ "can&#39;t be blank"
 
-      {:ok, _, html} =
-        show_live
-        |> form("#link-form", link: @update_attrs)
-        |> render_submit()
-        |> follow_redirect(conn, ~p"/admin/links/#{link}")
+  #     {:ok, _, html} =
+  #       show_live
+  #       |> form("#link-form", link: @update_attrs)
+  #       |> render_submit()
+  #       |> follow_redirect(conn, ~p"/admin/links/#{link}")
 
-      assert html =~ "Link updated successfully"
-      assert html =~ "some updated icon"
-    end
-  end
+  #     assert html =~ "Link updated successfully"
+  #     assert html =~ "some updated icon"
+  #   end
+  # end
 end

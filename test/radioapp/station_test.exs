@@ -550,7 +550,7 @@ defmodule Radioapp.StationTest do
       image = image_fixture()
 
       assert {:ok, %Image{} = image} =
-               Station.update_image_from_plug(image, @update_attrs)
+               Station.update_image_from_plug(image, @update_attrs, @tenant)
 
       assert image.content_type == "image/jpg"
       assert image.filename == "another-cat.jpg"
@@ -559,7 +559,7 @@ defmodule Radioapp.StationTest do
     test "update_image_from_plug/3 with invalid data returns error changeset" do
       image = image_fixture()
 
-      assert {:error, _reason} = Station.update_image_from_plug(image, @invalid_attrs)
+      assert {:error, _reason} = Station.update_image_from_plug(image, @invalid_attrs, @tenant)
 
       assert image == Station.get_image!(image.id, @tenant)
     end
