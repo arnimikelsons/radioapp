@@ -75,7 +75,7 @@ defmodule Radioapp.Accounts.User do
 
   def edit_changeset(user, attrs, _opts \\ []) do
     user
-    |> cast(attrs, [:full_name, :short_name, :role, :roles])
+    |> cast(attrs, [:full_name, :short_name, :tenant_role, :roles])
     |> validate_required([:full_name, :short_name])
   end
 

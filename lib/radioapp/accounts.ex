@@ -139,8 +139,8 @@ defmodule Radioapp.Accounts do
   #   |> Repo.update()
   # end
 
-  def update_user_in_tenant(%User{} = user, attrs, role, tenant) do
-    roles = user.roles |> Map.put(tenant, role)
+  def update_user_in_tenant(%User{} = user, attrs, tenant_role, tenant) do
+    roles = user.roles |> Map.put(tenant, tenant_role)
 
     user
     |> User.edit_changeset(attrs)

@@ -12,25 +12,44 @@ defmodule RadioappWeb.UserController do
   def edit(conn, %{"id" => id}) do
     user = Accounts.get_user!(id)
     tenant = RadioappWeb.get_tenant(conn)
+    
+    tenant_role = user.roles[tenant]
 
-    changeset = Accounts.edit_user(user)
-    render(conn, :edit, user: user, changeset: changeset)
+    if tenant_role != nil do
+      changeset =
+        Accounts.edit_user(user)
+        |> Ecto.Changeset.put_change(:tenant_role, tenant_role)
+
+      render(conn, :edit, user: user, changeset: changeset)
+    else
+      if user.role != nil do
+        tenant_role = user.role
+        changeset =
+          Accounts.edit_user(user)
+          |> Ecto.Changeset.put_change(:tenant_role, tenant_role)
+        
+          render(conn, :edit, user: user, changeset: changeset)
+      else 
+        conn
+        |> put_flash(:error, "User not found")
+        |> redirect(to: ~p"/users")
+      end
+    end
   end
 
   def update(conn, %{"id" => id, "user" => user_params}) do
     user = Accounts.get_user!(id)
     tenant = RadioappWeb.get_tenant(conn)
-    @current_role = user.roles[tenant] 
-    new_role = user_params["role"]
+    tenant_role = user_params["tenant_role"]
 
-    case Accounts.update_user_in_tenant(user, user_params, new_role, tenant) do
+    case Accounts.update_user_in_tenant(user, user_params, tenant_role, tenant) do
       {:ok, _user} ->
         conn
         |> put_flash(:info, "User updated successfully.")
         |> redirect(to: ~p"/users")
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, :edit, user: user, role: new_role, changeset: changeset)
+        render(conn, :edit, user: user, tenant_role: tenant_role, changeset: changeset)
     end
 
   end
