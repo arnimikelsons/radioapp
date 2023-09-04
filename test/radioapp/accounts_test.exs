@@ -635,4 +635,80 @@ defmodule Radioapp.AccountsTest do
   end
 
 
+
+  describe "orgs" do
+    alias Radioapp.Accounts.Org
+
+    import Radioapp.AccountsFixtures
+
+    @invalid_attrs %{address1: nil, address2: nil, city: nil, country: nil, email: nil, full_name: nil, organization: nil, postal_code: nil, province: nil, short_name: nil, telephone: nil, tenant_name: nil}
+
+    test "list_orgs/0 returns all orgs" do
+      org = org_fixture()
+      assert Accounts.list_orgs() == [org]
+    end
+
+    test "get_org!/1 returns the org with given id" do
+      org = org_fixture()
+      assert Accounts.get_org!(org.id) == org
+    end
+
+    test "create_org/1 with valid data creates a org" do
+      valid_attrs = %{address1: "some address1", address2: "some address2", city: "some city", country: "some country", email: "some email", full_name: "some full_name", organization: "some organization", postal_code: "some postal_code", province: "some province", short_name: "some short_name", telephone: "some telephone", tenant_name: "some tenant_name"}
+
+      assert {:ok, %Org{} = org} = Accounts.create_org(valid_attrs)
+      assert org.address1 == "some address1"
+      assert org.address2 == "some address2"
+      assert org.city == "some city"
+      assert org.country == "some country"
+      assert org.email == "some email"
+      assert org.full_name == "some full_name"
+      assert org.organization == "some organization"
+      assert org.postal_code == "some postal_code"
+      assert org.province == "some province"
+      assert org.short_name == "some short_name"
+      assert org.telephone == "some telephone"
+      assert org.tenant_name == "some tenant_name"
+    end
+
+    test "create_org/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Accounts.create_org(@invalid_attrs)
+    end
+
+    test "update_org/2 with valid data updates the org" do
+      org = org_fixture()
+      update_attrs = %{address1: "some updated address1", address2: "some updated address2", city: "some updated city", country: "some updated country", email: "some updated email", full_name: "some updated full_name", organization: "some updated organization", postal_code: "some updated postal_code", province: "some updated province", short_name: "some updated short_name", telephone: "some updated telephone", tenant_name: "some updated tenant_name"}
+
+      assert {:ok, %Org{} = org} = Accounts.update_org(org, update_attrs)
+      assert org.address1 == "some updated address1"
+      assert org.address2 == "some updated address2"
+      assert org.city == "some updated city"
+      assert org.country == "some updated country"
+      assert org.email == "some updated email"
+      assert org.full_name == "some updated full_name"
+      assert org.organization == "some updated organization"
+      assert org.postal_code == "some updated postal_code"
+      assert org.province == "some updated province"
+      assert org.short_name == "some updated short_name"
+      assert org.telephone == "some updated telephone"
+      assert org.tenant_name == "some updated tenant_name"
+    end
+
+    test "update_org/2 with invalid data returns error changeset" do
+      org = org_fixture()
+      assert {:error, %Ecto.Changeset{}} = Accounts.update_org(org, @invalid_attrs)
+      assert org == Accounts.get_org!(org.id)
+    end
+
+    test "delete_org/1 deletes the org" do
+      org = org_fixture()
+      assert {:ok, %Org{}} = Accounts.delete_org(org)
+      assert_raise Ecto.NoResultsError, fn -> Accounts.get_org!(org.id) end
+    end
+
+    test "change_org/1 returns a org changeset" do
+      org = org_fixture()
+      assert %Ecto.Changeset{} = Accounts.change_org(org)
+    end
+  end
 end

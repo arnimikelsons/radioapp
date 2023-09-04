@@ -1,0 +1,34 @@
+<.header>
+  Listing Orgs
+  <:actions>
+    <.link href={~p"/orgs/new"}>
+      <.button>New Org</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table id="orgs" rows={@orgs} row_click={&JS.navigate(~p"/orgs/#{&1}")}>
+  <:col :let={org} label="Address1"><%= org.address1 %></:col>
+  <:col :let={org} label="Address2"><%= org.address2 %></:col>
+  <:col :let={org} label="City"><%= org.city %></:col>
+  <:col :let={org} label="Country"><%= org.country %></:col>
+  <:col :let={org} label="Email"><%= org.email %></:col>
+  <:col :let={org} label="Full name"><%= org.full_name %></:col>
+  <:col :let={org} label="Short name"><%= org.short_name %></:col>
+  <:col :let={org} label="Organization"><%= org.organization %></:col>
+  <:col :let={org} label="Postal code"><%= org.postal_code %></:col>
+  <:col :let={org} label="Province"><%= org.province %></:col>
+  <:col :let={org} label="Telephone"><%= org.telephone %></:col>
+  <:col :let={org} label="Tenant name"><%= org.tenant_name %></:col>
+  <:action :let={org}>
+    <div class="sr-only">
+      <.link navigate={~p"/orgs/#{org}"}>Show</.link>
+    </div>
+    <.link navigate={~p"/orgs/#{org}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={org}>
+    <.link href={~p"/orgs/#{org}"} method="delete" data-confirm="Are you sure?">
+      Delete
+    </.link>
+  </:action>
+</.table>

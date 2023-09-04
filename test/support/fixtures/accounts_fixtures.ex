@@ -29,4 +29,29 @@ defmodule Radioapp.AccountsFixtures do
     [_, token | _] = String.split(captured_email.text_body, "[TOKEN]")
     token
   end
+
+  @doc """
+  Generate a org.
+  """
+  def org_fixture(attrs \\ %{}) do
+    {:ok, org} =
+      attrs
+      |> Enum.into(%{
+        address1: "some address1",
+        address2: "some address2",
+        city: "some city",
+        country: "some country",
+        email: "some email",
+        full_name: "some full_name",
+        organization: "some organization",
+        postal_code: "some postal_code",
+        province: "some province",
+        short_name: "some short_name",
+        telephone: "some telephone",
+        tenant_name: "some tenant_name"
+      })
+      |> Radioapp.Accounts.create_org()
+
+    org
+  end
 end
