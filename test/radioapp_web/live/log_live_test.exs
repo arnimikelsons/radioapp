@@ -47,24 +47,20 @@ defmodule RadioappWeb.LogLiveTest do
     end
   end
 
-  describe "Don't allow users to access functions" do
-    setup %{conn: conn} do
-      user = Factory.insert(:user, role: "user")
-      conn = log_in_user(conn, user)
-      %{conn: conn, user: user}
-    end
+  describe "Don't allow non-users to access functions" do
 
     test "Does not list all logs for non-admin user", %{conn: conn} do
       Factory.insert(:link, [], prefix: @prefix)
       assert {:error, redirect} = live(conn, ~p"/admin/logs")
       assert {:redirect, %{to: path, flash: flash}} = redirect
-      assert path == ~p"/"
-      assert %{"error" => "Unauthorised"} = flash
+      assert path == ~p"/users/log_in"
+      assert %{"error" => "You must log in to access this page."} = flash
     end
   end
+  
   describe "Index" do
     setup %{conn: conn} do
-      user = Factory.insert(:user, role: "admin")
+      user = Factory.insert(:user, role: "user")
       conn = log_in_user(conn, user)
       %{conn: conn, user: user}
     end   
@@ -131,19 +127,25 @@ defmodule RadioappWeb.LogLiveTest do
       
     end
 
+  end
+
+  describe "Cannot delete log with user" do
+    setup %{conn: conn} do
+      user = Factory.insert(:user, role: "user")
+      conn = log_in_user(conn, user)
+      %{conn: conn, user: user}
+    end
     test "deletes log in listing", %{conn: conn} do
       program = Factory.insert(:program, [], prefix: @prefix)
 
       log = Factory.insert(:log, [program_id: program.id], prefix: @prefix)
       {:ok, index_live, _html} = live(conn, ~p"/programs/#{program}/logs")
       
-      assert {:error, redirect}  = index_live |> element("#logs-#{log.id} a", "Delete") |> render_click()
-     
-      assert {:redirect, %{to: path, flash: flash}} = redirect
-      assert path == ~p"/"
-      assert %{"error" => "Unauthorised"} = flash
+      {:ok, _index_live, html} = live(conn, ~p"/programs/#{program}/logs")
+      refute html =~ "Delete"
     end
   end
+
 
   describe "Delete log with admin" do
     setup %{conn: conn} do

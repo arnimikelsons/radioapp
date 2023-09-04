@@ -6,6 +6,9 @@ defmodule Radioapp.AccountsTest do
   import Radioapp.AccountsFixtures
   alias Radioapp.Accounts.{User, UserToken}
 
+  @tenant "sample"
+  @prefix Triplex.to_prefix(@tenant)
+
   describe "get_user_by_email/1" do
     test "does not return the user if the email does not exist" do
       refute Accounts.get_user_by_email("unknown@example.com")
@@ -87,7 +90,7 @@ defmodule Radioapp.AccountsTest do
     test "registers users with a hashed password" do
       email = unique_user_email()
       password = "ABCD928374982696" #set in user_invitation_live
-      {:ok, user} = Accounts.invite_user(valid_user_attributes(email: email, password: password))
+      {:ok, user} = Accounts.invite_user_for_tenant(valid_user_attributes(email: email, password: password), "user", @tenant)
       assert user.email == email
       assert is_binary(user.hashed_password)
       assert is_nil(user.confirmed_at)
@@ -119,8 +122,7 @@ defmodule Radioapp.AccountsTest do
   end
   describe "invite_user/1" do
     test "requires email to be set" do
-      {:error, changeset} = Accounts.invite_user(%{})
-
+      {:error, changeset} = Accounts.invite_user_for_tenant(%{}, "user", @tenant)
       assert %{
               full_name: ["can't be blank"],
               short_name: ["can't be blank"],
@@ -615,18 +617,20 @@ defmodule Radioapp.AccountsTest do
   describe "update user through admin/2" do
     
     test "update_user/2 with valid data updates the user" do
-      user= Factory.insert(:user, role: "user")
+      user= Factory.insert(:user, roles: %{@tenant => :user})
 
       update_attrs = %{
         full_name: "some updated full name",
         short_name: "some updated short name",
-        role: "admin"
+        tenant_role: "admin"
       }
 
-      assert {:ok, %User{} = user} = Accounts.update_user(user, update_attrs)
+      this_user = Accounts.update_user_in_tenant(user, update_attrs, "admin", @tenant)
+
+      assert {:ok, %User{} = user} = this_user
       assert user.full_name == "some updated full name"
       assert user.short_name == "some updated short name"
-      assert user.role == :admin
+      assert user.roles == %{"sample" => "admin"}
     end
   end
 

@@ -13,6 +13,7 @@
     <:col :let={user} label="Email"><%= user.email %></:col>
     <:col :let={user} label="Confirmed At"><%= user.confirmed_at %></:col>
     <:col :let={user} label="Role"><%= user.role %></:col>
+    <:col :let={user} label="Roles"><%= user.roles[@tenant] %></:col>
 
     <:action :let={user}>
       <%= if @current_user do %>

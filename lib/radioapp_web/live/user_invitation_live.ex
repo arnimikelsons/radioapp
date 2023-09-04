@@ -31,7 +31,7 @@ defmodule RadioappWeb.UserInvitationLive do
         <.input field={{f, :full_name}} type="text" label="Full Name" required />
         <.input field={{f, :short_name}} type="text" label="Short Name" required />
         <.input field={{f, :email}} type="email" label="Email" required />
-        <.input field={{f, :role}} options={([user: "user", admin: "admin"])} type="select" label="Role" required />
+        <.input field={{f, :tenant_role}} options={([user: "user", admin: "admin"])} type="select" label="Role" required />
 
         <:actions>
           <.button phx-disable-with="Creating account..." class="w-full">Create an account</.button>
@@ -42,18 +42,20 @@ defmodule RadioappWeb.UserInvitationLive do
   end
 
   def mount(_params, session, socket) do
-
+    tenant = Map.fetch!(session, "subdomain")
     socket =
       assign_defaults(session, socket)
 
     changeset = Accounts.change_user_invitation(%User{})
     socket = assign(socket, changeset: changeset, trigger_submit: false)
     password = "ABCD928374982696"
-    {:ok, socket, temporary_assigns: [changeset: nil, password: password]}
+    {:ok, socket, temporary_assigns: [changeset: nil, password: password, tenant: tenant]}
   end
 
   def handle_event("save", %{"user" => user_params}, socket) do
-    case Accounts.invite_user(user_params) do
+    tenant = socket.assigns.tenant
+    tenant_role = user_params["tenant_role"]
+    case Accounts.invite_user_for_tenant(user_params, tenant_role, tenant) do
       {:ok, user} ->
         {:ok, _} =
           Accounts.deliver_user_invitation_instructions(

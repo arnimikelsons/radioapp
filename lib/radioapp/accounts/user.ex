@@ -16,6 +16,10 @@ defmodule Radioapp.Accounts.User do
     field :full_name, :string
     field :short_name, :string
     field :role, RolesEnum, default: :user
+    field :roles, :map
+    field :terms_date, :utc_datetime_usec
+
+    field :tenant_role, :string, virtual: true
 
     timestamps()
   end
@@ -45,16 +49,25 @@ defmodule Radioapp.Accounts.User do
   """
   def registration_changeset(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:email, :password, :role, :full_name, :short_name])
+    |> cast(attrs, [:email, :password, :tenant_role, :full_name, :short_name, :roles])
     |> validate_required([:full_name, :short_name])
     |> validate_confirmation(:password, message: "does not match password")
     |> validate_email(opts)
     |> validate_password(opts)
   end
 
-  def invitation_changeset(user, attrs, opts \\ []) do
+  # def invitation_changeset(user, attrs, opts \\ []) do
+  #   user
+  #   |> cast(attrs, [:email, :password, :full_name, :short_name, :role, :roles])
+  #   |> validate_required([:full_name, :short_name])
+  #   |> put_change(:users, Bcrypt.hash_pwd_salt(password))
+  #   |> validate_email(opts)
+  #   |> validate_password(opts)
+  # end
+
+  def invitation_changeset_for_tenant(user, attrs, opts \\ []) do
     user
-    |> cast(attrs, [:email, :password, :full_name, :short_name, :role])
+    |> cast(attrs, [:email, :password, :full_name, :short_name, :tenant_role, :roles])
     |> validate_required([:full_name, :short_name])
     |> validate_email(opts)
     |> validate_password(opts)
@@ -62,7 +75,7 @@ defmodule Radioapp.Accounts.User do
 
   def edit_changeset(user, attrs, _opts \\ []) do
     user
-    |> cast(attrs, [:full_name, :short_name, :role])
+    |> cast(attrs, [:full_name, :short_name, :tenant_role, :roles])
     |> validate_required([:full_name, :short_name])
   end
 

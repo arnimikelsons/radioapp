@@ -94,12 +94,19 @@ defmodule Radioapp.Accounts do
   end
 
   def change_user_invitation(%User{} = user, attrs \\ %{}) do
-    User.invitation_changeset(user, attrs, hash_password: false, validate_email: false)
+    User.invitation_changeset_for_tenant(user, attrs, hash_password: false, validate_email: false)
   end
 
-  def invite_user(attrs) do
+  # def invite_user(attrs) do
+  #   %User{}
+  #   |> User.invitation_changeset_for_tenant(attrs)
+  #   |> Repo.insert()
+  # end
+
+  def invite_user_for_tenant(attrs, role, tenant) do
     %User{}
-    |> User.invitation_changeset(attrs)
+    |> User.invitation_changeset_for_tenant(attrs)
+    |> Ecto.Changeset.change(roles: %{tenant => role})
     |> Repo.insert()
   end
 
@@ -126,9 +133,18 @@ defmodule Radioapp.Accounts do
     User.edit_changeset(user, attrs)
   end
 
-  def update_user(%User{} = user, attrs) do
+  # def update_user(%User{} = user, attrs) do
+  #   user
+  #   |> User.edit_changeset(attrs)
+  #   |> Repo.update()
+  # end
+
+  def update_user_in_tenant(%User{} = user, attrs, tenant_role, tenant) do
+    roles = user.roles |> Map.put(tenant, tenant_role)
+
     user
     |> User.edit_changeset(attrs)
+    |> Ecto.Changeset.change(%{roles: roles})
     |> Repo.update()
   end
 

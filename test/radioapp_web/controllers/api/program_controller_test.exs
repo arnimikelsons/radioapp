@@ -3,6 +3,9 @@ defmodule RadioappWeb.Api.ProgramControllerTest do
 
   alias Radioapp.Factory
 
+  @tenant "sample"
+  @prefix Triplex.to_prefix(@tenant)
+
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
   end
@@ -17,11 +20,11 @@ defmodule RadioappWeb.Api.ProgramControllerTest do
       endtime = Time.add(time_now, 60, :minute)
 
        # Given a program
-      program = Factory.insert(:program)
+       program =Factory.insert(:program, [], prefix: @prefix)
 
       name = program.name
       # When we create a timeslot for right now
-      Factory.insert(:timeslot, program: program, day: weekday, runtime: 60, starttime: time_now, endtime: endtime)
+      Factory.insert(:timeslot, [program: program, day: weekday, runtime: 60, starttime: time_now, endtime: endtime], prefix: @prefix)
 
       conn = get(conn, ~p"/api/shows")
       assert %{
