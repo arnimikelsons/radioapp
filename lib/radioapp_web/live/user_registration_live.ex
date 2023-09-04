@@ -35,7 +35,7 @@ defmodule RadioappWeb.UserRegistrationLive do
         <.input field={{f, :full_name}} type="text" label="Full Name" required />
         <.input field={{f, :short_name}} type="text" label="Short Name" required />
         <.input field={{f, :email}} type="email" label="Email" required />
-        <.input field={{f, :role}} options={([user: "user", admin: "admin"])} type="select" label="Role" required />
+        <.input field={{f, :tenant_role}} options={([user: "user", admin: "admin"])} type="select" label="Role" required />
         <.input field={{f, :password}} type="password" label="Password" required />
         <.input field={{f, :password_confirmation}} type="password" label="Confirm Password" required />
 

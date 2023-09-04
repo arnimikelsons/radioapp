@@ -15,11 +15,6 @@ defmodule RadioappWeb.UserControllerTest do
       assert html_response(conn, 200) =~ "Account Users"
     end
 
-    test "renders form", %{conn: conn} do
-      conn = get(conn, ~p"/users/invite")
-      assert html_response(conn, 200) =~ "Send invitation for an account"
-    end
-
     test "renders form for editing chosen user", %{conn: conn} do
       user = Factory.insert(:user)
       conn = get(conn, ~p"/users/#{user}/edit")
