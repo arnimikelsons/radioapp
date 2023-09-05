@@ -46,7 +46,8 @@ defmodule RadioappWeb.ImageControllerTest do
 
     describe "manage programs" do
       setup %{conn: conn} do
-        user = Factory.insert(:user)
+        user = Factory.insert(:user, roles: %{@tenant => "user"})
+
         conn = log_in_user(conn, user)
         %{conn: conn, user: user}
       end

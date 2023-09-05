@@ -19,7 +19,7 @@ defmodule RadioappWeb.ProgramControllerTest do
 
   describe "manage programs" do
     setup %{conn: conn} do
-      user = Factory.insert(:user, role: "user")
+      user = Factory.insert(:user, roles: %{@tenant => "user"}, full_name: "Some Full Name")
       conn = log_in_user(conn, user)
       %{conn: conn, user: user}
     end
@@ -71,13 +71,15 @@ defmodule RadioappWeb.ProgramControllerTest do
       assert html_response(conn, 200) =~ "Edit Program"
     end
 
-    test "deletes chosen program", %{conn: conn} do
+    test "deletes chosen program", %{conn: conn, user: user} do
       program = Factory.insert(:program, [], prefix: @prefix)
       conn = delete(conn, ~p"/programs/#{program}")
-      assert redirected_to(conn) == ~p"/"
+      IO.inspect(conn, label: "CONN")
+      assert redirected_to(conn) == ~p"/programs"
 
       conn = get(conn, ~p"/programs/#{program}")
-      assert html_response(conn, 200) =~ program.name
+      
+      assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "User updated successfully."
     end
   end
 

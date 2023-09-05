@@ -6,7 +6,8 @@ defmodule Radioapp.Accounts do
   import Ecto.Query, warn: false
   alias Radioapp.Repo
 
-  alias Radioapp.Accounts.{User, UserToken, UserNotifier}
+
+  alias Radioapp.Accounts.{User, UserToken, UserNotifier, Org}
 
   ## Database getters
 
@@ -466,7 +467,6 @@ defmodule Radioapp.Accounts do
   end
 
 
-  alias Radioapp.Accounts.Org
 
   @doc """
   Returns the list of orgs.

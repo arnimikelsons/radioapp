@@ -10,7 +10,6 @@ defmodule RadioappWeb.FeedController do
     weekday = Timex.weekday(now)
 
     show_name = Station.get_program_from_time(weekday, time_now, tenant)
-
     # if now in Timex.Interval.new(from: ~N[2022-12-04 00:00:00], until: ~N[2022-12-04 02:23:45]) do
     #  "TEsting for a show name"
     # else
