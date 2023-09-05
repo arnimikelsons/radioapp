@@ -72,9 +72,9 @@ defmodule RadioappWeb.ProgramControllerTest do
     end
 
     test "deletes chosen program", %{conn: conn, user: user} do
+
       program = Factory.insert(:program, [], prefix: @prefix)
       conn = delete(conn, ~p"/programs/#{program}")
-      IO.inspect(conn, label: "CONN")
       assert redirected_to(conn) == ~p"/programs"
 
       conn = get(conn, ~p"/programs/#{program}")
@@ -93,7 +93,7 @@ defmodule RadioappWeb.ProgramControllerTest do
     test "deletes chosen program", %{conn: conn} do
       program = Factory.insert(:program, [], prefix: @prefix)
       conn = delete(conn, ~p"/programs/#{program}")
-      assert redirected_to(conn) == ~p"/programs"
+      assert redirected_to(conn) == ~p"/"
 
       assert_error_sent 404, fn ->
         get(conn, ~p"/programs/#{program}")

@@ -60,7 +60,7 @@ defmodule RadioappWeb.LogLiveTest do
   
   describe "Index" do
     setup %{conn: conn} do
-      user = Factory.insert(:user, role: "user")
+      user = Factory.insert(:user, roles: %{@tenant => "user"})
       conn = log_in_user(conn, user)
       %{conn: conn, user: user}
     end   
@@ -131,16 +131,14 @@ defmodule RadioappWeb.LogLiveTest do
 
   describe "Cannot delete log with user" do
     setup %{conn: conn} do
-      user = Factory.insert(:user, role: "user")
+      user = Factory.insert(:user, roles: %{@tenant => "user"}, full_name: "Some Full Name")
       conn = log_in_user(conn, user)
       %{conn: conn, user: user}
     end
     test "deletes log in listing", %{conn: conn} do
       program = Factory.insert(:program, [], prefix: @prefix)
 
-      log = Factory.insert(:log, [program_id: program.id], prefix: @prefix)
-      {:ok, index_live, _html} = live(conn, ~p"/programs/#{program}/logs")
-      
+      _log = Factory.insert(:log, [program_id: program.id], prefix: @prefix)      
       {:ok, _index_live, html} = live(conn, ~p"/programs/#{program}/logs")
       refute html =~ "Delete"
     end
@@ -149,7 +147,7 @@ defmodule RadioappWeb.LogLiveTest do
 
   describe "Delete log with admin" do
     setup %{conn: conn} do
-      user = Factory.insert(:user, role: "admin")
+      user = Factory.insert(:user, roles: %{@tenant => "admin"})
       conn = log_in_user(conn, user)
       %{conn: conn, user: user}
     end
@@ -160,7 +158,6 @@ defmodule RadioappWeb.LogLiveTest do
       log = Factory.insert(:log, [program_id: program.id], prefix: @prefix)
 
       {:ok, index_live, _html} = live(conn, ~p"/programs/#{program}/logs")
-
       assert index_live |> element("#logs-#{log.id} a", "Delete") |> render_click()
       refute has_element?(index_live, "#log-#{log.id}")
     end
@@ -169,7 +166,7 @@ defmodule RadioappWeb.LogLiveTest do
 
   describe "Show" do
     setup %{conn: conn} do
-      user = Factory.insert(:user)
+      user = Factory.insert(:user, roles: %{@tenant => "user"})
       conn = log_in_user(conn, user)
       %{conn: conn, user: user}
     end

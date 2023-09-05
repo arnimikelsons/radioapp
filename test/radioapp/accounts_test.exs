@@ -4,7 +4,7 @@ defmodule Radioapp.AccountsTest do
   alias Radioapp.Accounts
   alias Radioapp.Factory
   import Radioapp.AccountsFixtures
-  alias Radioapp.Accounts.{User, UserToken}
+  alias Radioapp.Accounts.{User, UserToken, Org}
 
   @tenant "sample"
   @prefix Triplex.to_prefix(@tenant)
@@ -637,9 +637,8 @@ defmodule Radioapp.AccountsTest do
 
 
   describe "orgs" do
-    alias Radioapp.Accounts.Org
 
-    import Radioapp.AccountsFixtures
+    @tenant "sample"
 
     @invalid_attrs %{address1: nil, address2: nil, city: nil, country: nil, email: nil, full_name: nil, organization: nil, postal_code: nil, province: nil, short_name: nil, telephone: nil, tenant_name: nil}
 
