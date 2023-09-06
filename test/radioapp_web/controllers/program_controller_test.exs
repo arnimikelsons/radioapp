@@ -100,6 +100,6 @@ defmodule RadioappWeb.ProgramControllerTest do
     #   assert_error_sent 404, fn ->
     #     get(conn, ~p"/programs/#{program}")
     #   end
-    end
+    #end
   end
 end

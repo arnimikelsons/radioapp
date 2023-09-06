@@ -10,7 +10,7 @@ def user_factory do
     short_name: "Some Short Name",
     confirmed_at: ~N[2000-01-01 23:00:07],
     email: unique_user_email(),
-    password: valid_user_password(), 
+    password: valid_user_password(),
     hashed_password: Bcrypt.hash_pwd_salt(valid_user_password())
   }
 end
@@ -98,5 +98,18 @@ end
         segments: []
     }
   end
-
+  def org_factory do
+    %Radioapp.Accounts.Org{
+      city: "Some City",
+      country: "Some Country",
+      email: "example@somewhere.net",
+      full_name: "Some Full Name",
+      short_name: "Some Short Name",
+      organization: "Some Organization",
+      postal_code: "Some Postal Code",
+      province: "Some Province",
+      telephone: "Some Telephone",
+      tenant_name: "sample"
+    }
+  end
 end

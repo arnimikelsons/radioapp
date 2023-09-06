@@ -16,7 +16,11 @@ defmodule RadioappWeb.PageController do
   end
 
   def admin(conn, _params) do
-    render(conn, :admin)
+    user = conn.assigns.current_user
+    tenant = conn.assigns.current_tenant
+    user_role = Map.get(user.roles, tenant)
+
+    render(conn, :admin, user_role: user_role)
   end
 
 end

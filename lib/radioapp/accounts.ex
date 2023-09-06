@@ -81,6 +81,12 @@ defmodule Radioapp.Accounts do
     |> Repo.insert()
   end
 
+  def seeds_user(attrs) do
+    %User{}
+    |> User.seeds_changeset(attrs)
+    |> Repo.insert()
+  end
+
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking user changes.
 
