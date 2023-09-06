@@ -7,7 +7,6 @@ defmodule Radioapp.AccountsTest do
   alias Radioapp.Accounts.{User, UserToken, Org}
 
   @tenant "sample"
-  @prefix Triplex.to_prefix(@tenant)
 
   describe "get_user_by_email/1" do
     test "does not return the user if the email does not exist" do
@@ -634,12 +633,7 @@ defmodule Radioapp.AccountsTest do
     end
   end
 
-
-
   describe "orgs" do
-
-    @tenant "sample"
-
     @invalid_attrs %{address1: nil, address2: nil, city: nil, country: nil, email: nil, full_name: nil, organization: nil, postal_code: nil, province: nil, short_name: nil, telephone: nil, tenant_name: nil}
 
     test "list_orgs/0 returns all orgs" do

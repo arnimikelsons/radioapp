@@ -12,10 +12,10 @@ defmodule RadioappWeb.UserSettingsLiveTest do
     setup %{conn: conn} do
       user = Factory.insert(:user, roles: %{@tenant => "admin"})
       conn = log_in_user(conn, user)
-      %{conn: conn, user: user}
+      %{conn: conn}
     end
 
-    test "renders settings page", %{conn: conn, user: user} do
+    test "renders settings page", %{conn: conn} do
       {:ok, _lv, html} =
         conn
         |> live(~p"/users/settings")
