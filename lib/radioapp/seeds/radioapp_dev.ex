@@ -1,8 +1,6 @@
 defmodule Radioapp.Seeds.RadioappDev do
-  alias Radioapp.Admin
-  alias Radioapp.Accounts
-  alias Radioapp.Station
 
+  alias Radioapp.Accounts
 
   # NOTE: Add email_confirmed_at to user changeset to seed working logins; remove after running
   def run(tenant) do

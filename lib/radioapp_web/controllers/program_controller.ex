@@ -49,8 +49,9 @@ defmodule RadioappWeb.ProgramController do
         %Image{}
         |> Image.changeset(%{})
     end
+    user_role = conn.assigns.current_user.role
 
-    render(conn, :show, timeslots: timeslots, program: program, image: image)
+    render(conn, :show, timeslots: timeslots, program: program, image: image, user_role: user_role)
   end
 
   def edit(conn, %{"id" => id}) do

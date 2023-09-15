@@ -22,8 +22,9 @@ defmodule RadioappWeb.UserControllerTest do
     end
 
     test "redirects when data is valid", %{conn: conn, user: user} do
+      target_user = Factory.insert(:user, roles: %{@tenant => "admin"}, full_name: "Some Full Name")
 
-      conn = put(conn, ~p"/users/#{user}", user: %{full_name: "Some Updated Full Name"})
+      conn = put(conn, ~p"/users/#{target_user}", user: %{full_name: "Some Updated Full Name"})
       assert redirected_to(conn) == ~p"/users"
       assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "User updated successfully."
       conn = get(conn, ~p"/users/")
