@@ -1,12 +1,9 @@
 defmodule RadioappWeb.OrgControllerTest do
   use RadioappWeb.ConnCase
 
-  import Radioapp.AccountsFixtures
-
   alias Radioapp.Factory
 
   @tenant "sample"
-  @prefix Triplex.to_prefix(@tenant)
 
   @create_attrs %{address1: "some address1", address2: "some address2", city: "some city", country: "some country", email: "some email", full_name: "some full_name", organization: "some organization", postal_code: "some postal_code", province: "some province", short_name: "some short_name", telephone: "some telephone", tenant_name: "some tenant_name"}
   @update_attrs %{address1: "some updated address1", address2: "some updated address2", city: "some updated city", country: "some updated country", email: "some updated email", full_name: "some updated full_name", organization: "some updated organization", postal_code: "some updated postal_code", province: "some updated province", short_name: "some updated short_name", telephone: "some updated telephone", tenant_name: "some updated tenant_name"}
@@ -54,7 +51,7 @@ defmodule RadioappWeb.OrgControllerTest do
     end
 
     test "renders form for editing chosen org", %{conn: conn} do
-      org = program = Factory.insert(:org)
+      org = Factory.insert(:org)
 
       conn = get(conn, ~p"/orgs/#{org}/edit")
       assert html_response(conn, 200) =~ "Edit Org"

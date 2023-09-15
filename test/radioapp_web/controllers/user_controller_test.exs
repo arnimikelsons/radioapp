@@ -21,7 +21,7 @@ defmodule RadioappWeb.UserControllerTest do
       assert html_response(conn, 200) =~ "Edit User"
     end
 
-    test "redirects when data is valid", %{conn: conn, user: user} do
+    test "redirects when data is valid", %{conn: conn} do
       target_user = Factory.insert(:user, roles: %{@tenant => "admin"}, full_name: "Some Full Name")
 
       conn = put(conn, ~p"/users/#{target_user}", user: %{full_name: "Some Updated Full Name"})

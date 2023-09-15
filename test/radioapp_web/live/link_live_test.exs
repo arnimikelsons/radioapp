@@ -40,7 +40,7 @@ defmodule RadioappWeb.LinkLiveTest do
       assert {:error, redirect} = live(conn, ~p"/admin/links")
       assert {:redirect, %{to: path, flash: flash}} = redirect
       assert path == ~p"/"
-      assert %{"error" => "Unauthorised"} = flash
+      assert %{"error" => "Unauthorized access"} = flash
     end
   end
 
