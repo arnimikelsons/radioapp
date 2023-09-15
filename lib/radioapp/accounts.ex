@@ -5,9 +5,7 @@ defmodule Radioapp.Accounts do
 
   import Ecto.Query, warn: false
   alias Radioapp.Repo
-
-
-  alias Radioapp.Accounts.{User, UserToken, UserNotifier, Org}
+  alias Radioapp.Accounts.{User, UserToken, UserNotifier, Org, OrganizationTenant}
 
   ## Database getters
 
@@ -533,6 +531,10 @@ defmodule Radioapp.Accounts do
     %Org{}
     |> Org.changeset(attrs)
     |> Repo.insert()
+  end
+
+  def initialize_org(%{} = attrs) do
+    OrganizationTenant.create(attrs)
   end
 
   @doc """

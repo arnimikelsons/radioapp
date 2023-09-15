@@ -9,18 +9,18 @@
 </.header>
 
 <.list>
+  <:item title="Tenant name"><%= @org.tenant_name %></:item>
+  <:item title="Organization"><%= @org.organization %></:item>
+  <:item title="Full name"><%= @org.full_name %></:item>
+  <:item title="Short name"><%= @org.short_name %></:item>
+  <:item title="Email"><%= @org.email %></:item>
+  <:item title="Telephone"><%= @org.telephone %></:item>
   <:item title="Address1"><%= @org.address1 %></:item>
   <:item title="Address2"><%= @org.address2 %></:item>
   <:item title="City"><%= @org.city %></:item>
-  <:item title="Country"><%= @org.country %></:item>
-  <:item title="Email"><%= @org.email %></:item>
-  <:item title="Full name"><%= @org.full_name %></:item>
-  <:item title="Short name"><%= @org.short_name %></:item>
-  <:item title="Organization"><%= @org.organization %></:item>
-  <:item title="Postal code"><%= @org.postal_code %></:item>
   <:item title="Province"><%= @org.province %></:item>
-  <:item title="Telephone"><%= @org.telephone %></:item>
-  <:item title="Tenant name"><%= @org.tenant_name %></:item>
+  <:item title="Postal code"><%= @org.postal_code %></:item>
+  <:item title="Country"><%= @org.country %></:item>
 </.list>
 
 <.back navigate={~p"/orgs"}>Back to orgs</.back>

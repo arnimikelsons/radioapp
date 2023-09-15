@@ -22,7 +22,6 @@ defmodule RadioappWeb.EnsureRolePlug do
   @doc false
   @spec call(Conn.t(), atom() | [atom()]) :: Conn.t()
   def call(conn, target_role) do
-
     user_token = get_session(conn, :user_token)
     user = Accounts.get_user_by_session_token(user_token)
     tenant = conn.assigns.current_tenant
@@ -31,35 +30,6 @@ defmodule RadioappWeb.EnsureRolePlug do
     |> Accounts.has_role?(user, target_role, tenant)
     |> maybe_halt(conn)
 
-
-
-    # case user do
-    #   %User{roles: roles} ->
-    #     case Map.get(roles, tenant) do
-    #       "admin" ->
-    #         conn
-    #       "user" ->
-    #         case target_role do
-    #           "user" ->
-    #             conn  
-    #           "admin" -> 
-    #             conn
-    #             |> Controller.put_flash(:error, "Unauthorised")
-    #             |> Controller.redirect(to: signed_in_path(conn))
-    #             |> halt()
-    #         end
-    #       _ -> 
-    #         conn
-    #           |> Controller.put_flash(:error, "Unauthorised")
-    #           |> Controller.redirect(to: signed_in_path(conn))
-    #           |> halt()
-    #     end
-    #     _ ->
-    #       conn
-    #       |> Controller.put_flash(:error, "Unauthorised")
-    #       |> Controller.redirect(to: signed_in_path(conn))
-    #       |> halt()
-    # end
   end
 
   defp maybe_halt(true, conn), do: conn

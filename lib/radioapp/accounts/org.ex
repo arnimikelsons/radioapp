@@ -23,7 +23,7 @@ defmodule Radioapp.Accounts.Org do
   def changeset(org, attrs) do
     org
     |> cast(attrs, [:address1, :address2, :city, :country, :email, :full_name, :short_name, :organization, :postal_code, :province, :telephone, :tenant_name])
-    |> validate_required([:city, :country, :email, :full_name, :short_name, :organization, :postal_code, :province, :telephone, :tenant_name])
+    |> validate_required([:tenant_name, :organization, :full_name, :short_name, :email, :telephone])
     |> unique_constraint(:tenant_name)
   end
 end
