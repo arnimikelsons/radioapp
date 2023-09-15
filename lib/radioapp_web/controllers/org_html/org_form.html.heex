@@ -2,18 +2,18 @@
   <.error :if={@changeset.action}>
     Oops, something went wrong! Please check the errors below.
   </.error>
-  <.input field={f[:address1]} type="text" label="Address1" />
-  <.input field={f[:address2]} type="text" label="Address2" />
-  <.input field={f[:city]} type="text" label="City" />
-  <.input field={f[:country]} type="text" label="Country" />
-  <.input field={f[:email]} type="text" label="Email" />
-  <.input field={f[:full_name]} type="text" label="Full name" />
-  <.input field={f[:short_name]} type="text" label="Short name" />
-  <.input field={f[:organization]} type="text" label="Organization" />
-  <.input field={f[:postal_code]} type="text" label="Postal code" />
-  <.input field={f[:province]} type="text" label="Province" />
-  <.input field={f[:telephone]} type="text" label="Telephone" />
-  <.input field={f[:tenant_name]} type="text" label="Tenant name" />
+  <.input field={{f, :address1}} type="text" label="Address1" />
+  <.input field={{f, :address2}} type="text" label="Address2" />
+  <.input field={{f, :city}} type="text" label="City" />
+  <.input field={{f, :country}} type="text" label="Country" />
+  <.input field={{f, :email}} type="text" label="Email" />
+  <.input field={{f, :full_name}} type="text" label="Full name" />
+  <.input field={{f, :short_name}} type="text" label="Short name" />
+  <.input field={{f, :organization}} type="text" label="Organization" />
+  <.input field={{f, :postal_code}} type="text" label="Postal code" />
+  <.input field={{f, :province}} type="text" label="Province" />
+  <.input field={{f, :telephone}} type="text" label="Telephone" />
+  <.input field={{f, :tenant_name}} type="text" label="Tenant name" />
   <:actions>
     <.button>Save Org</.button>
   </:actions>

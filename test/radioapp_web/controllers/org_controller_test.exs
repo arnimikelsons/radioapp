@@ -53,14 +53,14 @@ defmodule RadioappWeb.OrgControllerTest do
       %{conn: conn, user: user}
     end
 
-    test "renders form for editing chosen org", %{conn: conn, org: org} do
+    test "renders form for editing chosen org", %{conn: conn} do
       org = program = Factory.insert(:org)
 
       conn = get(conn, ~p"/orgs/#{org}/edit")
       assert html_response(conn, 200) =~ "Edit Org"
     end
 
-    test "redirects when data is valid", %{conn: conn, org: org} do
+    test "redirects when data is valid", %{conn: conn} do
       org = Factory.insert(:org)
       
       conn = put(conn, ~p"/orgs/#{org}", org: @update_attrs)
@@ -70,14 +70,14 @@ defmodule RadioappWeb.OrgControllerTest do
       assert html_response(conn, 200) =~ "some updated address1"
     end
 
-    test "renders errors when data is invalid", %{conn: conn, org: org} do
+    test "renders errors when data is invalid", %{conn: conn} do
       org = Factory.insert(:org)
 
       conn = put(conn, ~p"/orgs/#{org}", org: @invalid_attrs)
       assert html_response(conn, 200) =~ "Edit Org"
     end
 
-    test "deletes chosen org", %{conn: conn, org: org} do
+    test "deletes chosen org", %{conn: conn} do
       org = Factory.insert(:org)
 
       conn = delete(conn, ~p"/orgs/#{org}")

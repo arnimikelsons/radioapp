@@ -168,7 +168,6 @@ defmodule RadioappWeb.Router do
       post "/admin/logs/search", LogController, :search
       post "/admin/logs/export", LogController, :export
 
-      resources "/orgs", OrgController
   end
 
 
@@ -187,7 +186,7 @@ defmodule RadioappWeb.Router do
     put "/programs/:program_id/timeslots/:id", TimeslotController, :update
     delete "/programs/:program_id/timeslots/:id", TimeslotController, :delete
 
-
+    resources "/orgs", OrgController
   end
 
   scope "/", RadioappWeb do
