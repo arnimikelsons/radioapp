@@ -220,6 +220,10 @@ defmodule RadioappWeb.UserAuth do
       if user.confirmed_at do
         conn
       else 
+        Accounts.deliver_user_invitation_instructions(
+            user,
+            &url(~p"/users/accept/#{&1}")
+          )
         conn
         |> put_flash(:error, "You must accept your invitation.")
         |> maybe_store_return_to()

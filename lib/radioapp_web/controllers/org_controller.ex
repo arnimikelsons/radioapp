@@ -15,7 +15,7 @@ defmodule RadioappWeb.OrgController do
   end
 
   def create(conn, %{"org" => org_params}) do
-    case Accounts.create_org(org_params) do
+    case Accounts.initialize_org(org_params) do
       {:ok, org} ->
         conn
         |> put_flash(:info, "Org created successfully.")
@@ -23,6 +23,13 @@ defmodule RadioappWeb.OrgController do
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, :new, changeset: changeset)
+
+      {:error, :duplicate_schema} ->
+        changeset = Accounts.change_org(%Org{}, org_params)
+
+        conn
+        |> put_flash(:error, "Tenant already exists")
+        |> render("new.html", changeset: changeset)
     end
   end
 

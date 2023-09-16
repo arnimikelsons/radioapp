@@ -470,14 +470,14 @@ defmodule Radioapp.Accounts do
     Repo.delete(user)
   end
 
-  def has_role?(_conn, user, role, tenant) when is_atom(role) do
-    has_role?(_conn, user, Atom.to_string(role), tenant)
+  def has_role?(conn, user, role, tenant) when is_atom(role) do
+    has_role?(conn, user, Atom.to_string(role), tenant)
   end
 
   def has_role?(_conn, nil, _, _), do: false
 
-  def has_role?(_conn, user, roles, tenant) when is_list(roles) do
-    roles |> Enum.any?(fn role -> has_role?(_conn, user, role, tenant) end)
+  def has_role?(conn, user, roles, tenant) when is_list(roles) do
+    roles |> Enum.any?(fn role -> has_role?(conn, user, role, tenant) end)
   end
 
   def has_role?(_conn, user, role, tenant) when is_binary(role) do
