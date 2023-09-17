@@ -1,7 +1,7 @@
 defmodule Radioapp.AdminTest do
   use Radioapp.DataCase
   alias Radioapp.Factory
-  alias Radioapp.Admin.{Category, Link, Orgsettings}
+  alias Radioapp.Admin.{Category, Link}
   alias Radioapp.Admin
 
   @tenant "sample"

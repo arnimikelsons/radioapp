@@ -56,6 +56,15 @@ defmodule Radioapp.Accounts.User do
     |> validate_password(opts)
   end
 
+  def seeds_changeset(user, attrs, opts \\ []) do
+    user
+    |> cast(attrs, [:email, :password, :tenant_role, :confirmed_at, :full_name, :short_name, :roles])
+    |> validate_required([:full_name, :short_name])
+    |> validate_confirmation(:password, message: "does not match password")
+    |> validate_email(opts)
+    |> validate_password(opts)
+  end
+
   # def invitation_changeset(user, attrs, opts \\ []) do
   #   user
   #   |> cast(attrs, [:email, :password, :full_name, :short_name, :role, :roles])

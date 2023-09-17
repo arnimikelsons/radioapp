@@ -6,17 +6,25 @@ defmodule RadioappWeb.UserSettingsLiveTest do
   import Radioapp.AccountsFixtures
   alias Radioapp.Factory
 
+  @tenant "sample"
+
   describe "Settings page" do
+    setup %{conn: conn} do
+      user = Factory.insert(:user, roles: %{@tenant => "admin"})
+      conn = log_in_user(conn, user)
+      %{conn: conn}
+    end
+
     test "renders settings page", %{conn: conn} do
       {:ok, _lv, html} =
         conn
-        |> log_in_user(Factory.insert(:user))
         |> live(~p"/users/settings")
 
       assert html =~ "Change Name"
       assert html =~ "Change Password"
     end
-
+  end
+  describe "not logged in" do
     test "redirects if user is not logged in", %{conn: conn} do
       assert {:error, redirect} = live(conn, ~p"/users/settings")
 
@@ -29,7 +37,7 @@ defmodule RadioappWeb.UserSettingsLiveTest do
   describe "update name form" do
     setup %{conn: conn} do
       password = valid_user_password()
-      user = Factory.insert(:user, password: password)
+      user = Factory.insert(:user, roles: %{@tenant => "admin"})
       conn = log_in_user(conn, user)
       %{conn: conn, user: user, password: password}
     end
@@ -77,7 +85,7 @@ defmodule RadioappWeb.UserSettingsLiveTest do
   describe "update password form" do
     setup %{conn: conn} do
       password = valid_user_password()
-      user = Factory.insert(:user, password: password)
+      user = Factory.insert(:user, roles: %{@tenant => "admin"}, password: password)
       conn = log_in_user(conn, user)
       %{conn: conn, user: user, password: password}
     end

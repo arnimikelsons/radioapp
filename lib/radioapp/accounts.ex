@@ -5,8 +5,7 @@ defmodule Radioapp.Accounts do
 
   import Ecto.Query, warn: false
   alias Radioapp.Repo
-
-  alias Radioapp.Accounts.{User, UserToken, UserNotifier}
+  alias Radioapp.Accounts.{User, UserToken, UserNotifier, Org, OrganizationTenant}
 
   ## Database getters
 
@@ -77,6 +76,12 @@ defmodule Radioapp.Accounts do
   def register_user(attrs) do
     %User{}
     |> User.registration_changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def seeds_user(attrs) do
+    %User{}
+    |> User.seeds_changeset(attrs)
     |> Repo.insert()
   end
 
@@ -465,4 +470,117 @@ defmodule Radioapp.Accounts do
     Repo.delete(user)
   end
 
+  def has_role?(conn, user, role, tenant) when is_atom(role) do
+    has_role?(conn, user, Atom.to_string(role), tenant)
+  end
+
+  def has_role?(_conn, nil, _, _), do: false
+
+  def has_role?(conn, user, roles, tenant) when is_list(roles) do
+    roles |> Enum.any?(fn role -> has_role?(conn, user, role, tenant) end)
+  end
+
+  def has_role?(_conn, user, role, tenant) when is_binary(role) do
+    roles = Map.get(user, :roles, %{})
+    Map.get(roles, tenant, %{}) == role
+  end
+
+
+  @doc """
+  Returns the list of orgs.
+
+  ## Examples
+
+      iex> list_orgs()
+      [%Org{}, ...]
+
+  """
+  def list_orgs do
+    Repo.all(Org)
+  end
+
+  @doc """
+  Gets a single org.
+
+  Raises `Ecto.NoResultsError` if the Org does not exist.
+
+  ## Examples
+
+      iex> get_org!(123)
+      %Org{}
+
+      iex> get_org!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_org!(id), do: Repo.get!(Org, id)
+
+  @doc """
+  Creates a org.
+
+  ## Examples
+
+      iex> create_org(%{field: value})
+      {:ok, %Org{}}
+
+      iex> create_org(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_org(attrs \\ %{}) do
+    %Org{}
+    |> Org.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def initialize_org(%{} = attrs) do
+    OrganizationTenant.create(attrs)
+  end
+
+  @doc """
+  Updates a org.
+
+  ## Examples
+
+      iex> update_org(org, %{field: new_value})
+      {:ok, %Org{}}
+
+      iex> update_org(org, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_org(%Org{} = org, attrs) do
+    org
+    |> Org.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a org.
+
+  ## Examples
+
+      iex> delete_org(org)
+      {:ok, %Org{}}
+
+      iex> delete_org(org)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_org(%Org{} = org) do
+    Repo.delete(org)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking org changes.
+
+  ## Examples
+
+      iex> change_org(org)
+      %Ecto.Changeset{data: %Org{}}
+
+  """
+  def change_org(%Org{} = org, attrs \\ %{}) do
+    Org.changeset(org, attrs)
+  end
 end

@@ -40,13 +40,13 @@ defmodule RadioappWeb.LinkLiveTest do
       assert {:error, redirect} = live(conn, ~p"/admin/links")
       assert {:redirect, %{to: path, flash: flash}} = redirect
       assert path == ~p"/"
-      assert %{"error" => "Unauthorised"} = flash
+      assert %{"error" => "Unauthorized access"} = flash
     end
   end
 
   describe "Index" do
     setup %{conn: conn} do
-      user = Factory.insert(:user, [role: "admin"])
+      user = Factory.insert(:user, roles: %{@tenant => "admin"})
       conn = log_in_user(conn, user)
       %{conn: conn, user: user}
     end

@@ -99,7 +99,10 @@ defmodule RadioappWeb.UserAuth do
   def fetch_current_user(conn, _opts) do
     {user_token, conn} = ensure_user_token(conn)
     user = user_token && Accounts.get_user_by_session_token(user_token)
+    
     assign(conn, :current_user, user)
+ 
+
   end
 
   defp ensure_user_token(conn) do
@@ -217,6 +220,10 @@ defmodule RadioappWeb.UserAuth do
       if user.confirmed_at do
         conn
       else 
+        Accounts.deliver_user_invitation_instructions(
+            user,
+            &url(~p"/users/accept/#{&1}")
+          )
         conn
         |> put_flash(:error, "You must accept your invitation.")
         |> maybe_store_return_to()

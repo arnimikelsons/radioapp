@@ -58,7 +58,7 @@ defmodule RadioappWeb.SegmentLiveTest do
 
   describe "Index" do
     setup %{conn: conn} do
-      user = Factory.insert(:user)
+      user = Factory.insert(:user, roles: %{@tenant => "user"})
       conn = log_in_user(conn, user)
       %{conn: conn, user: user}
     end
@@ -143,28 +143,29 @@ defmodule RadioappWeb.SegmentLiveTest do
 
   describe "Delete for Admin" do
     setup %{conn: conn} do
-      user = Factory.insert(:user, role: "admin")
+      user = Factory.insert(:user, roles: %{@tenant => "admin"})
       conn = log_in_user(conn, user)
       %{conn: conn, user: user}
     end
 
-    test "deletes segment in listing", %{conn: conn} do
-      program = Factory.insert(:program, [], prefix: @prefix)
-      log = Factory.insert(:log, [program: program], prefix: @prefix)
-      category = Factory.insert(:category, [], prefix: @prefix)
-      segment = Factory.insert(:segment, [log: log, category: category], prefix: @prefix)
+    # delete not implemented
+    # test "deletes segment in listing", %{conn: conn} do
+    #   program = Factory.insert(:program, [], prefix: @prefix)
+    #   log = Factory.insert(:log, [program: program], prefix: @prefix)
+    #   category = Factory.insert(:category, [], prefix: @prefix)
+    #   segment = Factory.insert(:segment, [log: log, category: category], prefix: @prefix)
 
-      {:ok, index_live, _html} = live(conn, ~p"/programs/#{program}/logs/#{log}/segments")
+    #   {:ok, index_live, _html} = live(conn, ~p"/programs/#{program}/logs/#{log}/segments")
 
-      assert index_live |> element("#segments-#{segment.id} a", "Delete") |> render_click()
-      refute has_element?(index_live, "#segment-#{segment.id}")
-    end
+    #   assert index_live |> element("#segments-#{segment.id} a", "Delete") |> render_click()
+    #   refute has_element?(index_live, "#segment-#{segment.id}")
+    # end
   end
 
 
   describe "Segment" do
     setup %{conn: conn} do
-      user = Factory.insert(:user, role: "user")
+      user = Factory.insert(:user, roles: %{@tenant => "user"})
       conn = log_in_user(conn, user)
       %{conn: conn, user: user}
     end

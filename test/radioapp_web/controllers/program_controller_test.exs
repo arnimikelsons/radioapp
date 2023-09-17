@@ -19,7 +19,7 @@ defmodule RadioappWeb.ProgramControllerTest do
 
   describe "manage programs" do
     setup %{conn: conn} do
-      user = Factory.insert(:user, role: "user")
+      user = Factory.insert(:user, roles: %{@tenant => "user"}, full_name: "Some Full Name")
       conn = log_in_user(conn, user)
       %{conn: conn, user: user}
     end
@@ -71,14 +71,17 @@ defmodule RadioappWeb.ProgramControllerTest do
       assert html_response(conn, 200) =~ "Edit Program"
     end
 
-    test "deletes chosen program", %{conn: conn} do
-      program = Factory.insert(:program, [], prefix: @prefix)
-      conn = delete(conn, ~p"/programs/#{program}")
-      assert redirected_to(conn) == ~p"/"
+    # no delete of programs (they are archived)
+    # test "deletes chosen program", %{conn: conn, user: user} do
 
-      conn = get(conn, ~p"/programs/#{program}")
-      assert html_response(conn, 200) =~ program.name
-    end
+    #   program = Factory.insert(:program, [], prefix: @prefix)
+    #   conn = delete(conn, ~p"/programs/#{program}")
+    #   assert redirected_to(conn) == ~p"/programs"
+
+    #   conn = get(conn, ~p"/programs/#{program}")
+      
+    #   assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "User updated successfully."
+    # end
   end
 
   describe "delete programs for admin" do
@@ -88,14 +91,15 @@ defmodule RadioappWeb.ProgramControllerTest do
       %{conn: conn, user: user}
     end
 
-    test "deletes chosen program", %{conn: conn} do
-      program = Factory.insert(:program, [], prefix: @prefix)
-      conn = delete(conn, ~p"/programs/#{program}")
-      assert redirected_to(conn) == ~p"/programs"
+    # delete removed
+    # test "deletes chosen program", %{conn: conn} do
+    #   program = Factory.insert(:program, [], prefix: @prefix)
+    #   conn = delete(conn, ~p"/programs/#{program}")
+    #   assert redirected_to(conn) == ~p"/"
 
-      assert_error_sent 404, fn ->
-        get(conn, ~p"/programs/#{program}")
-      end
-    end
+    #   assert_error_sent 404, fn ->
+    #     get(conn, ~p"/programs/#{program}")
+    #   end
+    #end
   end
 end

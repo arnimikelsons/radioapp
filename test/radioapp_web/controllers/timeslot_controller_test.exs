@@ -36,7 +36,7 @@ defmodule RadioappWeb.TimeslotControllerTest do
 
   describe "manage timeslot for regular user" do
     setup %{conn: conn} do
-      user = Factory.insert(:user, role: "user")
+      user = Factory.insert(:user, roles: %{@tenant => "user"})
       conn = log_in_user(conn, user)
       %{conn: conn, user: user}
     end
@@ -54,7 +54,7 @@ defmodule RadioappWeb.TimeslotControllerTest do
 
   describe "manage timeslots" do
     setup %{conn: conn} do
-      user = Factory.insert(:user, role: "admin")
+      user = Factory.insert(:user, roles: %{@tenant => "admin"})
       conn = log_in_user(conn, user)
       %{conn: conn, user: user}
     end

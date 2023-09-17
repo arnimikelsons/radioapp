@@ -29,8 +29,7 @@ defmodule RadioappWeb.CategoryLiveTest do
   describe "Test for non-admin user not allowed" do
 
     setup %{conn: conn} do
-
-      user = Factory.insert(:user, role: "user")
+      user = Factory.insert(:user, roles: %{@tenant => "user"})
       conn = log_in_user(conn, user)
       %{conn: conn, user: user}
     end
@@ -40,15 +39,14 @@ defmodule RadioappWeb.CategoryLiveTest do
       assert {:error, redirect} = live(conn, ~p"/admin/categories")
       assert {:redirect, %{to: path, flash: flash}} = redirect
       assert path == ~p"/"
-      assert %{"error" => "Unauthorised"} = flash
+      assert %{"error" => "Unauthorized access"} = flash
     end
   end
 
   describe "Index" do
 
     setup %{conn: conn} do
-
-      user = Factory.insert(:user, role: "admin")
+      user = Factory.insert(:user, roles: %{@tenant => "admin"})
       conn = log_in_user(conn, user)
       %{conn: conn, user: user}
     end
@@ -118,7 +116,7 @@ defmodule RadioappWeb.CategoryLiveTest do
 
   describe "Show" do
     setup %{conn: conn} do
-      user = Factory.insert(:user, role: "admin")
+      user = Factory.insert(:user, roles: %{@tenant => "admin"})
       conn = log_in_user(conn, user)
       %{conn: conn, user: user}
     end
