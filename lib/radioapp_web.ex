@@ -55,6 +55,8 @@ defmodule RadioappWeb do
       use Phoenix.LiveView,
         layout: {RadioappWeb.Layouts, :app}
 
+      import RadioappWeb.PlayingNowComponent
+
       unquote(html_helpers())
     end
   end

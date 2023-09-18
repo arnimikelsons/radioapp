@@ -4,9 +4,8 @@ defmodule RadioappWeb.PlayerLive do
 
   def mount(_params, session, socket) do
     tenant = Map.fetch!(session, "subdomain")
-
     socket = assign(socket, tenant: tenant)
-    
+
     if connected?(socket) do
       Process.send_after(self(), :tick, 60 * 1000) # In 1 minute
     end
@@ -18,9 +17,7 @@ defmodule RadioappWeb.PlayerLive do
         saved: 1.0,
         playing: false
       )
-
       socket = assign_show(socket)
-      
 
     if socket.assigns.live_action == :pop do
       socket = assign(socket, page_title: "Pop-Up Player")

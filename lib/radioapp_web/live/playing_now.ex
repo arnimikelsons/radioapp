@@ -7,15 +7,19 @@ defmodule RadioappWeb.PlayingNow do
       <span></span>
     """
   end
-  def playing_now(assigns, tenant) do
-    
+
+  def playing_now(assigns) do
+
+    # current_tenant = Map.fetch!(session, "subdomain")
+    current_tenant = assigns.current_tenant
+
     now = DateTime.to_naive(Timex.now("America/Toronto"))
     time_now = DateTime.to_time(Timex.now("America/Toronto"))
     weekday = Timex.weekday(now)
-    assigns = assign(assigns, :show_name, Station.get_program_from_time(weekday, time_now, tenant))
+    assigns = assign(assigns, :show_name, Station.get_program_from_time(weekday, time_now, current_tenant))
+    # show_name =  Station.get_program_from_time(weekday, time_now, current_tenant)
   ~H"""
     <span><%= @show_name %></span>
-    <%!-- <span>Test</span> --%>
   """
   end
 end
