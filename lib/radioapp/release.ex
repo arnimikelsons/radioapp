@@ -9,6 +9,7 @@ defmodule Radioapp.Release do
     load_app()
 
     for repo <- repos() do
+      Radioapp.Accounts.OrganizationTenant.create(%{"tenant_name: "admin"})
       {:ok, _, _} = Ecto.Migrator.with_repo(repo, &Ecto.Migrator.run(&1, :up, all: true))
     end
   end
