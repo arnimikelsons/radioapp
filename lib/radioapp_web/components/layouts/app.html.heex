@@ -97,7 +97,7 @@
                   current_tenant={@current_tenant} 
                 />
                 <% else %>
-                  <.live_component module={RadioappWeb.PlayingNowComponent} id="playingnow" content={"Hello World!"} />
+                  <.live_component module={RadioappWeb.PlayingNowComponent} id="playingnow" content={"Hello World!"} tenant={@tenant} />
                 <% end %>
               </p>
               <!-- play/pause -->

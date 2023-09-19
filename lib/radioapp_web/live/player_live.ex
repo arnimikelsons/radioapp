@@ -48,7 +48,7 @@ defmodule RadioappWeb.PlayerLive do
     {:noreply, socket}
   end
 
-  defp assign_show(socket) do
+  def assign_show(socket) do
     tenant = socket.assigns.tenant
     now = DateTime.to_naive(Timex.now("America/Toronto"))
     time_now = DateTime.to_time(Timex.now("America/Toronto"))
