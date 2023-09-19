@@ -12,7 +12,7 @@ defmodule RadioappWeb.PlayingNowComponent do
   def update(assigns, socket) do
 
     tenant = assigns.tenant
-    IO.inspect(tenant, label: "TENANT")
+    # IO.inspect(tenant, label: "TENANT")
     socket = assign(socket, tenant: tenant)
     socket = assign_show(socket)
     {:ok, socket}
@@ -25,7 +25,7 @@ defmodule RadioappWeb.PlayingNowComponent do
   end
 
   defp assign_show(socket) do
-    IO.inspect(socket.assigns, label: "SOCKET.ASSIGNS")
+    # IO.inspect(socket.assigns, label: "SOCKET.ASSIGNS")
     tenant = socket.assigns.tenant
     now = DateTime.to_naive(Timex.now("America/Toronto"))
     time_now = DateTime.to_time(Timex.now("America/Toronto"))
@@ -34,7 +34,7 @@ defmodule RadioappWeb.PlayingNowComponent do
     showName = Station.get_program_from_time(weekday, time_now, tenant)
     startTime = Station.get_program_now_start_time(weekday, time_now, tenant)
 
-    IO.inspect(showName, label: "SHOWNAME IN PLAYING_NOW_COMPONENT")
+    # IO.inspect(showName, label: "SHOWNAME IN PLAYING_NOW_COMPONENT")
     showName =
     if showName == [] do
       "No Show Available"

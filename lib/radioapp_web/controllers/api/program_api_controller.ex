@@ -12,7 +12,9 @@ defmodule RadioappWeb.Api.ProgramApiController do
   end
 
   def show(conn, _params) do
-    render(conn, :show, program: "test")
+    tenant = RadioappWeb.get_tenant(conn)
+    IO.inspect(tenant, label: "TENANT IN API CONTROLLER")
+    render(conn, :show, tenant: tenant)
   end
 
 end
