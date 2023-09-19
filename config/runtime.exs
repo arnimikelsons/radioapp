@@ -63,9 +63,9 @@ if config_env() == :prod do
     ],
     secret_key_base: secret_key_base
 
-    config :appsignal, :config,
-      active: true,
-      push_api_key: System.fetch_env!("APPSIGNAL_PUSH_API_KEY")
+  config :appsignal, :config,
+    active: true,
+    push_api_key: System.fetch_env!("APPSIGNAL_PUSH_API_KEY")
 
   # ## SSL Support
   #
