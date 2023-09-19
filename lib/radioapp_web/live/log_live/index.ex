@@ -14,7 +14,6 @@ defmodule RadioappWeb.LogLive.Index do
     socket =
       assign_defaults(session, socket)
       |> assign(:tenant, tenant)
-    
     program = Station.get_program!(program_id, tenant)
     {:ok,
       socket

@@ -5,12 +5,13 @@ defmodule RadioappWeb.UserController do
 
   def index(conn, _params) do
     tenant = RadioappWeb.get_tenant(conn)
-    users = Accounts.list_users()
+    users = Accounts.list_users(tenant)
     render(conn, :index, users: users, tenant: tenant)
   end
 
   def edit(conn, %{"id" => id}) do
-    user = Accounts.get_user!(id)
+    tenant = RadioappWeb.get_tenant(conn)
+    user = Accounts.get_user_in_tenant!(id, tenant)
     tenant = RadioappWeb.get_tenant(conn)
     
     tenant_role = user.roles[tenant]
@@ -38,8 +39,8 @@ defmodule RadioappWeb.UserController do
   end
 
   def update(conn, %{"id" => id, "user" => user_params}) do
-    user = Accounts.get_user!(id)
     tenant = RadioappWeb.get_tenant(conn)
+    user = Accounts.get_user_in_tenant!(id, tenant)
     tenant_role = user_params["tenant_role"]
 
     case Accounts.update_user_in_tenant(user, user_params, tenant_role, tenant) do
@@ -55,7 +56,8 @@ defmodule RadioappWeb.UserController do
   end
 
   def delete(conn, %{"id" => id}) do
-    user = Accounts.get_user!(id)
+    tenant = RadioappWeb.get_tenant(conn)
+    user = Accounts.get_user_in_tenant!(id, tenant)
     {:ok, _user} = Accounts.delete_user(user)
 
     conn

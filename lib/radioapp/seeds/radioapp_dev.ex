@@ -27,6 +27,15 @@ defmodule Radioapp.Seeds.RadioappDev do
       hashed_password: Bcrypt.hash_pwd_salt("42Beach424242"),
       roles: %{tenant => "admin"}
     }) 
+
+    OrganizationTenant.create(%{
+      "tenant_name" => Id.admin_tenant(),
+      "first_name" => "Some",
+      "last_name" => "McUser",
+      "organization" => "Access2ID Admin",
+      "telephone" => "123-456-7890",
+      "email" => "admin@access2id.ca"
+    })
     
     # {:ok, _linda_admin} =
     #   Radioapp.Users.create_staff_user(

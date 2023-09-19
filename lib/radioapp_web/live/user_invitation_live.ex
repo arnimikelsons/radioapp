@@ -43,8 +43,10 @@ defmodule RadioappWeb.UserInvitationLive do
 
   def mount(_params, session, socket) do
     tenant = Map.fetch!(session, "subdomain")
+    host = Map.fetch!(session, "host")
     socket =
       assign_defaults(session, socket)
+      |> assign(:host, host)
 
     changeset = Accounts.change_user_invitation(%User{})
     socket = assign(socket, changeset: changeset, trigger_submit: false)
@@ -54,20 +56,44 @@ defmodule RadioappWeb.UserInvitationLive do
 
   def handle_event("save", %{"user" => user_params}, socket) do
     tenant = socket.assigns.tenant
+    host = socket.assigns.host
     tenant_role = user_params["tenant_role"]
     case Accounts.invite_user_for_tenant(user_params, tenant_role, tenant) do
-      {:ok, user} ->
+      {:new_user_created, user} ->
         {:ok, _} =
           Accounts.deliver_user_invitation_instructions(
             user,
+            tenant,
             &url(~p"/users/accept/#{&1}")
           )
 
         changeset = Accounts.change_user_invitation(user)
         {:noreply, assign(socket, trigger_submit: true, changeset: changeset)}
 
+
+      {:user_added_to_tenant, user} ->
+        {:ok, _} = UserNotifier.deliver_update_email_instructions(user, host)
+
+        changeset = Accounts.change_user_invitation(user)
+        {:noreply, assign(socket, trigger_submit: true, changeset: changeset)}
+
+
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, :changeset, changeset)}
+
+
+      # {:ok, user} ->
+      #   {:ok, _} =
+      #     Accounts.deliver_user_invitation_instructions(
+      #       user,
+      #       &url(~p"/users/accept/#{&1}")
+      #     )
+
+      #   changeset = Accounts.change_user_invitation(user)
+      #   {:noreply, assign(socket, trigger_submit: true, changeset: changeset)}
+
+      # {:error, %Ecto.Changeset{} = changeset} ->
+      #   {:noreply, assign(socket, :changeset, changeset)}
     end
   end
 

@@ -60,7 +60,7 @@ defmodule RadioappWeb.UserSettingsLiveTest do
       info = Phoenix.Flash.get(conn.assigns.flash, :info)
       assert info == "Name changed successfully."
 
-      user = Accounts.get_user!(user.id)
+      user = Accounts.get_user_from_tenant!(user.id, @tenant)
 
       assert user.full_name == new_full_name
       assert user.short_name == new_short_name
