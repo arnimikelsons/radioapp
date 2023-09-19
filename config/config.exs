@@ -22,7 +22,8 @@ config :radioapp, RadioappWeb.Endpoint,
   pubsub_server: Radioapp.PubSub,
   live_view: [signing_salt: "2jlv8atB"],
   check_origin: [
-    "//admin.radioapp.ca"
+    "//admin.radioapp.ca",
+    "//coopradio.radioapp.ca"
   ]
 
 # Configures the mailer
