@@ -94,7 +94,7 @@
                
                 <%= if assigns[:current_tenant] do %>
                 <RadioappWeb.PlayingNow.playing_now 
-                  current_tenant={@current_tenant} 
+                  tenant={@current_tenant} 
                 />
                 <% else %>
                   <.live_component module={RadioappWeb.PlayingNowComponent} id="playingnow" content={"Hello World!"} tenant={@tenant} />

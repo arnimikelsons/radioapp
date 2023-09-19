@@ -30,11 +30,11 @@ defmodule Radioapp.Accounts.OrganizationTenant do
     end
   end
   def seed_defaults(attrs, tenant) do
-    
+
     Repo.transaction(fn ->
-      IO.inspect(attrs.full_name, label: "TENANT_ATTRS")
+      # IO.inspect(attrs.full_name, label: "TENANT_ATTRS")
       with {:ok, org} <- Accounts.create_org(attrs),
-          {:ok, _} <- create_admin(tenant), 
+          {:ok, _} <- create_admin(tenant),
 
           {:ok, _} <- create_category(tenant, %{code: "11", name: "News"}),
            {:ok, _} <- create_category(tenant, %{code: "12", name: "Spoken Word / PSAs"}),
@@ -56,7 +56,7 @@ defmodule Radioapp.Accounts.OrganizationTenant do
            {:ok, _} <- create_category(tenant, %{code: "51", name: "Ads"}),
            {:ok, _} <- create_category(tenant, %{code: "52", name: "Sponsor identification"}),
            {:ok, _} <- create_category(tenant, %{code: "53", name: "Promotion with sponsor mention"}),
-           
+
            {:ok, _} <- create_link(tenant, %{icon: "fa-regular fa-window-maximize", type: "Website" }),
            {:ok, _} <- create_link(tenant, %{icon: "fa-brands fa-twitter ", type: "Twitter" }),
            {:ok, _} <- create_link(tenant, %{icon: "fa-brands fa-facebook ", type: "Facebook" }),
@@ -64,7 +64,7 @@ defmodule Radioapp.Accounts.OrganizationTenant do
            {:ok, _} <- create_link(tenant, %{icon: "fa-brands fa-instagram", type: "Instagram" }),
            {:ok, _} <- create_link(tenant, %{icon: "fa-brands fa-tiktok", type: "TikTok" }) do
 
-               
+
           #{:ok, _} <- create_textfield(tenant),
           #{:ok, _} <- create_settings(tenant) do
           #{:ok, _} <- create_worker_user(tenant) do
@@ -77,7 +77,7 @@ defmodule Radioapp.Accounts.OrganizationTenant do
   end
 
   defp create_admin(tenant) do
-    
+
     Radioapp.Accounts.seeds_user(
       %{
         email: "arni+20@northernvillage.com",
@@ -98,7 +98,7 @@ defmodule Radioapp.Accounts.OrganizationTenant do
   defp create_link(tenant, link) do
     Admin.create_link(link, tenant)
   end
-  
+
 
   # defp create_textfield(tenant) do
   #   Giftingapp.Admin.create_textfield(
@@ -131,20 +131,20 @@ defmodule Radioapp.Accounts.OrganizationTenant do
   #       donor_terms_and_conditions: "Yes, I agree to receive emails from the your GiftingApp for marketing purposes, which will include information regarding the GiftingApp, and other charitable opportunities, initiatives and events. I understand that I can withdraw my consent at any time. For more details see our Privacy Policy.",
   #       donor_thankyou: """
   #       # Thank you for signing up to bring hope and joy home for the holidays!
-        
+
   #       Our volunteers will be processing your donor registration and will be in touch with your family or independent youth match by email within 2-5 business days. If you don’t see an email from us, please check your Spam folder just in case (or Promotions folder in Gmail).
-        
+
   #       Any questions, please email us at <email> or call <phone number>
   #       """,
   #       terms_and_conditions: "# Donor terms and conditions",
   #       worker_intro: "# Register to GiftingApp",
   #       worker_thankyou: """
   #       # Thank you for registering
-        
+
   #       We’ve received your registration to refer families to the GiftingApp Program. You should hear from us within a business day to let you know that your Worker account has been activated so that you can begin submitting Family Referrals.
-        
+
   #       Any questions, please email us at <email>
-        
+
   #       GiftingApp Team
   #       """,
   #       worker_intro_email: "We've received your registration to refer families to the Adopt-A-Family Program. You should hear from us within a business day to let you know that your Worker account has been activated so that you can begin submitting Family Referrals. Any questions, please email us at <email> "

@@ -35,11 +35,12 @@ defmodule RadioappWeb.UserLoginLive do
     """
   end
 
-  def mount(_params, session, socket) do
+  def mount(_params, _session, socket) do
 
-    tenant = Map.fetch!(session, "subdomain")
+    # tenant = Map.fetch!(session, "subdomain")
 
     email = live_flash(socket.assigns.flash, :email)
-    {:ok, assign(socket, email: email, tenant: tenant), temporary_assigns: [email: nil]}
+    # {:ok, assign(socket, email: email, tenant: tenant), temporary_assigns: [email: nil]}
+    {:ok, assign(socket, email: email), temporary_assigns: [email: nil]}
   end
 end

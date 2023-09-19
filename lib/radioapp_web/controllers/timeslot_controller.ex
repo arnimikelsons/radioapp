@@ -16,7 +16,7 @@ defmodule RadioappWeb.TimeslotController do
     timeslots_by_day = Station.list_timeslots_by_day(id, tenant)
     day =  String.to_integer(id)
     current_user = conn.assigns.current_user
-    render(conn, :schedule, timeslots_by_day: timeslots_by_day, day: day, current_user: current_user)
+    render(conn, :schedule, timeslots_by_day: timeslots_by_day, day: day, current_user: current_user, tenant: tenant)
   end
 
   def index_by_day(conn, _params) do

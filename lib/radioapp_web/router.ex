@@ -12,7 +12,7 @@ defmodule RadioappWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug :fetch_current_user
-    
+
     plug RadioappWeb.AllowIFramePlug
   end
 
@@ -87,6 +87,8 @@ defmodule RadioappWeb.Router do
 
     delete "/users/log_out", UserSessionController, :delete
 
+    resources "/orgs", OrgController
+
     live_session :current_user,
       on_mount: [{RadioappWeb.UserAuth, :mount_current_user}] do
       live "/users/confirm/:token", UserConfirmationLive, :edit
@@ -112,7 +114,7 @@ defmodule RadioappWeb.Router do
     post "/programs", ProgramController, :create
     patch "/programs/:id", ProgramController, :update
     put "/programs/:id", ProgramController, :update
-    
+
 
     get "/timeslots", TimeslotController, :index
 
@@ -128,7 +130,7 @@ defmodule RadioappWeb.Router do
 
   scope "/", RadioappWeb do
     pipe_through [:browser, :require_authenticated_user, :user, :tenant_in_session]
-    
+
     live "/programs/:program_id/logs/", LogLive.Index, :index
     live "/programs/:program_id/logs/new", LogLive.Index, :new
     live "/programs/:program_id/logs/:id/edit", LogLive.Index, :edit
@@ -147,9 +149,9 @@ defmodule RadioappWeb.Router do
     get "/admin", PageController, :admin
   end
 
-  
+
   scope "/", RadioappWeb do
-    pipe_through [:browser, :require_authenticated_user, :admin, :tenant_in_session] 
+    pipe_through [:browser, :require_authenticated_user, :admin, :tenant_in_session]
       live "/admin/links", LinkLive.Index, :index
       live "/admin/links/new", LinkLive.Index, :new
       live "/admin/links/:id/edit", LinkLive.Index, :edit
@@ -160,7 +162,7 @@ defmodule RadioappWeb.Router do
       live "/admin/categories", CategoryLive.Index, :index
       live "/admin/categories/new", CategoryLive.Index, :new
       live "/admin/categories/:id/edit", CategoryLive.Index, :edit
-  
+
       live "/admin/categories/:id", CategoryLive.Show, :show
       live "/admin/categories/:id/show/edit", CategoryLive.Show, :edit
 
@@ -186,16 +188,15 @@ defmodule RadioappWeb.Router do
     put "/programs/:program_id/timeslots/:id", TimeslotController, :update
     delete "/programs/:program_id/timeslots/:id", TimeslotController, :delete
 
-    resources "/orgs", OrgController
   end
 
   scope "/", RadioappWeb do
     pipe_through [:browser, :tenant_in_session]
     get "/feed", FeedController, :index
-    
+
     # Route for pop-out player
     live "/player", PlayerLive, :pop, container: {:main, class: "px-20 sm:px-6 lg:px-8 popup-container"}
-  
+
   end
 
   scope "/", RadioappWeb do

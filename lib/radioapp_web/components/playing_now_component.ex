@@ -34,6 +34,14 @@ defmodule RadioappWeb.PlayingNowComponent do
     showName = Station.get_program_from_time(weekday, time_now, tenant)
     startTime = Station.get_program_now_start_time(weekday, time_now, tenant)
 
+    IO.inspect(showName, label: "SHOWNAME IN PLAYING_NOW_COMPONENT")
+    showName =
+    if showName == [] do
+      "No Show Available"
+    else
+      showName
+    end
+
     assign(socket,
       show_name: showName,
       show_start: startTime

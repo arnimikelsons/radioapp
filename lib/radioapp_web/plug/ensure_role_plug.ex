@@ -11,7 +11,7 @@ defmodule RadioappWeb.EnsureRolePlug do
   import Plug.Conn
 
   alias Radioapp.Accounts
-  alias Radioapp.Accounts.User
+  # alias Radioapp.Accounts.User
   alias Phoenix.Controller
   alias Plug.Conn
 
