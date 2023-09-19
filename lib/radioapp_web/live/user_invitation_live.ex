@@ -2,7 +2,7 @@ defmodule RadioappWeb.UserInvitationLive do
   use RadioappWeb, :live_view
 
   alias Radioapp.Accounts
-  alias Radioapp.Accounts.User
+  alias Radioapp.Accounts.{User, UserNotifier}
   import RadioappWeb.LiveHelpers
 
   def render(assigns) do
@@ -42,11 +42,13 @@ defmodule RadioappWeb.UserInvitationLive do
   end
 
   def mount(_params, session, socket) do
+    IO.inspect(session, label: "SESSION")
     tenant = Map.fetch!(session, "subdomain")
     host = Map.fetch!(session, "host")
     socket =
       assign_defaults(session, socket)
       |> assign(:host, host)
+
 
     changeset = Accounts.change_user_invitation(%User{})
     socket = assign(socket, changeset: changeset, trigger_submit: false)
@@ -72,8 +74,17 @@ defmodule RadioappWeb.UserInvitationLive do
 
 
       {:user_added_to_tenant, user} ->
-        {:ok, _} = UserNotifier.deliver_update_email_instructions(user, host)
-
+        if user.confirmed_at do
+          url = "https://#{host}"
+          {:ok, _} = UserNotifier.deliver_invited_to_tenant_email(user, url)
+        else 
+          Accounts.deliver_user_invitation_instructions(
+            user,
+            tenant,
+            &url(~p"/users/accept/#{&1}")
+          )
+        end
+        
         changeset = Accounts.change_user_invitation(user)
         {:noreply, assign(socket, trigger_submit: true, changeset: changeset)}
 

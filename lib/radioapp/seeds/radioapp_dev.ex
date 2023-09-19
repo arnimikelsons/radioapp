@@ -1,41 +1,36 @@
 defmodule Radioapp.Seeds.RadioappDev do
 
   alias Radioapp.Accounts
+  alias Radioapp.Accounts.OrganizationTenant
 
   # NOTE: Add email_confirmed_at to user changeset to seed working logins; remove after running
   def run(tenant) do
     Radioapp.Seeds.create_tenant(tenant)
 
-    {:ok, _alice_admin} = Accounts.register_user(%{
-      full_name: "Alice McExampleson",
-      short_name: "Alice",
-      confirmed_at: ~N[2000-01-01 23:00:07],
-      email: "alice@example.com",
-      role: "admin",
-      password: "super-duper-secret",
-      hashed_password: Bcrypt.hash_pwd_salt("super-duper-secret"),
-      roles: %{tenant => "admin"}
-    }) 
-
-    {:ok, _arni_admin} = Accounts.register_user(%{
+    {:ok, _arni_admin} = Accounts.seeds_user(%{
       full_name: "Arni Mikelsons",
       short_name: "Arni",
-      role: "admin",
+      roles: %{tenant => "admin"},
       email: "arni@northernvillage.com",
-      confirmed_at: ~N[2000-01-01 23:00:07],
-      password: "42Beach424242",
-      hashed_password: Bcrypt.hash_pwd_salt("42Beach424242"),
+      confirmed_at: DateTime.utc_now(),
+      password: "super-secret",
+      hashed_password: Bcrypt.hash_pwd_salt("super-secret"),
+    }) 
+
+    {:ok, _alice_admin} = Accounts.seeds_user(%{
+      full_name: "Alice McExampleson",
+      short_name: "Alice",
+      confirmed_at: DateTime.utc_now(),
+      email: "alice@example.com",
+      roles: %{tenant => "admin"},
+      password: "super-duper-secret",
+      hashed_password: Bcrypt.hash_pwd_salt("super-secret"),
       roles: %{tenant => "admin"}
     }) 
 
-    OrganizationTenant.create(%{
-      "tenant_name" => Id.admin_tenant(),
-      "first_name" => "Some",
-      "last_name" => "McUser",
-      "organization" => "Access2ID Admin",
-      "telephone" => "123-456-7890",
-      "email" => "admin@access2id.ca"
-    })
+
+
+
     
     # {:ok, _linda_admin} =
     #   Radioapp.Users.create_staff_user(

@@ -134,7 +134,8 @@ defmodule Radioapp.Accounts do
               Repo.transaction(fn ->
                 # find the existing user by the email given
                 email = Ecto.Changeset.fetch_field!(changeset, :email)
-                user = get_user_by_email(email: email)
+                IO.inspect(email, label: "EM")
+                user = get_user_by_email(email)
                 IO.inspect(user, label: "USER")
                 # add the new tenant and role to the existing roles
                 roles = user.roles |> Map.put(tenant, role)
@@ -489,7 +490,8 @@ defmodule Radioapp.Accounts do
     |> case do
       {:ok, %{user: user}} -> {:ok, user}
       {:error, :user, changeset, _} -> {:error, changeset}
-    end
+      end
+    
   end
 
   @doc """
