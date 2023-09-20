@@ -73,7 +73,7 @@ defmodule RadioappWeb.Router do
 
 
   scope "/", RadioappWeb do
-    pipe_through [:browser, :require_authenticated_user, :user]
+    pipe_through [:browser, :require_authenticated_user, :user, :tenant_in_session]
 
     live_session :require_authenticated_user,
       on_mount: [{RadioappWeb.UserAuth, :ensure_authenticated}] do
