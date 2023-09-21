@@ -96,9 +96,10 @@
                 <RadioappWeb.PlayingNow.playing_now 
                   tenant={@current_tenant} 
                 />
-                <% end %>
-                <%= if assigns[:tenant] do %>
-                  <.live_component module={RadioappWeb.PlayingNowComponent} id="playingnow" content={"Hello World!"} tenant={@tenant} />
+                <% else %>
+                  <%= if assigns[:tenant] do %>
+                    <.live_component module={RadioappWeb.PlayingNowComponent} id="playingnow" content={"Hello World!"} tenant={@tenant} />
+                  <% end %>
                 <% end %>
               </p>
               <!-- play/pause -->
