@@ -42,7 +42,6 @@ defmodule RadioappWeb.UserInvitationLive do
   end
 
   def mount(_params, session, socket) do
-    IO.inspect(session, label: "SESSION")
     tenant = Map.fetch!(session, "subdomain")
     host = Map.fetch!(session, "host")
     socket =
@@ -59,6 +58,7 @@ defmodule RadioappWeb.UserInvitationLive do
   def handle_event("save", %{"user" => user_params}, socket) do
     tenant = socket.assigns.tenant
     host = socket.assigns.host
+    host = String.replace(host, ".fly.dev", ".ca")
     tenant_role = user_params["tenant_role"]
     case Accounts.invite_user_for_tenant(user_params, tenant_role, tenant) do
       {:new_user_created, user} ->
