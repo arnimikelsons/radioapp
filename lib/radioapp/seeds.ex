@@ -5,7 +5,7 @@ defmodule Radioapp.Seeds do
   # end
 
   def dev(_tenant) do
-    Radioapp.Seeds.RadioappDev.run("demo")
+    Radioapp.Seeds.RadioappDev.run("admin")
   end
 
   # def production(tenant) do

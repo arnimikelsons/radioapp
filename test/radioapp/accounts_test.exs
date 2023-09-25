@@ -7,6 +7,7 @@ defmodule Radioapp.AccountsTest do
   alias Radioapp.Accounts.{User, UserToken, Org}
 
   @tenant "sample"
+  @another_tenant "not_sample"
 
   describe "get_user_by_email/1" do
     test "does not return the user if the email does not exist" do
@@ -37,16 +38,32 @@ defmodule Radioapp.AccountsTest do
     end
   end
 
-  describe "get_user!/1" do
+  # describe "get_user!/1" do
+  #   test "raises if id is invalid" do
+  #     assert_raise Ecto.NoResultsError, fn ->
+  #       Accounts.get_user!(-1)
+  #     end
+  #   end
+
+  #   test "returns the user with the given id" do
+  #     %{id: id} = user = user_fixture()
+  #     assert %User{id: ^id} = Accounts.get_user!(user.id)
+  #   end
+  # end
+
+  describe "get_user_from_tenant/2" do
     test "raises if id is invalid" do
-      assert_raise Ecto.NoResultsError, fn ->
-        Accounts.get_user!(-1)
-      end
+      refute Accounts.get_user_in_tenant!(-1, @tenant)
     end
 
     test "returns the user with the given id" do
-      %{id: id} = user = user_fixture()
-      assert %User{id: ^id} = Accounts.get_user!(user.id)
+      %{id: id} = user = Factory.insert(:user, roles: %{@tenant => "admin"})
+      assert %User{id: ^id} = Accounts.get_user_in_tenant!(user.id, @tenant)
+    end
+
+    test "does not return the user with the given id in different tenant" do
+      %{id: id} = user = Factory.insert(:user, roles: %{@another_tenant => "admin"})
+      refute Accounts.get_user_in_tenant!(id, @tenant)
     end
   end
 

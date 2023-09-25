@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for radioapp on 2023-07-27T15:14:07-04:00
+# fly.toml app configuration file generated for radioapp on 2023-09-19T14:29:51-04:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -8,11 +8,13 @@ primary_region = "yyz"
 kill_signal = "SIGTERM"
 swap_size_mb = 512
 
+[build]
+
 [deploy]
   release_command = "/app/bin/migrate"
 
 [env]
-  PHX_HOST = "radioapp.fly.dev"
+  PHX_HOST = "radioapp.ca"
   PORT = "8080"
 
 [http_service]

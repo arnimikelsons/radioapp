@@ -217,11 +217,13 @@ defmodule RadioappWeb.UserAuth do
   def require_authenticated_user(conn, _opts) do
     if conn.assigns[:current_user] do
       user = conn.assigns[:current_user]
+      tenant = conn.assigns[:current_tenant]
       if user.confirmed_at do
         conn
       else 
         Accounts.deliver_user_invitation_instructions(
             user,
+            tenant,
             &url(~p"/users/accept/#{&1}")
           )
         conn

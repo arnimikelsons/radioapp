@@ -99,8 +99,6 @@ defmodule RadioappWeb.Router do
 
   scope "/", RadioappWeb do
     pipe_through [:browser, :require_authenticated_user, :user]
-    live "/users/invite", UserInvitationLive, :new
-
 
     get "/users", UserController, :index
     get "/users/:id/edit", UserController, :edit
@@ -128,6 +126,8 @@ defmodule RadioappWeb.Router do
 
   scope "/", RadioappWeb do
     pipe_through [:browser, :require_authenticated_user, :user, :tenant_in_session]
+  
+    live "/users/invite", UserInvitationLive, :new
     
     live "/programs/:program_id/logs/", LogLive.Index, :index
     live "/programs/:program_id/logs/new", LogLive.Index, :new

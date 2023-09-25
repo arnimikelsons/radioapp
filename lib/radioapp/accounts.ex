@@ -57,7 +57,13 @@ defmodule Radioapp.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_user!(id), do: Repo.get!(User, id)
+  #def get_user!(id), do: Repo.get!(User, id)
+
+  def get_user_in_tenant!(user_id, tenant) do
+    User
+    |> in_tenant?(tenant)
+    |> Repo.get(user_id)
+  end
 
   ## User registration
 
@@ -109,11 +115,51 @@ defmodule Radioapp.Accounts do
   # end
 
   def invite_user_for_tenant(attrs, role, tenant) do
-    %User{}
+    changeset = %User{}
     |> User.invitation_changeset_for_tenant(attrs)
     |> Ecto.Changeset.change(roles: %{tenant => role})
-    |> Repo.insert()
+
+    create_or_add_user_role_for_tenant(changeset, role, tenant)
   end
+
+  def create_or_add_user_role_for_tenant(changeset, role, tenant) do
+    case Repo.insert(changeset) do
+      {:ok, user} ->
+        {:new_user_created, user}
+
+      {:error, %{errors: errors} = reason} ->
+        case Keyword.get(errors, :email) do
+          {"has already been taken", _} ->
+            result =
+              Repo.transaction(fn ->
+                # find the existing user by the email given
+                email = Ecto.Changeset.fetch_field!(changeset, :email)
+                IO.inspect(email, label: "EM")
+                user = get_user_by_email(email)
+                IO.inspect(user, label: "USER")
+                # add the new tenant and role to the existing roles
+                roles = user.roles |> Map.put(tenant, role)
+
+                # update only the user's roles
+                user
+                |> Ecto.Changeset.change(%{roles: roles})
+                |> Repo.update!()
+              end)
+
+            case result do
+              {:ok, user} -> {:user_added_to_tenant, user}
+              {:error, reason} -> {:error, reason}
+            end
+
+          _ ->
+            {:error, reason}
+        end
+
+      {:error, reason} ->
+        {:error, reason}
+    end
+  end
+
 
   ## Settings
 
@@ -222,10 +268,10 @@ defmodule Radioapp.Accounts do
   """
   def deliver_user_update_email_instructions(%User{} = user, current_email, update_email_url_fun)
       when is_function(update_email_url_fun, 1) do
-    {encoded_token, user_token} = UserToken.build_email_token(user, "change:#{current_email}")
+        {encoded_token, user_token} = UserToken.build_email_token(user, "change:#{current_email}")
 
-    Repo.insert!(user_token)
-    UserNotifier.deliver_update_email_instructions(user, update_email_url_fun.(encoded_token))
+        Repo.insert!(user_token)
+        UserNotifier.deliver_update_email_instructions(user, update_email_url_fun.(encoded_token))
   end
 
   @doc """
@@ -303,7 +349,7 @@ defmodule Radioapp.Accounts do
 
   ## Examples
 
-      iex> deliver_user_confirmation_instructions(user, &url(~p"/users/confirm/#{&1}"))
+      iex>  (user, &url(~p"/users/confirm/#{&1}"))
       {:ok, %{to: ..., body: ...}}
 
       iex> deliver_user_confirmation_instructions(confirmed_user, &url(~p"/users/confirm/#{&1}"))
@@ -311,14 +357,14 @@ defmodule Radioapp.Accounts do
 
   """
   def deliver_user_confirmation_instructions(%User{} = user, confirmation_url_fun)
-      when is_function(confirmation_url_fun, 1) do
-    if user.confirmed_at do
-      {:error, :already_confirmed}
-    else
-      {encoded_token, user_token} = UserToken.build_email_token(user, "confirm")
-      Repo.insert!(user_token)
-      UserNotifier.deliver_confirmation_instructions(user, confirmation_url_fun.(encoded_token))
-    end
+  when is_function(confirmation_url_fun, 1) do
+      if user.confirmed_at do
+        {:error, :already_confirmed}
+      else
+        {encoded_token, user_token} = UserToken.build_email_token(user, "confirm")
+        Repo.insert!(user_token)
+        UserNotifier.deliver_confirmation_instructions(user, confirmation_url_fun.(encoded_token))
+      end
   end
 
   @doc """
@@ -364,14 +410,14 @@ defmodule Radioapp.Accounts do
     |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, ["confirm"]))
   end
 
-  def deliver_user_invitation_instructions(%User{} = user, invitation_url_fun)
+  def deliver_user_invitation_instructions(%User{} = user, tenant, invitation_url_fun)
   when is_function(invitation_url_fun, 1) do
     if user.confirmed_at do
       {:error, :already_confirmed}
     else
       {encoded_token, user_token} = UserToken.build_email_token(user, "confirm")
       Repo.insert!(user_token)
-      UserNotifier.deliver_invitation_instructions(user, invitation_url_fun.(encoded_token))
+      UserNotifier.deliver_invitation_instructions(user, tenant, invitation_url_fun.(encoded_token))
     end
   end
 
@@ -444,7 +490,8 @@ defmodule Radioapp.Accounts do
     |> case do
       {:ok, %{user: user}} -> {:ok, user}
       {:error, :user, changeset, _} -> {:error, changeset}
-    end
+      end
+    
   end
 
   @doc """
@@ -453,8 +500,10 @@ defmodule Radioapp.Accounts do
       iex> list_users()
       [%User{}, ...]
   """
-  def list_users do
+  def list_users(tenant) do
+
     from(p in User, order_by: [asc: :email])
+    |> in_tenant?(tenant)
     |> Repo.all()
   end
 
@@ -583,4 +632,10 @@ defmodule Radioapp.Accounts do
   def change_org(%Org{} = org, attrs \\ %{}) do
     Org.changeset(org, attrs)
   end
+
+  def in_tenant?(user_query, tenant) do
+    user_query
+    |> where([u], fragment("roles->>? is not null", ^tenant))
+  end
+
 end
