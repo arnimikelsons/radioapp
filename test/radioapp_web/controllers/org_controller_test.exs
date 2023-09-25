@@ -7,7 +7,7 @@ defmodule RadioappWeb.OrgControllerTest do
 
   @create_attrs %{address1: "some address1", address2: "some address2", city: "some city", country: "some country", email: "some email", full_name: "some full_name", organization: "some organization", postal_code: "some postal_code", province: "some province", short_name: "some short_name", telephone: "some telephone", tenant_name: "some tenant_name"}
   @update_attrs %{address1: "some updated address1", address2: "some updated address2", city: "some updated city", country: "some updated country", email: "some updated email", full_name: "some updated full_name", organization: "some updated organization", postal_code: "some updated postal_code", province: "some updated province", short_name: "some updated short_name", telephone: "some updated telephone", tenant_name: "some updated tenant_name"}
-  @invalid_attrs %{address1: nil, address2: nil, city: nil, country: nil, email: nil, full_name: nil, organization: nil, postal_code: nil, province: nil, short_name: nil, telephone: nil, tenant_name: nil}
+  @invalid_attrs %{address1: nil, address2: nil, city: nil, country: nil, email: nil, full_name: nil, organization: nil, postal_code: nil, province: nil, short_name: nil, telephone: nil, tenant_name: ""}
 
   describe "Org functions for Admin" do
     setup %{conn: conn} do
@@ -59,7 +59,7 @@ defmodule RadioappWeb.OrgControllerTest do
 
     test "redirects when data is valid", %{conn: conn} do
       org = Factory.insert(:org)
-      
+
       conn = put(conn, ~p"/orgs/#{org}", org: @update_attrs)
       assert redirected_to(conn) == ~p"/orgs/#{org}"
 

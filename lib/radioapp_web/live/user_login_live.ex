@@ -11,7 +11,7 @@ defmodule RadioappWeb.UserLoginLive do
       <.simple_form
         :let={f}
         id="login_form"
-        for={%{}} 
+        for={%{}}
         as={:user}
         action={~p"/users/log_in"}
         phx-update="ignore"
@@ -36,7 +36,11 @@ defmodule RadioappWeb.UserLoginLive do
   end
 
   def mount(_params, _session, socket) do
+
+    # tenant = Map.fetch!(session, "subdomain")
+
     email = live_flash(socket.assigns.flash, :email)
+    # {:ok, assign(socket, email: email, tenant: tenant), temporary_assigns: [email: nil]}
     {:ok, assign(socket, email: email), temporary_assigns: [email: nil]}
   end
 end

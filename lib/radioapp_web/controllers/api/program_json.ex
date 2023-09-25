@@ -12,13 +12,13 @@ defmodule RadioappWeb.Api.ProgramApiJSON do
   @doc """
   Renders the current program.
   """
-  def show(_program) do
-
+  def show(%{conn: conn}) do
+    tenant = conn.assigns.tenant
     now = DateTime.to_naive(Timex.now("America/Toronto"))
     time_now = DateTime.to_time(Timex.now("America/Toronto"))
     weekday = Timex.weekday(now)
 
-    show_name = Station.get_program_from_time(weekday, time_now)
+    show_name = Station.get_program_from_time(weekday, time_now, tenant)
     %{data: %{
       current: show_name
     }}

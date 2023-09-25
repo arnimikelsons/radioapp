@@ -91,7 +91,16 @@
             </div>
               <!-- Show Name and info -->
               <p class="text-xl font-medium text-black pop-up-title" id="show-name">
-                <#RadioappWeb.PlayingNow.playing_now(tenant) />
+               
+                <%= if assigns[:current_tenant] do %>
+                <RadioappWeb.PlayingNow.playing_now 
+                  tenant={@current_tenant} 
+                />
+                <% else %>
+                  <%= if assigns[:tenant] do %>
+                    <.live_component module={RadioappWeb.PlayingNowComponent} id="playingnow" content={"Hello World!"} tenant={@tenant} />
+                  <% end %>
+                <% end %>
               </p>
               <!-- play/pause -->
               <button
