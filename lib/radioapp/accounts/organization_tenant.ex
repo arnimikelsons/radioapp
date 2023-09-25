@@ -7,7 +7,6 @@ defmodule Radioapp.Accounts.OrganizationTenant do
   alias Radioapp.Repo
 
   def create(%{"tenant_name" => tenant} = attrs) do
-    IO.inspect(attrs, label: "TENANT ATTRS")
     result =
       Triplex.create_schema(tenant, Repo, fn tenant, repo ->
         {:ok, _} = Triplex.migrate(tenant, repo)
@@ -32,10 +31,8 @@ defmodule Radioapp.Accounts.OrganizationTenant do
   def seed_defaults(attrs, tenant) do
 
     Repo.transaction(fn ->
-      # IO.inspect(attrs.full_name, label: "TENANT_ATTRS")
       with {:ok, org} <- Accounts.create_org(attrs),
-          {:ok, _} <- create_admin(tenant),
-
+          {:ok, _} <- create_admin(tenant), 
           {:ok, _} <- create_category(tenant, %{code: "11", name: "News"}),
            {:ok, _} <- create_category(tenant, %{code: "12", name: "Spoken Word / PSAs"}),
            {:ok, _} <- create_category(tenant, %{code: "21", name: "Pop/Rock/RPM/Beatbox/Loud"}),
@@ -77,10 +74,9 @@ defmodule Radioapp.Accounts.OrganizationTenant do
   end
 
   defp create_admin(tenant) do
-
     Radioapp.Accounts.seeds_user(
       %{
-        email: "arni+20@northernvillage.com",
+        email: "arni+#{tenant}@northernvillage.com",
         password: "super-secret",
         hashed_password: Bcrypt.hash_pwd_salt("super-secret"),
         roles: %{tenant => "admin"},

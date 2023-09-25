@@ -144,25 +144,24 @@ defmodule RadioappWeb.LogLiveTest do
     end
   end
 
+  # No delete log
+  # describe "Delete log with admin" do
+  #   setup %{conn: conn} do
+  #     user = Factory.insert(:user, roles: %{@tenant => "admin"})
+  #     conn = log_in_user(conn, user)
+  #     %{conn: conn, user: user}
+  #   end
 
-  describe "Delete log with admin" do
-    setup %{conn: conn} do
-      user = Factory.insert(:user, roles: %{@tenant => "admin"})
-      conn = log_in_user(conn, user)
-      %{conn: conn, user: user}
-    end
+  #   test "deletes log in listing", %{conn: conn} do
+  #     program = Factory.insert(:program, [], prefix: @prefix)
 
-    # test "deletes log in listing", %{conn: conn} do
-    #   program = Factory.insert(:program, [], prefix: @prefix)
+  #     log = Factory.insert(:log, [program_id: program.id], prefix: @prefix)
 
-    #   log = Factory.insert(:log, [program_id: program.id], prefix: @prefix)
-
-    #   {:ok, index_live, _html} = live(conn, ~p"/programs/#{program}/logs")
-    #   assert index_live |> element("#logs-#{log.id} a", "Delete") |> render_click()
-    #   refute has_element?(index_live, "#log-#{log.id}")
-    # end
-  end
-
+  #     {:ok, index_live, _html} = live(conn, ~p"/programs/#{program}/logs")
+  #     assert index_live |> element("#logs-#{log.id} a", "Delete") |> render_click()
+  #     refute has_element?(index_live, "#log-#{log.id}")
+  #   end
+  # end
 
   describe "Show" do
     setup %{conn: conn} do

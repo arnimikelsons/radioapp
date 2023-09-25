@@ -8,7 +8,9 @@
 import Config
 
 config :radioapp,
-  ecto_repos: [Radioapp.Repo]
+  ecto_repos: [Radioapp.Repo],
+  admin_tenant: "admin_tenant",
+  super_admin_role: "super_admin"
 
 # Configures the endpoint
 config :radioapp, RadioappWeb.Endpoint,
@@ -18,7 +20,11 @@ config :radioapp, RadioappWeb.Endpoint,
     layout: false
   ],
   pubsub_server: Radioapp.PubSub,
-  live_view: [signing_salt: "2jlv8atB"]
+  live_view: [signing_salt: "2jlv8atB"],
+  check_origin: [
+    "//admin.radioapp.ca",
+    "//coopradio.radioapp.ca"
+  ]
 
 # Configures the mailer
 #
@@ -29,11 +35,10 @@ config :radioapp, RadioappWeb.Endpoint,
 # at the `config/runtime.exs`.
 config :radioapp, Radioapp.Mailer, adapter: Swoosh.Adapters.Local
 
-
 # in case want to test on dev
-#config :radioapp, Radioapp.Mailer,
-#adapter: Swoosh.Adapters.Sendgrid,
-#api_key: {:system, "SENDGRID_API_KEY"}
+# config :radioapp, Radioapp.Mailer,
+# adapter: Swoosh.Adapters.Sendgrid,
+# api_key: {:system, "SENDGRID_API_KEY"}
 
 # Configure esbuild (the version is required)
 config :esbuild,
@@ -77,7 +82,7 @@ config :ex_aws,
   access_key_id: {:system, "AWS_ACCESS_KEY_ID"},
   secret_access_key_id: {:system, "AWS_SECRET_ACCESS_KEY_ID"}
 
-config :triplex, 
+config :triplex,
   repo: Radioapp.Repo,
   tenant_prefix: "org_"
 
@@ -87,7 +92,6 @@ config :appsignal, :config,
   push_api_key: System.get_env("APPSIGNAL_PUSH_API_KEY"),
   env: Mix.env(),
   active: false
-
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

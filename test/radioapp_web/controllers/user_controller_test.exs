@@ -3,17 +3,22 @@ defmodule RadioappWeb.UserControllerTest do
 
   alias Radioapp.Factory
   @tenant "sample"
+  @another_tenant "not_sample"
 
   describe "manage users" do
     setup %{conn: conn} do
       user = Factory.insert(:user, roles: %{@tenant => "admin"}, full_name: "Some Full Name")
+      _user2 = Factory.insert(:user, roles: %{@another_tenant => "admin"}, full_name: "Different Full Name")
+
       conn = log_in_user(conn, user)
       %{conn: conn, user: user}
     end
 
     test "lists all users", %{conn: conn} do
+      
       conn = get(conn, ~p"/users")
-      assert html_response(conn, 200) =~ "Account Users"
+      assert html_response(conn, 200) =~ "Some Full Name"
+      refute html_response(conn, 200) =~ "Different Full Name"
     end
 
     test "renders form for editing chosen user", %{conn: conn, user: user} do
@@ -28,6 +33,7 @@ defmodule RadioappWeb.UserControllerTest do
       assert redirected_to(conn) == ~p"/users"
       assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "User updated successfully."
       conn = get(conn, ~p"/users/")
+      IO.inspect(target_user, label: "USER")
       assert html_response(conn, 200) =~ "Some Updated Full Name"
     end
 

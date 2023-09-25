@@ -77,7 +77,26 @@ defmodule Radioapp.Accounts.UserNotifier do
     ==============================
     """)
   end
-  def deliver_invitation_instructions(user, url) do
+  def deliver_invitation_instructions(user, tenant, url) do
+    url = String.replace(url, "://", "://#{tenant}.")
+    deliver(user.email, "Invitation to Radio App", """
+
+    ==============================
+
+    Hi #{user.email},
+
+    You are invited to join the CFRC online App to manage your radio program. Click on the following link to join:
+
+    #{url}
+
+    Please contact <a href="mailto:radioapp@northernvillage.net">radioapp@northernvillage.net</a> if you have any questions.
+
+    ==============================
+    """)
+  end
+
+  def deliver_invited_to_tenant_email(user, url) do
+
     deliver(user.email, "Invitation to Radio App", """
 
     ==============================

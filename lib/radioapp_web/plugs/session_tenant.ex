@@ -11,5 +11,7 @@ defmodule RadioappWeb.Plugs.SessionTenant do
   def call(conn, _opts) do
     conn
     |> put_session(:subdomain, conn.assigns.current_tenant)
+    |> put_session(:host, conn.assigns.host)
+
   end
 end
