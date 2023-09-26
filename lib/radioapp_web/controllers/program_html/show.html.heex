@@ -15,7 +15,6 @@
       <%= if @program.timeslots == [] do %>
         <p>No timeslots defined</p>
       <% end %>
-      <p>User Role <%= @user_role %></p>
       
       <%= for timeslot <- @timeslots do %>
         <%= #Link only when logged in %>
