@@ -6,6 +6,7 @@
   <div class="flex">
     <div class="w-full">
       <div class="show-description p-2 px-4">
+      
         <h3 class="pt-3"><strong>Show Description</strong></h3>
         <%= raw(Earmark.as_html!(@program.description)) %>
       </div>
@@ -14,6 +15,8 @@
       <%= if @program.timeslots == [] do %>
         <p>No timeslots defined</p>
       <% end %>
+      <p>User Role <%= @user_role %></p>
+      
       <%= for timeslot <- @timeslots do %>
         <%= #Link only when logged in %>
         <p><%= Timex.day_name(timeslot.day) %>, <%= timeslot.starttimereadable %> for <%= timeslot.runtime %> minutes.

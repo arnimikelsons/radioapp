@@ -49,7 +49,8 @@ defmodule RadioappWeb.ProgramController do
         %Image{}
         |> Image.changeset(%{})
     end
-    user_role = conn.assigns.current_user.role
+    user = conn.assigns.current_user
+    user_role = Map.get(user.roles, tenant)
 
     render(conn, :show, timeslots: timeslots, program: program, image: image, user_role: user_role)
   end

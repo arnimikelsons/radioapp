@@ -57,7 +57,7 @@ defmodule Radioapp.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  #def get_user!(id), do: Repo.get!(User, id)
+  def get_user!(id), do: Repo.get!(User, id)
 
   def get_user_in_tenant!(user_id, tenant) do
     User
@@ -134,9 +134,7 @@ defmodule Radioapp.Accounts do
               Repo.transaction(fn ->
                 # find the existing user by the email given
                 email = Ecto.Changeset.fetch_field!(changeset, :email)
-                IO.inspect(email, label: "EM")
                 user = get_user_by_email(email)
-                IO.inspect(user, label: "USER")
                 # add the new tenant and role to the existing roles
                 roles = user.roles |> Map.put(tenant, role)
 

@@ -6,7 +6,7 @@ defmodule Radioapp.Seeds.RadioappDev do
   # NOTE: Add email_confirmed_at to user changeset to seed working logins; remove after running
   def run(tenant) do
     Radioapp.Seeds.create_tenant(tenant)
-
+IO.inspect(tenant, label: "TENANT")
     {:ok, _arni_admin} = Accounts.seeds_user(%{
       full_name: "Arni Mikelsons",
       short_name: "Arni",
@@ -25,7 +25,6 @@ defmodule Radioapp.Seeds.RadioappDev do
       roles: %{tenant => "admin"},
       password: "super-duper-secret",
       hashed_password: Bcrypt.hash_pwd_salt("super-secret"),
-      roles: %{tenant => "admin"}
     }) 
 
 

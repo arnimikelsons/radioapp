@@ -106,7 +106,7 @@ defmodule Radioapp.AccountsTest do
     test "registers users with a hashed password" do
       email = unique_user_email()
       password = "ABCD928374982696" #set in user_invitation_live
-      {:ok, user} = Accounts.invite_user_for_tenant(valid_user_attributes(email: email, password: password), "user", @tenant)
+      {:new_user_created, user} = Accounts.invite_user_for_tenant(valid_user_attributes(email: email, password: password), "user", @tenant)
       assert user.email == email
       assert is_binary(user.hashed_password)
       assert is_nil(user.confirmed_at)
