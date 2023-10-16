@@ -4,8 +4,11 @@ defmodule RadioappWeb.UserSessionControllerTest do
   import Radioapp.AccountsFixtures
   alias Radioapp.Factory
 
+  @tenant "sample"
+  @another_tenant "not_sample"
+
   setup do
-    %{user: Factory.insert(:user)}
+    %{user: Factory.insert(:user, roles: %{@tenant => "admin"})}
   end
 
   describe "POST /users/log_in" do
@@ -87,6 +90,19 @@ defmodule RadioappWeb.UserSessionControllerTest do
       conn =
         post(conn, ~p"/users/log_in", %{
           "user" => %{"email" => "invalid@email.com", "password" => "invalid_password"}
+        })
+
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) == "Invalid email or password"
+      assert redirected_to(conn) == ~p"/users/log_in"
+    end
+  end
+
+  describe "Don't allow login if not user in tenant" do
+    test "no login to wrong tenant", %{conn: conn} do
+      user = Factory.insert(:user, roles: %{@another_tenant => "admin"})
+      conn =
+        post(conn, ~p"/users/log_in", %{
+          "user" => %{"email" => user.email, "password" => valid_user_password()}
         })
 
       assert Phoenix.Flash.get(conn.assigns.flash, :error) == "Invalid email or password"
