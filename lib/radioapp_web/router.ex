@@ -62,7 +62,7 @@ defmodule RadioappWeb.Router do
 
     live_session :redirect_if_user_is_authenticated,
       on_mount: [{RadioappWeb.UserAuth, :redirect_if_user_is_authenticated}] do
-      live "/users/register", UserRegistrationLive, :new
+      #live "/users/register", UserRegistrationLive, :new
       live "/users/log_in", UserLoginLive, :new
       live "/users/reset_password", UserForgotPasswordLive, :new
       live "/users/reset_password/:token", UserResetPasswordLive, :edit

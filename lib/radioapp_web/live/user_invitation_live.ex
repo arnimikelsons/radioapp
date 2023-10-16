@@ -87,7 +87,12 @@ defmodule RadioappWeb.UserInvitationLive do
         
         changeset = Accounts.change_user_invitation(user)
         {:noreply, assign(socket, trigger_submit: true, changeset: changeset)}
-
+      
+      {:error, "User exists in tenant"} ->
+        {:noreply,
+        socket
+        |> put_flash(:error, "User exists in tenant.")
+        |> redirect(to: ~p"/users")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, :changeset, changeset)}
