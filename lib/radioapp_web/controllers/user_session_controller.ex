@@ -23,16 +23,22 @@ defmodule RadioappWeb.UserSessionController do
     tenant = RadioappWeb.get_tenant(conn)
   
     if user = Accounts.get_user_by_email_and_password(email, password) do
-      if Accounts.get_user_in_tenant!(user.id, tenant) do
+      if Accounts.get_user_in_tenant!(user.id, "admin") do
         conn
-        |> put_flash(:info, info)
+        |> put_flash(:info, "logged in with super admin")
         |> UserAuth.log_in_user(user, user_params)
-      else
-        # In order to prevent user enumeration attacks, don't disclose whether the email is registered.
-        conn
-        |> put_flash(:error, "Invalid email or password")
-        |> put_flash(:email, String.slice(email, 0, 160))
-        |> redirect(to: ~p"/users/log_in")
+      else 
+        if Accounts.get_user_in_tenant!(user.id, tenant) do
+          conn
+          |> put_flash(:info, info)
+          |> UserAuth.log_in_user(user, user_params)
+        else
+          # In order to prevent user enumeration attacks, don't disclose whether the email is registered.
+          conn
+          |> put_flash(:error, "Invalid email or password")
+          |> put_flash(:email, String.slice(email, 0, 160))
+          |> redirect(to: ~p"/users/log_in")
+        end 
       end
     else 
       # In order to prevent user enumeration attacks, don't disclose whether the email is registered.

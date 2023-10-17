@@ -7,8 +7,11 @@
   </.error>
   <.input field={{f, :full_name}} type="text" label="Full Name" required />
   <.input field={{f, :short_name}} type="text" label="Short Name" required />
-  <.input field={{f, :tenant_role}} options={([user: "user", admin: "admin"])} type="select" label="Role" required />
-     
+  <%= if @tenant == "admin" do %>
+    <.input field={{f, :tenant_role}} options={([user: "user", admin: "admin", super_admin: "super_admin"])} type="select" label="Role" required />
+  <% else %>
+    <.input field={{f, :tenant_role}} options={([user: "user", admin: "admin"])} type="select" label="Role" required />
+  <% end %>    
   <:actions>
     <.button>Save User</.button>
   </:actions>
