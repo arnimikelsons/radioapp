@@ -7,6 +7,9 @@ defmodule Radioapp.Accounts do
   alias Radioapp.Repo
   alias Radioapp.Accounts.{User, UserToken, UserNotifier, Org, OrganizationTenant}
 
+  @super_admin "admin"
+  @admin_tenant "admin"
+
   ## Database getters
 
   @doc """
@@ -519,6 +522,10 @@ defmodule Radioapp.Accounts do
   """
   def delete_user(%User{} = user) do
     Repo.delete(user)
+  end
+
+  def has_role?(conn, user, @super_admin = role, tenant) when tenant != @admin_tenant do
+    has_role?(conn, user, role, @admin_tenant)
   end
 
   def has_role?(conn, user, role, tenant) when is_atom(role) do

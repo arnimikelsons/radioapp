@@ -21,11 +21,15 @@ defmodule RadioappWeb.Router do
   end
 
   pipeline :user do
-    plug EnsureRolePlug, [:admin, :user]
+    plug EnsureRolePlug, [:user, :admin, :super_admin]
   end
 
   pipeline :admin do
-    plug EnsureRolePlug, :admin
+    plug EnsureRolePlug, [:admin, :super_admin]
+  end
+
+  pipeline :super_admin do
+    plug EnsureRolePlug, [:super_admin]
   end
 
   pipeline :tenant_in_session do

@@ -1,6 +1,7 @@
 <div class="max-w-2xl mx-auto"> 
   <h1>Admin</h1>
-  <%= if @user_role == "admin" do %>
+  <p>user role: <%= @user_role %></p>
+  <%= if @user_role == "admin"  or @user_role == "super_admin" do %>
     <p>The following are your Admin functions:</p>
     <div class="text-center">
       <p><.link href={~p"/admin/logs"}>Logs by Date Range</.link></p>
