@@ -33,7 +33,6 @@ defmodule RadioappWeb.UserControllerTest do
       assert redirected_to(conn) == ~p"/users"
       assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "User updated successfully."
       conn = get(conn, ~p"/users/")
-      IO.inspect(target_user, label: "USER")
       assert html_response(conn, 200) =~ "Some Updated Full Name"
     end
 

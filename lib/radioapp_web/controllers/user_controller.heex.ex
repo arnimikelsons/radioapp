@@ -21,7 +21,7 @@ defmodule RadioappWeb.UserController do
         Accounts.edit_user(user)
         |> Ecto.Changeset.put_change(:tenant_role, tenant_role)
 
-      render(conn, :edit, user: user, changeset: changeset)
+      render(conn, :edit, user: user, changeset: changeset, tenant: tenant)
     else
       if user.role != nil do
         tenant_role = user.role
@@ -29,7 +29,7 @@ defmodule RadioappWeb.UserController do
           Accounts.edit_user(user)
           |> Ecto.Changeset.put_change(:tenant_role, tenant_role)
         
-          render(conn, :edit, user: user, changeset: changeset)
+          render(conn, :edit, user: user, changeset: changeset, tenant: tenant)
       else 
         conn
         |> put_flash(:error, "User not found")

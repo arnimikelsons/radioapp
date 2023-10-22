@@ -31,8 +31,13 @@ defmodule RadioappWeb.UserInvitationLive do
         <.input field={{f, :full_name}} type="text" label="Full Name" required />
         <.input field={{f, :short_name}} type="text" label="Short Name" required />
         <.input field={{f, :email}} type="email" label="Email" required />
-        <.input field={{f, :tenant_role}} options={([user: "user", admin: "admin"])} type="select" label="Role" required />
-
+        
+        <%= if @tenant == "admin" do %>
+          <.input field={{f, :tenant_role}} options={([user: "user", admin: "admin", super_admin: "super_admin"])} type="select" label="Role" required />
+        <% else %>
+          <.input field={{f, :tenant_role}} options={([user: "user", admin: "admin"])} type="select" label="Role" required />
+        <% end %>
+        
         <:actions>
           <.button phx-disable-with="Creating account..." class="w-full">Create an account</.button>
         </:actions>
@@ -87,7 +92,12 @@ defmodule RadioappWeb.UserInvitationLive do
         
         changeset = Accounts.change_user_invitation(user)
         {:noreply, assign(socket, trigger_submit: true, changeset: changeset)}
-
+      
+      {:error, "User exists in tenant"} ->
+        {:noreply,
+        socket
+        |> put_flash(:error, "User exists in tenant.")
+        |> redirect(to: ~p"/users")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, :changeset, changeset)}

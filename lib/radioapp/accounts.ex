@@ -7,6 +7,9 @@ defmodule Radioapp.Accounts do
   alias Radioapp.Repo
   alias Radioapp.Accounts.{User, UserToken, UserNotifier, Org, OrganizationTenant}
 
+  @super_admin Radioapp.super_admin_role()
+  @admin_tenant Radioapp.admin_tenant()
+
   ## Database getters
 
   @doc """
@@ -130,25 +133,29 @@ defmodule Radioapp.Accounts do
       {:error, %{errors: errors} = reason} ->
         case Keyword.get(errors, :email) do
           {"has already been taken", _} ->
-            result =
-              Repo.transaction(fn ->
-                # find the existing user by the email given
-                email = Ecto.Changeset.fetch_field!(changeset, :email)
-                user = get_user_by_email(email)
-                # add the new tenant and role to the existing roles
-                roles = user.roles |> Map.put(tenant, role)
+            # find the existing user by the email given
+            email = Ecto.Changeset.fetch_field!(changeset, :email)
+            user = get_user_by_email(email)
+            case get_user_in_tenant!(user.id, tenant) do
+              nil ->
+                result =
+                  Repo.transaction(fn ->
+                    # add the new tenant and role to the existing roles
+                    roles = user.roles |> Map.put(tenant, role)
 
-                # update only the user's roles
-                user
-                |> Ecto.Changeset.change(%{roles: roles})
-                |> Repo.update!()
-              end)
+                    # update only the user's roles
+                    user
+                    |> Ecto.Changeset.change(%{roles: roles})
+                    |> Repo.update!()
+                  end)
 
-            case result do
-              {:ok, user} -> {:user_added_to_tenant, user}
-              {:error, reason} -> {:error, reason}
+                  case result do
+                    {:ok, user} -> {:user_added_to_tenant, user}
+                    {:error, reason} -> {:error, reason}
+                  end
+              _ ->
+                {:error, "User exists in tenant"}
             end
-
           _ ->
             {:error, reason}
         end
@@ -517,6 +524,10 @@ defmodule Radioapp.Accounts do
     Repo.delete(user)
   end
 
+  def has_role?(conn, user, @super_admin = role, tenant) when tenant != @admin_tenant do
+    has_role?(conn, user, role, @admin_tenant)
+  end
+
   def has_role?(conn, user, role, tenant) when is_atom(role) do
     has_role?(conn, user, Atom.to_string(role), tenant)
   end
@@ -531,7 +542,6 @@ defmodule Radioapp.Accounts do
     roles = Map.get(user, :roles, %{})
     Map.get(roles, tenant, %{}) == role
   end
-
 
   @doc """
   Returns the list of orgs.

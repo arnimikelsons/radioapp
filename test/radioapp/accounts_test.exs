@@ -93,16 +93,6 @@ defmodule Radioapp.AccountsTest do
       assert "should be at most 72 character(s)" in errors_on(changeset).password
     end
 
-    test "validates email uniqueness" do
-      %{email: email} = Factory.insert(:user)
-      {:error, changeset} = Accounts.register_user(%{email: email})
-      assert "has already been taken" in errors_on(changeset).email
-
-      # Now try with the upper cased email too, to check that email case is ignored.
-      {:error, changeset} = Accounts.register_user(%{email: String.upcase(email)})
-      assert "has already been taken" in errors_on(changeset).email
-    end
-
     test "registers users with a hashed password" do
       email = unique_user_email()
       password = "ABCD928374982696" #set in user_invitation_live
@@ -111,7 +101,45 @@ defmodule Radioapp.AccountsTest do
       assert is_binary(user.hashed_password)
       assert is_nil(user.confirmed_at)
       assert is_nil(user.password)
+      get_user = Accounts.get_user_in_tenant!(user.id, @tenant)
+      assert get_user.roles == %{"sample" => "user"}
     end
+
+    test "tries to register user to new tenant, keep user, add role" do
+      user = Factory.insert(:user, roles: %{@tenant => "user"})
+      email = user.email
+      password = "ABCD928374982696" #set in user_invitation_live
+      {:user_added_to_tenant, same_user} = Accounts.invite_user_for_tenant(valid_user_attributes(email: email, password: password), "admin", @another_tenant)
+      assert user.email == email
+      assert is_binary(user.hashed_password)
+      assert user.confirmed_at == same_user.confirmed_at
+      assert user.hashed_password == same_user.hashed_password
+      get_user = Accounts.get_user_in_tenant!(user.id, @tenant)
+      #TODO: use get_role function here
+      assert get_user.roles == %{"sample" => "user", "not_sample" => "admin"}
+    end
+
+    test "tries to register user to tenant where they already have permissions" do
+      %{email: email} = user = Factory.insert(:user, roles: %{@tenant => "user"})
+      password = "ABCD928374982696" #set in user_invitation_live
+      {:error, "User exists in tenant"} = Accounts.invite_user_for_tenant(valid_user_attributes(email: email, password: password), "user", @tenant)
+      assert user.email == email
+      get_user = Accounts.get_user_in_tenant!(user.id, @tenant)
+      assert get_user.roles == %{"sample" => "user"}
+
+    end
+
+    # Not using Registration
+    # test "validates email uniqueness" do
+    #   %{email: email} = Factory.insert(:user)
+    #   {:error, changeset} = Accounts.register_user(%{email: email})
+    #   assert "has already been taken" in errors_on(changeset).email
+
+    #   # Now try with the upper cased email too, to check that email case is ignored.
+    #   {:error, changeset} = Accounts.register_user(%{email: String.upcase(email)})
+    #   assert "has already been taken" in errors_on(changeset).email
+    # end
+
   end
 
   describe "change_user_registration/2" do
