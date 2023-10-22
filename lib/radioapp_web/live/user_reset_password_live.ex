@@ -62,7 +62,6 @@ defmodule RadioappWeb.UserResetPasswordLive do
          |> redirect(to: ~p"/users/log_in")}
 
       {:error, error}   ->
-        IO.inspect(error, label: "ERROR")
 
       # {:error, changeset} ->
       #   {:noreply, assign(socket, :changeset, Map.put(changeset, :action, :insert))}
