@@ -7,6 +7,9 @@ defmodule RadioappWeb.UserSessionControllerTest do
   @tenant "sample"
   @another_tenant "not_sample"
 
+  @super_admin Radioapp.super_admin_role()
+  @admin_tenant Radioapp.admin_tenant()
+
   setup do
     %{user: Factory.insert(:user, roles: %{@tenant => "admin"})}
   end
@@ -108,6 +111,24 @@ defmodule RadioappWeb.UserSessionControllerTest do
       assert Phoenix.Flash.get(conn.assigns.flash, :error) == "Invalid email or password"
       assert redirected_to(conn) == ~p"/users/log_in"
     end
+
+    test "login with super_admin", %{conn: conn} do
+      user = Factory.insert(:user, roles: %{@admin_tenant => "super_admin"})
+      conn =
+        post(conn, ~p"/users/log_in", %{
+          "user" => %{"email" => user.email, "password" => valid_user_password()}
+        })
+
+      assert get_session(conn, :user_token)
+      assert redirected_to(conn) == ~p"/"
+
+      # Now do a logged in request and assert on the menu
+      conn = get(conn, ~p"/")
+      response = html_response(conn, 200)
+      assert response =~ user.short_name
+    end
+
+
   end
 
   describe "DELETE /users/log_out" do

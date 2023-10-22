@@ -7,8 +7,8 @@ defmodule Radioapp.Accounts do
   alias Radioapp.Repo
   alias Radioapp.Accounts.{User, UserToken, UserNotifier, Org, OrganizationTenant}
 
-  @super_admin "admin"
-  @admin_tenant "admin"
+  @super_admin Radioapp.super_admin_role()
+  @admin_tenant Radioapp.admin_tenant()
 
   ## Database getters
 

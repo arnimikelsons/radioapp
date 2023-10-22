@@ -9,7 +9,7 @@ import Config
 
 config :radioapp,
   ecto_repos: [Radioapp.Repo],
-  admin_tenant: "admin_tenant",
+  admin_tenant: "admin",
   super_admin_role: "super_admin"
 
 # Configures the endpoint

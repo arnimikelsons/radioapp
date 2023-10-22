@@ -4,6 +4,9 @@ defmodule RadioappWeb.UserSessionController do
   alias Radioapp.Accounts
   alias RadioappWeb.UserAuth
 
+  @super_admin Radioapp.super_admin_role()
+  @admin_tenant Radioapp.admin_tenant()
+
   def create(conn, %{"_action" => "registered"} = params) do
     create(conn, params, "Account created successfully!")
   end
@@ -23,7 +26,7 @@ defmodule RadioappWeb.UserSessionController do
     tenant = RadioappWeb.get_tenant(conn)
   
     if user = Accounts.get_user_by_email_and_password(email, password) do
-      if Accounts.get_user_in_tenant!(user.id, "admin") do
+      if Accounts.get_user_in_tenant!(user.id, @admin_tenant) do
         conn
         |> put_flash(:info, "logged in with super admin")
         |> UserAuth.log_in_user(user, user_params)
