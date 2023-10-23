@@ -24,7 +24,9 @@ config :radioapp, RadioappWeb.Endpoint,
   check_origin: [
     "//admin.radioapp.ca",
     "//coopradio.radioapp.ca",
-    "//ncra.radioapp.ca"
+    "//ncra.radioapp.ca", 
+    "//nv.radioapp.ca",
+    "//demo.radioapp.ca"
   ]
 
 # Configures the mailer

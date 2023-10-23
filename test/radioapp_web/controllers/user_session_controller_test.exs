@@ -111,9 +111,14 @@ defmodule RadioappWeb.UserSessionControllerTest do
       assert Phoenix.Flash.get(conn.assigns.flash, :error) == "Invalid email or password"
       assert redirected_to(conn) == ~p"/users/log_in"
     end
+  end
 
-    test "login with super_admin", %{conn: conn} do
-      user = Factory.insert(:user, roles: %{@admin_tenant => "super_admin"})
+  describe "Log in as super_admin" do
+    setup do
+      %{user: Factory.insert(:user, roles: %{@admin_tenant => @super_admin})}
+    end
+    
+    test "login with super_admin", %{conn: conn, user: user} do
       conn =
         post(conn, ~p"/users/log_in", %{
           "user" => %{"email" => user.email, "password" => valid_user_password()}

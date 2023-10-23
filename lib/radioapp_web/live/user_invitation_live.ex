@@ -5,8 +5,6 @@ defmodule RadioappWeb.UserInvitationLive do
   alias Radioapp.Accounts.{User, UserNotifier}
   import RadioappWeb.LiveHelpers
 
-  @admin_tenant Radioapp.admin_tenant()
-
   def render(assigns) do
     ~H"""
     <div class="mx-auto max-w-sm">
@@ -34,7 +32,7 @@ defmodule RadioappWeb.UserInvitationLive do
         <.input field={{f, :short_name}} type="text" label="Short Name" required />
         <.input field={{f, :email}} type="email" label="Email" required />
         
-        <%= if @tenant == @admin_tenant do %>
+        <%= if @tenant == Radioapp.admin_tenant() do %>
           <.input field={{f, :tenant_role}} options={([super_admin: "super_admin"])} type="select" label="Role" required />
         <% else %>
           <.input field={{f, :tenant_role}} options={([user: "user", admin: "admin"])} type="select" label="Role" required />
