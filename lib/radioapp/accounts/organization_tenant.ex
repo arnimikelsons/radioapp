@@ -32,7 +32,7 @@ defmodule Radioapp.Accounts.OrganizationTenant do
 
     Repo.transaction(fn ->
       with {:ok, org} <- Accounts.create_org(attrs),
-          {:ok, _} <- create_admin(tenant), 
+          #{:ok, _} <- create_admin(tenant), 
           {:ok, _} <- create_category(tenant, %{code: "11", name: "News"}),
            {:ok, _} <- create_category(tenant, %{code: "12", name: "Spoken Word / PSAs"}),
            {:ok, _} <- create_category(tenant, %{code: "21", name: "Pop/Rock/RPM/Beatbox/Loud"}),
@@ -73,19 +73,19 @@ defmodule Radioapp.Accounts.OrganizationTenant do
     end)
   end
 
-  defp create_admin(tenant) do
-    Radioapp.Accounts.seeds_user(
-      %{
-        email: "arni+#{tenant}@northernvillage.com",
-        password: "super-secret",
-        hashed_password: Bcrypt.hash_pwd_salt("super-secret"),
-        roles: %{tenant => "admin"},
-        full_name: "NV Info",
-        short_name: "Admin",
-        confirmed_at: DateTime.utc_now()
-      }
-    )
-  end
+  # defp create_admin(tenant) do
+  #   Radioapp.Accounts.seeds_user(
+  #     %{
+  #       email: "arni+#{tenant}@northernvillage.com",
+  #       password: "super-secret",
+  #       hashed_password: Bcrypt.hash_pwd_salt("super-secret"),
+  #       roles: %{tenant => "admin"},
+  #       full_name: "NV Info",
+  #       short_name: "Admin",
+  #       confirmed_at: DateTime.utc_now()
+  #     }
+  #   )
+  # end
 
   defp create_category(tenant, category) do
     Admin.create_category(category, tenant)

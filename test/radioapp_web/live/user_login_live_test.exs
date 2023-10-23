@@ -4,6 +4,8 @@ defmodule RadioappWeb.UserLoginLiveTest do
   import Phoenix.LiveViewTest
   import Radioapp.AccountsFixtures
 
+  @tenant "sample"
+
   describe "Log in page" do
     test "renders log in page", %{conn: conn} do
       {:ok, _lv, html} = live(conn, ~p"/users/log_in")
@@ -26,7 +28,7 @@ defmodule RadioappWeb.UserLoginLiveTest do
   describe "user login" do
     test "redirects if user login with valid credentials", %{conn: conn} do
       password = "123456789abcd"
-      user = user_fixture(%{password: password})
+      user = user_fixture(%{password: password, roles: %{@tenant => "admin"}})
 
       {:ok, lv, _html} = live(conn, ~p"/users/log_in")
 

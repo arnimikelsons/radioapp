@@ -61,10 +61,8 @@ defmodule RadioappWeb.UserResetPasswordLive do
          |> put_flash(:info, "Password reset successfully.")
          |> redirect(to: ~p"/users/log_in")}
 
-      {:error, error}   ->
-
-      # {:error, changeset} ->
-      #   {:noreply, assign(socket, :changeset, Map.put(changeset, :action, :insert))}
+      {:error, changeset} ->
+        {:noreply, assign(socket, :changeset, Map.put(changeset, :action, :insert))}
     end
   end
 

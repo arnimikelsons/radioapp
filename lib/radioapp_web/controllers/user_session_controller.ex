@@ -4,7 +4,6 @@ defmodule RadioappWeb.UserSessionController do
   alias Radioapp.Accounts
   alias RadioappWeb.UserAuth
 
-  @super_admin Radioapp.super_admin_role()
   @admin_tenant Radioapp.admin_tenant()
 
   def create(conn, %{"_action" => "registered"} = params) do
