@@ -91,8 +91,6 @@ defmodule RadioappWeb.Router do
 
     delete "/users/log_out", UserSessionController, :delete
 
-    resources "/orgs", OrgController
-
     live_session :current_user,
       on_mount: [{RadioappWeb.UserAuth, :mount_current_user}] do
       live "/users/confirm/:token", UserConfirmationLive, :edit
@@ -101,6 +99,12 @@ defmodule RadioappWeb.Router do
       live "/users/accept", UserAcceptanceInstructionsLive, :new
 
     end
+  end
+
+  scope "/", RadioappWeb do
+    pipe_through [:browser, :super_admin]
+
+    resources "/orgs", OrgController
   end
 
   scope "/", RadioappWeb do
