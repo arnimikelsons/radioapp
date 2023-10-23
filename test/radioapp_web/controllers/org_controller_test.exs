@@ -3,15 +3,14 @@ defmodule RadioappWeb.OrgControllerTest do
 
   alias Radioapp.Factory
 
-  @tenant "sample"
+  @admin_tenant Radioapp.admin_tenant()
 
-  @create_attrs %{address1: "some address1", address2: "some address2", city: "some city", country: "some country", email: "some email", full_name: "some full_name", organization: "some organization", postal_code: "some postal_code", province: "some province", short_name: "some short_name", telephone: "some telephone", tenant_name: "some tenant_name"}
   @update_attrs %{address1: "some updated address1", address2: "some updated address2", city: "some updated city", country: "some updated country", email: "some updated email", full_name: "some updated full_name", organization: "some updated organization", postal_code: "some updated postal_code", province: "some updated province", short_name: "some updated short_name", telephone: "some updated telephone", tenant_name: "some updated tenant_name"}
   @invalid_attrs %{address1: nil, address2: nil, city: nil, country: nil, email: nil, full_name: nil, organization: nil, postal_code: nil, province: nil, short_name: nil, telephone: nil, tenant_name: ""}
 
   describe "Org functions for Admin" do
     setup %{conn: conn} do
-      user = Factory.insert(:user, roles: %{@tenant => "admin"})
+      user = Factory.insert(:user, roles: %{@admin_tenant => "super_admin"})
       conn = log_in_user(conn, user)
       %{conn: conn, user: user}
     end
@@ -46,7 +45,7 @@ defmodule RadioappWeb.OrgControllerTest do
   describe "editing functions for org" do
 
     setup %{conn: conn} do
-      user = Factory.insert(:user, roles: %{@tenant => "admin"})
+      user = Factory.insert(:user, roles: %{@admin_tenant => "super_admin"})
       conn = log_in_user(conn, user)
       %{conn: conn, user: user}
     end
