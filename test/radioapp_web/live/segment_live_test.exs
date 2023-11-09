@@ -122,7 +122,7 @@ defmodule RadioappWeb.SegmentLiveTest do
         index_live
         |> form("#segment-form", segment: @update_attrs)
         |> render_submit()
-        |> follow_redirect(conn, ~p"/programs/#{program}/logs/#{log}/segments/new")
+        |> follow_redirect(conn, ~p"/programs/#{program}/logs/#{log}/segments")
 
       assert html =~ "Segment updated successfully"
       assert html =~ "some updated song title"
@@ -191,7 +191,7 @@ defmodule RadioappWeb.SegmentLiveTest do
         show_live
         |> form("#segment-form", segment: @update_attrs)
         |> render_submit()
-        |> follow_redirect(conn, ~p"/programs/#{program}/logs/#{log}/segments/new")
+        |> follow_redirect(conn, ~p"/programs/#{program}/logs/#{log}/segments")
 
       assert html =~ "Segment updated successfully"
       assert html =~ "some updated song title"
