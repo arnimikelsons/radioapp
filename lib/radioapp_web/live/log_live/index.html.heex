@@ -4,7 +4,7 @@
 
     <:actions>
       <.link patch={~p"/programs/#{@program}/logs/new"}>
-        <.button>Add Log</.button>
+        <.button>Add Log Sheet</.button>
       </.link>
     </:actions>
   </.header>
@@ -26,7 +26,7 @@
       <.link navigate={~p"/programs/#{@program}/logs/#{log}/segments"}>View Log</.link>
       </:action>
     <:action :let={log}>
-      <.link patch={~p"/programs/#{@program}/logs/#{log}/edit"}>Edit Log</.link>
+      <.link patch={~p"/programs/#{@program}/logs/#{log}/edit"}>Edit Log Sheet</.link>
     </:action>
     <:action :let={segment}>
       <%= if @current_user.role == :admin do %>

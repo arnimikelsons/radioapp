@@ -102,7 +102,7 @@ defmodule RadioappWeb.SegmentLive.FormComponent do
         {:noreply,
          socket
          |> put_flash(:info, "Segment updated successfully")
-         |> push_navigate(to: socket.assigns.navigate)}
+         |> push_navigate(to: socket.assigns.navigate_edit)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, :changeset, changeset)}
