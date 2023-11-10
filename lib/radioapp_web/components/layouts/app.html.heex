@@ -4,7 +4,9 @@
       <div class="flex flex-wrap justify-between">
         <div class="brand-container flex">
           <a class="navbar-brand logo-img d-block" href="/">
-            <img src="/images/radioapp_logo.png" alt="RadioApp Logo" />
+            <%= if @conn.private.settings.logo_path != nil do %>
+              <img src={@conn.private.settings.logo_path} alt="RadioApp Logo" />
+            <% end %>
           </a>
           <div class="flex flex-col justify-center title-text ml-6">
 

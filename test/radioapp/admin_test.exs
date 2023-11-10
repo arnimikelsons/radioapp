@@ -111,4 +111,78 @@ defmodule Radioapp.AdminTest do
       assert %Ecto.Changeset{} = Admin.change_category(category)
     end
   end
+
+  describe "settings" do
+    alias Radioapp.Admin.Settings
+
+    import Radioapp.AdminFixtures
+
+    @invalid_attrs %{callsign: nil, from_email: nil, from_email_name: nil, logo_path: nil, org_name: nil, phone: nil, playout_url: nil, privacy_policy_url: nil, support_email: nil, tos_url: nil, website_url: nil}
+
+    test "list_settings/0 returns all settings" do
+      settings = settings_fixture()
+      assert Admin.list_settings() == [settings]
+    end
+
+    test "get_settings!/1 returns the settings with given id" do
+      settings = settings_fixture()
+      assert Admin.get_settings!(settings.id) == settings
+    end
+
+    test "create_settings/1 with valid data creates a settings" do
+      valid_attrs = %{callsign: "some callsign", from_email: "some from_email", from_email_name: "some from_email_name", logo_path: "some logo_path", org_name: "some org_name", phone: "some phone", playout_url: "some playout_url", privacy_policy_url: "some privacy_policy_url", support_email: "some support_email", tos_url: "some tos_url", website_url: "some website_url"}
+
+      assert {:ok, %Settings{} = settings} = Admin.create_settings(valid_attrs)
+      assert settings.callsign == "some callsign"
+      assert settings.from_email == "some from_email"
+      assert settings.from_email_name == "some from_email_name"
+      assert settings.logo_path == "some logo_path"
+      assert settings.org_name == "some org_name"
+      assert settings.phone == "some phone"
+      assert settings.playout_url == "some playout_url"
+      assert settings.privacy_policy_url == "some privacy_policy_url"
+      assert settings.support_email == "some support_email"
+      assert settings.tos_url == "some tos_url"
+      assert settings.website_url == "some website_url"
+    end
+
+    test "create_settings/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Admin.create_settings(@invalid_attrs)
+    end
+
+    test "update_settings/2 with valid data updates the settings" do
+      settings = settings_fixture()
+      update_attrs = %{callsign: "some updated callsign", from_email: "some updated from_email", from_email_name: "some updated from_email_name", logo_path: "some updated logo_path", org_name: "some updated org_name", phone: "some updated phone", playout_url: "some updated playout_url", privacy_policy_url: "some updated privacy_policy_url", support_email: "some updated support_email", tos_url: "some updated tos_url", website_url: "some updated website_url"}
+
+      assert {:ok, %Settings{} = settings} = Admin.update_settings(settings, update_attrs)
+      assert settings.callsign == "some updated callsign"
+      assert settings.from_email == "some updated from_email"
+      assert settings.from_email_name == "some updated from_email_name"
+      assert settings.logo_path == "some updated logo_path"
+      assert settings.org_name == "some updated org_name"
+      assert settings.phone == "some updated phone"
+      assert settings.playout_url == "some updated playout_url"
+      assert settings.privacy_policy_url == "some updated privacy_policy_url"
+      assert settings.support_email == "some updated support_email"
+      assert settings.tos_url == "some updated tos_url"
+      assert settings.website_url == "some updated website_url"
+    end
+
+    test "update_settings/2 with invalid data returns error changeset" do
+      settings = settings_fixture()
+      assert {:error, %Ecto.Changeset{}} = Admin.update_settings(settings, @invalid_attrs)
+      assert settings == Admin.get_settings!(settings.id)
+    end
+
+    test "delete_settings/1 deletes the settings" do
+      settings = settings_fixture()
+      assert {:ok, %Settings{}} = Admin.delete_settings(settings)
+      assert_raise Ecto.NoResultsError, fn -> Admin.get_settings!(settings.id) end
+    end
+
+    test "change_settings/1 returns a settings changeset" do
+      settings = settings_fixture()
+      assert %Ecto.Changeset{} = Admin.change_settings(settings)
+    end
+  end
 end
