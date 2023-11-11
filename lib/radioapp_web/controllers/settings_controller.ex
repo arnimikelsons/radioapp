@@ -29,22 +29,36 @@ defmodule RadioappWeb.SettingsController do
     end
   end
 
-  def show(conn, %{"id" => id}) do
+  def show(conn, %{}) do
     tenant = RadioappWeb.get_tenant(conn)
-    settings = Admin.get_settings!(id, tenant)
+    settings = Admin.get_settings!(tenant)
     render(conn, :show, settings: settings)
   end
 
-  def edit(conn, %{"id" => id}) do
+  def edit(conn, %{}) do
     tenant = RadioappWeb.get_tenant(conn)
-    settings = Admin.get_settings!(id, tenant)
+    settings = Admin.get_settings!(tenant) 
+      if settings == nil do
+        {:ok, _settings} =
+          Admin.create_settings(
+            %{
+              callsign: tenant,
+              from_email: "radioapp@northernvillage.net",
+              from_email_name: "RadioApp",
+              org_name: tenant,
+              logo_path: "/images/radioapp_logo.png"
+            },
+            tenant
+          )   
+    end
+    settings = Admin.get_settings!(tenant)
     changeset = Admin.change_settings(settings)
     render(conn, :edit, settings: settings, changeset: changeset)
   end
 
-  def update(conn, %{"id" => id, "settings" => settings_params}) do
+  def update(conn, %{"settings" => settings_params}) do
     tenant = RadioappWeb.get_tenant(conn)
-    settings = Admin.get_settings!(id, tenant)
+    settings = Admin.get_settings!(tenant)
 
     case Admin.update_settings(settings, settings_params) do
       {:ok, settings} ->
@@ -57,9 +71,9 @@ defmodule RadioappWeb.SettingsController do
     end
   end
 
-  def delete(conn, %{"id" => id}) do
+  def delete(conn, %{}) do
     tenant = RadioappWeb.get_tenant(conn)
-    settings = Admin.get_settings!(id, tenant)
+    settings = Admin.get_settings!(tenant)
     {:ok, _settings} = Admin.delete_settings(settings)
 
     conn
