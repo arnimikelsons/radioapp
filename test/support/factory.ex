@@ -112,4 +112,19 @@ end
       tenant_name: "sample"
     }
   end
+  def settings_factory() do
+    %Radioapp.Admin.Settings{
+      callsign: "CYYY",
+      from_email: "some from email",
+      from_email_name: "some email name",
+      logo_path: "/images/radioapp_logo.png",
+      org_name: "some org name",
+      phone: "some phone",
+      playout_url: "some playout_url",
+      privacy_policy_url: "some privacy policy url",
+      support_email: "some support email",
+      tos_url: "some tos",
+      website_url: "some website url"   
+    }
+  end
 end
