@@ -24,11 +24,6 @@ defmodule RadioappWeb.SettingsControllerTest do
       assert html_response(conn, 200) =~ "Listing Settings"
     end
 
-    test "renders form", %{conn: conn} do
-      conn = get(conn, ~p"/settings/new")
-      assert html_response(conn, 200) =~ "New Settings"
-    end
-
     test "redirects to show when data is valid", %{conn: conn} do
       conn = post(conn, ~p"/settings", settings: @create_attrs)
 
@@ -39,10 +34,11 @@ defmodule RadioappWeb.SettingsControllerTest do
       assert html_response(conn, 200) =~ "Settings #{id}"
     end
 
-    test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, ~p"/settings", settings: @invalid_attrs)
-      assert html_response(conn, 200) =~ "New Settings"
-    end
+    # no new function
+    # test "renders errors when data is invalid", %{conn: conn} do
+    #   conn = post(conn, ~p"/settings", settings: @invalid_attrs)
+    #   assert html_response(conn, 200) =~ "New Settings"
+    # end
 
     test "renders form for editing chosen settings", %{conn: conn} do
       settings = Factory.insert(:settings, [], prefix: @prefix)

@@ -12,6 +12,7 @@ defmodule Radioapp.Repo.Migrations.CreateSettings do
       add :support_email, :string
       add :phone, :string
       add :playout_url, :string
+      add :playout_type, :string
       add :tos_url, :string
       add :website_url, :string
 

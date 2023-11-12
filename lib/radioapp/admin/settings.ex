@@ -10,6 +10,7 @@ defmodule Radioapp.Admin.Settings do
     field :org_name, :string
     field :phone, :string
     field :playout_url, :string
+    field :playout_type, :string
     field :privacy_policy_url, :string
     field :support_email, :string
     field :tos_url, :string
@@ -21,8 +22,8 @@ defmodule Radioapp.Admin.Settings do
   @doc false
   def changeset(settings, attrs) do
     settings
-    |> cast(attrs, [:callsign, :from_email, :from_email_name, :logo_path, :org_name, :privacy_policy_url, :support_email, :phone, :playout_url, :tos_url, :website_url])
-    |> validate_required([:callsign, #:from_email, :from_email_name, :logo_path, :org_name, :privacy_policy_url, :support_email, :phone, :playout_url, :tos_url, :website_url
+    |> cast(attrs, [:callsign, :from_email, :from_email_name, :logo_path, :org_name, :privacy_policy_url, :support_email, :phone, :playout_url, :playout_type, :tos_url, :website_url])
+    |> validate_required([:callsign, #:from_email, :from_email_name, :logo_path, :org_name, :privacy_policy_url, :support_email, :phone, :playout_url, :playout_type, :tos_url, :website_url
     ])
   end
 end
