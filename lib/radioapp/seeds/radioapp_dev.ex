@@ -8,7 +8,7 @@ defmodule Radioapp.Seeds.RadioappDev do
     {:ok, _arni_admin} = Accounts.seeds_user(%{
       full_name: "Arni Mikelsons",
       short_name: "Arni",
-      roles: %{tenant => "admin"},
+      roles: %{tenant => "super_admin"},
       email: "arni@northernvillage.com",
       confirmed_at: DateTime.utc_now(),
       password: "super-secret",
