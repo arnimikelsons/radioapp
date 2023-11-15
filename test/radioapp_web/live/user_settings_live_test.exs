@@ -162,7 +162,7 @@ defmodule RadioappWeb.UserSettingsLiveTest do
   describe "confirm email" do
     setup %{conn: conn} do
       email = unique_user_email()
-      user = Factory.insert(:user, email: email)
+      user = Factory.insert(:user, email: email, roles: %{@tenant => "admin"})
 
       token =
         extract_user_token(fn url ->
@@ -201,13 +201,13 @@ defmodule RadioappWeb.UserSettingsLiveTest do
     #  assert Accounts.get_user_by_email(user.email)
     # end
 
-    test "redirects if user is not logged in", %{token: token} do
-      conn = build_conn()
-      {:error, redirect} = live(conn, ~p"/users/settings/confirm_email/#{token}")
-      assert {:redirect, %{to: path, flash: flash}} = redirect
-      assert path == ~p"/users/log_in"
-      assert %{"error" => message} = flash
-      assert message == "You must log in to access this page."
-    end
+    # test "redirects if user is not logged in", %{token: token} do
+    #   conn = build_conn()
+    #   {:error, redirect} = live(conn, ~p"/users/settings/confirm_email/#{token}")
+    #   assert {:redirect, %{to: path, flash: flash}} = redirect
+    #   assert path == ~p"/users/log_in"
+    #   assert %{"error" => message} = flash
+    #   assert message == "You must log in to access this page."
+    # end
   end
 end

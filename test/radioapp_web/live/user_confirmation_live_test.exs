@@ -6,9 +6,14 @@ defmodule RadioappWeb.UserConfirmationLiveTest do
 
   alias Radioapp.Accounts
   alias Radioapp.Repo
+  alias Radioapp.Factory
 
-  setup do
-    %{user: user_fixture()}
+  @tenant "sample"
+
+  setup %{conn: conn} do
+    user = Factory.insert(:user, roles: %{@tenant => "admin"})
+    conn = log_in_user(conn, user)
+    %{conn: conn, user: user}
   end
 
   describe "Confirm user" do
