@@ -11,7 +11,7 @@ defmodule RadioappWeb.UserConfirmationLiveTest do
   @tenant "sample"
 
   setup %{conn: conn} do
-    user = Factory.insert(:user, roles: %{@tenant => "admin"})
+    user = Factory.insert(:user, roles: %{@tenant => "admin"}, confirmed_at: nil)
     conn = log_in_user(conn, user)
     %{conn: conn, user: user}
   end
@@ -42,6 +42,7 @@ defmodule RadioappWeb.UserConfirmationLiveTest do
                "User confirmed successfully"
 
       assert Accounts.get_user!(user.id).confirmed_at
+      
       refute get_session(conn, :user_token)
       assert Repo.all(Accounts.UserToken) == []
 
