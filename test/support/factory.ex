@@ -15,6 +15,16 @@ def user_factory do
   }
 end
 
+def unconfirmedUser_factory do
+  %Radioapp.Accounts.User{
+    full_name: "Some Full Name",
+    short_name: "Some Short Name",
+    email: unique_user_email(),
+    password: valid_user_password(),
+    hashed_password: Bcrypt.hash_pwd_salt(valid_user_password())
+  }
+end
+
 
   def program_factory do
     %Radioapp.Station.Program{
@@ -124,7 +134,7 @@ end
       privacy_policy_url: "some privacy policy url",
       support_email: "some support email",
       tos_url: "some tos",
-      website_url: "some website url"   
+      website_url: "some website url"
     }
   end
 end

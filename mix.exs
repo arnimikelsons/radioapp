@@ -83,4 +83,12 @@ defmodule Radioapp.MixProject do
       "assets.deploy": ["tailwind default --minify", "esbuild default --minify", "phx.digest"]
     ]
   end
+
+  # Testing note:
+  # Tests rely on the existence of a tenant name 'sample'.
+  # You must run this command before testing will work:
+  #   MIX_ENV=test mix tenant.create sample
+  # And also run this:
+  #   source .env
+
 end
