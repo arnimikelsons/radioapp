@@ -13,9 +13,7 @@ defmodule RadioappWeb.UserConfirmationLiveTest do
 
 
   setup %{conn: conn} do
-    user = Factory.insert(:unconfirmedUser, roles: %{@tenant => "admin"})
-    # conn = log_in_user(conn, user) // Dont have a logged in user when testing user account confirmation,
-    # Also we don't want this user to have a confirmed_at value.
+    user = Factory.insert(:user, roles: %{@tenant => "admin"}, confirmed_at: nil)
     %{conn: conn, user: user}
   end
 
