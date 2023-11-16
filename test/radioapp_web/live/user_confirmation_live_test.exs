@@ -14,7 +14,8 @@ defmodule RadioappWeb.UserConfirmationLiveTest do
 
   setup %{conn: conn} do
     user = Factory.insert(:unconfirmedUser, roles: %{@tenant => "admin"})
-    # conn = log_in_user(conn, user)
+    # conn = log_in_user(conn, user) // Dont have a logged in user when testing user account confirmation,
+    # Also we don't want this user to have a confirmed_at value.
     %{conn: conn, user: user}
   end
 
@@ -30,7 +31,6 @@ defmodule RadioappWeb.UserConfirmationLiveTest do
           Accounts.deliver_user_confirmation_instructions(user, url)
         end)
 
-      IO.inspect(conn, label: "CONN")
       {:ok, lv, _html} = live(conn, ~p"/users/confirm/#{token}")
 
       result =
@@ -64,8 +64,12 @@ defmodule RadioappWeb.UserConfirmationLiveTest do
                "User confirmation link is invalid or it has expired"
 
       # when logged in
+      conn =
+        Phoenix.ConnTest.build_conn()
+        |> Map.put(:host, "sample.radioapp.ca")
+
       {:ok, lv, _html} =
-        build_conn()
+        conn
         |> log_in_user(user)
         |> live(~p"/users/confirm/#{token}")
 
