@@ -45,6 +45,7 @@ defmodule RadioappWeb.UserConfirmationLiveTest do
                "User confirmed successfully"
 
       assert Accounts.get_user!(user.id).confirmed_at
+
       refute get_session(conn, :user_token)
       assert Repo.all(Accounts.UserToken) == []
 
