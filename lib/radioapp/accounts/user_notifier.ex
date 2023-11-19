@@ -41,8 +41,8 @@ defmodule Radioapp.Accounts.UserNotifier do
   @doc """
   Deliver instructions to reset a user password.
   """
-  def deliver_reset_password_instructions(user, tenant, url) do
-    url = String.replace(url, "://", "://#{tenant}.")
+  def deliver_reset_password_instructions(user, url) do
+    #url = String.replace(url, "://", "://#{tenant}.")
     deliver(user.email, "Reset password instructions", """
 
     ==============================

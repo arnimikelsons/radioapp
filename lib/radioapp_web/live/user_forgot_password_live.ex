@@ -2,7 +2,7 @@ defmodule RadioappWeb.UserForgotPasswordLive do
   use RadioappWeb, :live_view
 
   alias Radioapp.Accounts
-  import RadioappWeb.LiveHelpers
+  #import RadioappWeb.LiveHelpers
 
   def render(assigns) do
     ~H"""
@@ -22,24 +22,18 @@ defmodule RadioappWeb.UserForgotPasswordLive do
       </.simple_form>
     </div>
     """
-  end
+  end     
 
-  def mount(_params, session, socket) do
-    tenant = Map.fetch!(session, "subdomain")
-    socket =
-      assign_defaults(session, socket)
-      |> assign(:tenant, tenant)
-    {:ok, socket}
+  def mount(_params, _session, socket) do
+        {:ok, socket}
   end
 
   def handle_event("send_email", %{"user" => %{"email" => email}}, socket) do
-    tenant = socket.assigns.tenant
-    
+        
     if user = Accounts.get_user_by_email(email) do
       Accounts.deliver_user_reset_password_instructions(
         user,
-        tenant, 
-        &url(~p"/users/reset_password/#{&1}")
+                &url(~p"/users/reset_password/#{&1}")
       )
     end
 
