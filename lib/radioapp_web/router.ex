@@ -196,6 +196,7 @@ defmodule RadioappWeb.Router do
     put "/programs/:program_id/timeslots/:id", TimeslotController, :update
     delete "/programs/:program_id/timeslots/:id", TimeslotController, :delete
 
+    resources "/settings", SettingsController
   end
 
   scope "/", RadioappWeb do
