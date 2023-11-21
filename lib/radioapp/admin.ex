@@ -218,101 +218,101 @@ defmodule Radioapp.Admin do
   end
 
 
-  alias Radioapp.Admin.Settings
+  alias Radioapp.Admin.Defaults
 
   @doc """
-  Returns the list of settings.
+  Returns the list of defaults.
 
   ## Examples
 
-      iex> list_settings()
-      [%Settings{}, ...]
+      iex> list_defaults()
+      [%Defaults{}, ...]
 
   """
-  def list_settings(tenant) do
-    Repo.all(Settings, prefix: Triplex.to_prefix(tenant))
+  def list_defaults(tenant) do
+    Repo.all(Defaults, prefix: Triplex.to_prefix(tenant))
   end
 
   @doc """
-  Gets a single settings.
+  Gets a single defaults.
 
-  Raises `Ecto.NoResultsError` if the Settings does not exist.
+  Raises `Ecto.NoResultsError` if the Defaults does not exist.
 
   ## Examples
 
-      iex> get_settings!(123)
-      %Settings{}
+      iex> get_defaults!(123)
+      %Defaults{}
 
-      iex> get_settings!(456)
+      iex> get_defaults!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_settings!(tenant) do
-    Repo.one(Settings, prefix: Triplex.to_prefix(tenant))
+  def get_defaults!(tenant) do
+    Repo.one(Defaults, prefix: Triplex.to_prefix(tenant))
   end
 
   @doc """
-  Creates a settings.
+  Creates a defaults.
 
   ## Examples
 
-      iex> create_settings(%{field: value})
-      {:ok, %Settings{}}
+      iex> create_defaults(%{field: value})
+      {:ok, %Defaults{}}
 
-      iex> create_settings(%{field: bad_value})
+      iex> create_defaults(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_settings(attrs \\ %{}, tenant) do
-    %Settings{}
-    |> Settings.changeset(attrs)
+  def create_defaults(attrs \\ %{}, tenant) do
+    %Defaults{}
+    |> Defaults.changeset(attrs)
     |> Repo.insert(prefix: Triplex.to_prefix(tenant))
   end
 
   @doc """
-  Updates a settings.
+  Updates a defaults.
 
   ## Examples
 
-      iex> update_settings(settings, %{field: new_value})
-      {:ok, %Settings{}}
+      iex> update_defaults(defaults, %{field: new_value})
+      {:ok, %Defaults{}}
 
-      iex> update_settings(settings, %{field: bad_value})
+      iex> update_defaults(defaults, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_settings(%Settings{} = settings, attrs) do
-    settings
-    |> Settings.changeset(attrs)
+  def update_defaults(%Defaults{} = defaults, attrs) do
+    defaults
+    |> Defaults.changeset(attrs)
     |> Repo.update()
   end
 
   @doc """
-  Deletes a settings.
+  Deletes a defaults.
 
   ## Examples
 
-      iex> delete_settings(settings)
-      {:ok, %Settings{}}
+      iex> delete_defaults(defaults)
+      {:ok, %Defaults{}}
 
-      iex> delete_settings(settings)
+      iex> delete_defaults(defaults)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_settings(%Settings{} = settings) do
-    Repo.delete(settings)
+  def delete_defaults(%Defaults{} = defaults) do
+    Repo.delete(defaults)
   end
 
   @doc """
-  Returns an `%Ecto.Changeset{}` for tracking settings changes.
+  Returns an `%Ecto.Changeset{}` for tracking defaults changes.
 
   ## Examples
 
-      iex> change_settings(settings)
-      %Ecto.Changeset{data: %Settings{}}
+      iex> change_defaults(defaults)
+      %Ecto.Changeset{data: %Defaults{}}
 
   """
-  def change_settings(%Settings{} = settings, attrs \\ %{}) do
-    Settings.changeset(settings, attrs)
+  def change_defaults(%Defaults{} = defaults, attrs \\ %{}) do
+    Defaults.changeset(defaults, attrs)
   end
 end

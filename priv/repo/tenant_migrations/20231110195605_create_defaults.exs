@@ -1,8 +1,8 @@
-defmodule Radioapp.Repo.Migrations.CreateSettings do
+defmodule Radioapp.Repo.Migrations.CreateDefaults do
   use Ecto.Migration
 
   def change do
-    create table(:settings) do
+    create table(:defaults) do
       add :callsign, :string
       add :from_email, :string
       add :from_email_name, :string

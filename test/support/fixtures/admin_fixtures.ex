@@ -20,10 +20,10 @@ defmodule Radioapp.AdminFixtures do
   end
 
   @doc """
-  Generate a settings.
+  Generate a defaults.
   """
-  def settings_fixture(attrs \\ %{}) do
-    {:ok, settings} =
+  def defaults_fixture(attrs \\ %{}) do
+    {:ok, defaults} =
       attrs
       |> Enum.into(%{
         callsign: "some callsign",
@@ -38,8 +38,8 @@ defmodule Radioapp.AdminFixtures do
         tos_url: "some tos_url",
         website_url: "some website_url"
       })
-      |> Radioapp.Admin.create_settings()
+      |> Radioapp.Admin.create_defaults()
 
-    settings
+    defaults
   end
 end

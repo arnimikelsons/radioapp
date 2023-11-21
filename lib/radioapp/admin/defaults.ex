@@ -1,8 +1,8 @@
-defmodule Radioapp.Admin.Settings do
+defmodule Radioapp.Admin.Defaults do
   use Ecto.Schema
   import Ecto.Changeset
 
-  schema "settings" do
+  schema "defaults" do
     field :callsign, :string
     field :from_email, :string
     field :from_email_name, :string
@@ -20,8 +20,8 @@ defmodule Radioapp.Admin.Settings do
   end
 
   @doc false
-  def changeset(settings, attrs) do
-    settings
+  def changeset(defaults, attrs) do
+    defaults
     |> cast(attrs, [:callsign, :from_email, :from_email_name, :logo_path, :org_name, :privacy_policy_url, :support_email, :phone, :playout_url, :playout_type, :tos_url, :website_url])
     |> validate_required([:callsign, #:from_email, :from_email_name, :logo_path, :org_name, :privacy_policy_url, :support_email, :phone, :playout_url, :playout_type, :tos_url, :website_url
     ])

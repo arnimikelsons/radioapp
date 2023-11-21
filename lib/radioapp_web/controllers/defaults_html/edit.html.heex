@@ -1,9 +1,9 @@
 <.header>
-  Edit Settings <%= @settings.id %>
-  <:subtitle>Use this form to manage settings records in your database.</:subtitle>
+  Edit Defaults
+  <:subtitle>Use this form to manage defaults records in your database.</:subtitle>
 </.header>
 
-<.simple_form :let={f} for={@changeset} action={~p"/settings/#{@settings}"}>
+<.simple_form :let={f} for={@changeset} action={~p"/defaults/#{@defaults}"}>
   <.error :if={@changeset.action}>
     Oops, something went wrong! Please check the errors below.
   </.error>
@@ -20,8 +20,8 @@
   <.input field={{f, :tos_url}} type="text" label="Tos url" />
   <.input field={{f, :website_url}} type="text" label="Website url" />
   <:actions>
-    <.button>Save Settings</.button>
+    <.button>Save defaults</.button>
   </:actions>
 </.simple_form>
 
-<.back navigate={~p"/settings"}>Back to settings</.back>
+<.back navigate={~p"/defaults"}>Back to defaults</.back>

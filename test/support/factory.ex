@@ -111,8 +111,8 @@ end
       tenant_name: "sample"
     }
   end
-  def settings_factory() do
-    %Radioapp.Admin.Settings{
+  def defaults_factory() do
+    %Radioapp.Admin.Defaults{
       callsign: "CYYY",
       from_email: "some from email",
       from_email_name: "some email name",

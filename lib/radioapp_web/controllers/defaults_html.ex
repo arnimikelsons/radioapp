@@ -1,13 +1,13 @@
-defmodule RadioappWeb.SettingsHTML do
+defmodule RadioappWeb.DefaultsHTML do
   use RadioappWeb, :html
 
-  embed_templates "settings_html/*"
+  embed_templates "defaults_html/*"
 
   @doc """
-  Renders a settings form.
+  Renders a defaults form.
   """
   attr :changeset, Ecto.Changeset, required: true
   attr :action, :string, required: true
 
-  def settings_form(assigns)
+  def defaults_form(assigns)
 end
