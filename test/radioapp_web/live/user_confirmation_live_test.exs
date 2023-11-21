@@ -6,15 +6,9 @@ defmodule RadioappWeb.UserConfirmationLiveTest do
 
   alias Radioapp.Accounts
   alias Radioapp.Repo
-  alias Radioapp.Factory
 
-  @tenant "sample"
-  @prefix Triplex.to_prefix(@tenant)
-
-
-  setup %{conn: conn} do
-    user = Factory.insert(:user, roles: %{@tenant => "admin"}, confirmed_at: nil)
-    %{conn: conn, user: user}
+  setup do
+    %{user: user_fixture()}
   end
 
   describe "Confirm user" do
@@ -43,7 +37,6 @@ defmodule RadioappWeb.UserConfirmationLiveTest do
                "User confirmed successfully"
 
       assert Accounts.get_user!(user.id).confirmed_at
-
       refute get_session(conn, :user_token)
       assert Repo.all(Accounts.UserToken) == []
 
@@ -62,12 +55,8 @@ defmodule RadioappWeb.UserConfirmationLiveTest do
                "User confirmation link is invalid or it has expired"
 
       # when logged in
-      conn =
-        Phoenix.ConnTest.build_conn()
-        |> Map.put(:host, "sample.radioapp.ca")
-
       {:ok, lv, _html} =
-        conn
+        build_conn()
         |> log_in_user(user)
         |> live(~p"/users/confirm/#{token}")
 

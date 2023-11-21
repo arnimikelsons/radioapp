@@ -6,15 +6,12 @@ defmodule RadioappWeb.UserResetPasswordLiveTest do
 
   alias Radioapp.Accounts
 
-  @tenant "sample"
-  @prefix Triplex.to_prefix(@tenant)
-
   setup do
     user = user_fixture()
 
     token =
       extract_user_token(fn url ->
-        Accounts.deliver_user_reset_password_instructions(user, @tenant, url)
+        Accounts.deliver_user_reset_password_instructions(user, url)
       end)
 
     %{token: token, user: user}
