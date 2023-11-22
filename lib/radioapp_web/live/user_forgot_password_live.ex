@@ -24,20 +24,18 @@ defmodule RadioappWeb.UserForgotPasswordLive do
     """
   end
 
-  def mount(params, _session, socket) do
-    tenant="demo"
+  def mount(params, %{"subdomain" => tenant}, socket) do
     socket =
       socket
-        |> assign(:tenant, tenant)
+      |> assign(:tenant, tenant)
+
     {:ok, socket}
   end
 
   def handle_event("send_email", %{"user" => %{"email" => email}}, socket) do
-    
     tenant = socket.assigns.tenant
-    
 
-    if user = Accounts.get_user_by_email(email) do
+    if user = Accounts.get_user_by_email(email, tenant) do
       Accounts.deliver_user_reset_password_instructions(
         user,
         tenant,
