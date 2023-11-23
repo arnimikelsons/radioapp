@@ -60,7 +60,7 @@
           <a class="navbar-brand logo-img d-block" href="/">
 
 
-              <%= if @conn.private.defaults != nil and @conn.private.defaults.logo_path != nil do %>
+              <%= if false and @conn.private.defaults != nil and @conn.private.defaults.logo_path != nil do %>
                 <img src={@conn.private.defaults.logo_path} alt={"#{@conn.private.defaults.org_name} logo"} />
               <% else  %>
                 <img src="/images/radioapp_logo.png" alt="RadioApp Logo" />
@@ -101,7 +101,7 @@
             <% end %>
           </ul>
         </nav>
-        <%= if @conn.private.defaults != nil and @conn.private.defaults.playout_url != nil and @conn.private.defaults.playout_type != nil do %>
+        <%= if false and @conn.private.defaults != nil and @conn.private.defaults.playout_url != nil and @conn.private.defaults.playout_type != nil do %>
 
           <div class="audio-container">
             <p class="text-center">Radio Player streaming <%= @conn.private.defaults.callsign %></p>

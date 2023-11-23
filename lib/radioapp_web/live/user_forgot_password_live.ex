@@ -3,8 +3,6 @@ defmodule RadioappWeb.UserForgotPasswordLive do
 
   alias Radioapp.Accounts
 
-  import RadioappWeb.LiveHelpers
-
   def render(assigns) do
     ~H"""
     <div class="mx-auto max-w-sm">
@@ -25,7 +23,7 @@ defmodule RadioappWeb.UserForgotPasswordLive do
     """
   end     
 
-  def mount(params, %{"subdomain" => tenant}, socket) do
+  def mount(_params, %{"subdomain" => tenant}, socket) do
     socket =
       socket
       |> assign(:tenant, tenant)
