@@ -62,7 +62,7 @@ defmodule RadioappWeb.Router do
   ## Authentication routes
 
   scope "/", RadioappWeb do
-    pipe_through [:browser, :redirect_if_user_is_authenticated]
+    pipe_through [:browser, :redirect_if_user_is_authenticated, :tenant_in_session]
 
     live_session :redirect_if_user_is_authenticated,
       on_mount: [{RadioappWeb.UserAuth, :redirect_if_user_is_authenticated}] do
@@ -136,7 +136,7 @@ defmodule RadioappWeb.Router do
 
   scope "/", RadioappWeb do
     pipe_through [:browser, :require_authenticated_user, :user, :tenant_in_session]
-  
+
     live "/users/invite", UserInvitationLive, :new
 
     live "/programs/:program_id/logs/", LogLive.Index, :index
