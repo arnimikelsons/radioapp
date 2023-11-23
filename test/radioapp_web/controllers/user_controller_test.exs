@@ -29,16 +29,17 @@ defmodule RadioappWeb.UserControllerTest do
     test "redirects when data is valid", %{conn: conn} do
       target_user = Factory.insert(:user, roles: %{@tenant => "admin"}, full_name: "Some Full Name")
 
-      conn = put(conn, ~p"/users/#{target_user}", user: %{full_name: "Some Updated Full Name"})
+      conn = put(conn, ~p"/users/#{target_user}", user: %{full_name: "Some Updated Full Name", tenant_role: target_user.roles[@tenant]})
       assert redirected_to(conn) == ~p"/users"
       assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "User updated successfully."
       conn = get(conn, ~p"/users/")
       assert html_response(conn, 200) =~ "Some Updated Full Name"
     end
 
-    test "renders errors when data is invalid for Edit", %{conn: conn, user: user} do
+    test "renders errors when data is invalid for Edit", %{conn: conn, user: _user} do
+      target_user = Factory.insert(:user, roles: %{@tenant => "admin"}, full_name: "Some Full Name")
 
-      conn = put(conn, ~p"/users/#{user}", user: %{full_name: nil})
+      conn = put(conn, ~p"/users/#{target_user}", user: %{full_name: nil, tenant_role: target_user.roles[@tenant]})
       assert html_response(conn, 200) =~ "Edit User"
     end
 

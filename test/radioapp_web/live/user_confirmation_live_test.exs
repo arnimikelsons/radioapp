@@ -6,9 +6,13 @@ defmodule RadioappWeb.UserConfirmationLiveTest do
 
   alias Radioapp.Accounts
   alias Radioapp.Repo
+  alias Radioapp.Factory
 
-  setup do
-    %{user: user_fixture()}
+  @tenant "sample"
+
+  setup %{conn: conn} do
+    user = Factory.insert(:user, roles: %{@tenant => "admin"}, confirmed_at: nil)
+    %{conn: conn, user: user}
   end
 
   describe "Confirm user" do
@@ -55,6 +59,10 @@ defmodule RadioappWeb.UserConfirmationLiveTest do
                "User confirmation link is invalid or it has expired"
 
       # when logged in
+      conn =
+      Phoenix.ConnTest.build_conn()
+        |> Map.put(:host, "sample.radioapp.ca")
+      
       {:ok, lv, _html} =
         build_conn()
         |> log_in_user(user)
@@ -71,6 +79,7 @@ defmodule RadioappWeb.UserConfirmationLiveTest do
     end
 
     test "does not confirm email with invalid token", %{conn: conn, user: user} do
+      
       {:ok, lv, _html} = live(conn, ~p"/users/confirm/invalid-token")
 
       {:ok, conn} =
