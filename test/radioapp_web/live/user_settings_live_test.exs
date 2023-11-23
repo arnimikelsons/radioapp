@@ -202,7 +202,9 @@ defmodule RadioappWeb.UserSettingsLiveTest do
     # end
 
     test "redirects if user is not logged in", %{token: token} do
-      conn = build_conn()
+      conn = 
+        build_conn()
+          |> Map.put(:host, "sample.radioapp.ca")
       {:error, redirect} = live(conn, ~p"/users/settings/confirm_email/#{token}")
       assert {:redirect, %{to: path, flash: flash}} = redirect
       assert path == ~p"/users/log_in"

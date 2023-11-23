@@ -175,7 +175,6 @@ defmodule Radioapp.AdminTest do
     test "delete_defaults/1 deletes the defaults" do
       defaults = Factory.insert(:defaults, [], prefix: @prefix)
       assert {:ok, %Defaults{}} = Admin.delete_defaults(defaults)
-      defaults = Admin.get_defaults!(@tenant)
       assert Admin.get_defaults!(@tenant) == nil 
     end
 

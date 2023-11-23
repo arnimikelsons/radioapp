@@ -69,9 +69,4 @@ defmodule RadioappWeb.DefaultsControllerTest do
 
     end
   end
-
-  defp create_defaults(_) do
-    defaults = Factory.insert(:link, [], prefix: @prefix)
-    %{defaults: defaults}
-  end
 end

@@ -59,12 +59,12 @@ defmodule RadioappWeb.UserConfirmationLiveTest do
                "User confirmation link is invalid or it has expired"
 
       # when logged in
-      conn =
+      build_conn =
       Phoenix.ConnTest.build_conn()
         |> Map.put(:host, "sample.radioapp.ca")
-      
+
       {:ok, lv, _html} =
-        build_conn()
+        build_conn
         |> log_in_user(user)
         |> live(~p"/users/confirm/#{token}")
 
