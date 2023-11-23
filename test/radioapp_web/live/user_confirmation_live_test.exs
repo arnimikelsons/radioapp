@@ -9,7 +9,6 @@ defmodule RadioappWeb.UserConfirmationLiveTest do
   alias Radioapp.Factory
 
   @tenant "sample"
-  @prefix Triplex.to_prefix(@tenant)
 
   setup %{conn: conn} do
     user = Factory.insert(:user, roles: %{@tenant => "admin"}, confirmed_at: nil)

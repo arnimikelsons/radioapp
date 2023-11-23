@@ -6,12 +6,14 @@ defmodule RadioappWeb.UserResetPasswordLiveTest do
 
   alias Radioapp.Accounts
 
+  @tenant "sample"
+
   setup do
     user = user_fixture()
 
     token =
       extract_user_token(fn url ->
-        Accounts.deliver_user_reset_password_instructions(user, url)
+        Accounts.deliver_user_reset_password_instructions(user, @tenant, url)
       end)
 
     %{token: token, user: user}

@@ -40,9 +40,9 @@ defmodule RadioappWeb.UserController do
 
   def update(conn, %{"id" => id, "user" => user_params}) do
     tenant = RadioappWeb.get_tenant(conn)
+
     user = Accounts.get_user_in_tenant!(id, tenant)
     tenant_role = user_params["tenant_role"]
-
     case Accounts.update_user_in_tenant(user, user_params, tenant_role, tenant) do
       {:ok, _user} ->
         conn
@@ -50,7 +50,7 @@ defmodule RadioappWeb.UserController do
         |> redirect(to: ~p"/users")
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, :edit, user: user, tenant_role: tenant_role, changeset: changeset)
+        render(conn, :edit, user: user, tenant: tenant, changeset: changeset)
     end
 
   end

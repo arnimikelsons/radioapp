@@ -62,7 +62,7 @@ defmodule Radioapp.AccountsTest do
     end
 
     test "does not return the user with the given id in different tenant" do
-      %{id: id} = user = Factory.insert(:user, roles: %{@another_tenant => "admin"})
+      %{id: id} = Factory.insert(:user, roles: %{@another_tenant => "admin"})
       refute Accounts.get_user_in_tenant!(id, @tenant)
     end
   end
@@ -575,7 +575,7 @@ defmodule Radioapp.AccountsTest do
     test "sends token through notification", %{user: user} do
       token =
         extract_user_token(fn url ->
-          Accounts.deliver_user_reset_password_instructions(user, url)
+          Accounts.deliver_user_reset_password_instructions(user, @tenant, url)
         end)
 
       {:ok, token} = Base.url_decode64(token, padding: false)
@@ -592,7 +592,7 @@ defmodule Radioapp.AccountsTest do
 
       token =
         extract_user_token(fn url ->
-          Accounts.deliver_user_reset_password_instructions(user, url)
+          Accounts.deliver_user_reset_password_instructions(user, @tenant, url)
         end)
 
       %{user: user, token: token}
