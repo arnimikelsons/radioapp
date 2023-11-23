@@ -59,11 +59,13 @@ defmodule Radioapp.Accounts.OrganizationTenant do
            {:ok, _} <- create_link(tenant, %{icon: "fa-brands fa-facebook ", type: "Facebook" }),
            {:ok, _} <- create_link(tenant, %{icon: "fa-brands fa-spotify", type: "Spotify" }),
            {:ok, _} <- create_link(tenant, %{icon: "fa-brands fa-instagram", type: "Instagram" }),
-           {:ok, _} <- create_link(tenant, %{icon: "fa-brands fa-tiktok", type: "TikTok" }) do
+           {:ok, _} <- create_link(tenant, %{icon: "fa-brands fa-tiktok", type: "TikTok" }),
+           
+           {:ok, _} <- create_defaults(tenant) do
 
 
           #{:ok, _} <- create_textfield(tenant),
-          #{:ok, _} <- create_settings(tenant) do
+          #{:ok, _} <- create_defaults(tenant) do
           #{:ok, _} <- create_worker_user(tenant) do
          org
         else
@@ -149,17 +151,17 @@ defmodule Radioapp.Accounts.OrganizationTenant do
   #   )
   # end
 
-  # defp create_settings(tenant) do
-  #   Admin.create_settings(
-  #     %{
-  #       program_name: "GiftingApp Program",
-  #       disable_logins: false,
-  #       from_email: "giftingapp@northernvillage.net",
-  #       from_email_name: "GiftingApp",
-  #       org_name: "GiftingApp",
-  #       logo_path: "/images/GiftingApp-logo.png"
-  #     },
-  #     tenant
-  #   )
-  # end
+  defp create_defaults(tenant) do
+    Admin.create_defaults(
+      %{
+        callsign: "RadioApp",
+        from_email: "radioapp@northernvillage.net",
+        from_email_name: "RadioApp",
+        logo_path: "/images/radioapp_logo.png",
+        org_name: "radioApp",
+        playout_type: "audio/mpeg"
+      },
+      tenant
+    )
+  end
 end

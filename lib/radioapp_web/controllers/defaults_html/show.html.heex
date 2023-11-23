@@ -1,0 +1,26 @@
+<.header>
+  Defaults
+  <:subtitle>This is a defaults record from your database.</:subtitle>
+  <:actions>
+    <.link href={~p"/defaults/#{@defaults}/edit"}>
+      <.button>Edit defaults</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Callsign"><%= @defaults.callsign %></:item>
+  <:item title="From email"><%= @defaults.from_email %></:item>
+  <:item title="From email name"><%= @defaults.from_email_name %></:item>
+  <:item title="Logo path"><%= @defaults.logo_path %></:item>
+  <:item title="Org name"><%= @defaults.org_name %></:item>
+  <:item title="Privacy policy url"><%= @defaults.privacy_policy_url %></:item>
+  <:item title="Support email"><%= @defaults.support_email %></:item>
+  <:item title="Phone"><%= @defaults.phone %></:item>
+  <:item title="Playout url"><%= @defaults.playout_url %></:item>
+  <:item title="Playout type"><%= @defaults.playout_type %></:item>
+  <:item title="Tos url"><%= @defaults.tos_url %></:item>
+  <:item title="Website url"><%= @defaults.website_url %></:item>
+</.list>
+
+<.back navigate={~p"/defaults"}>Back to defaults</.back>

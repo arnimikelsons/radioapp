@@ -2,6 +2,7 @@ defmodule RadioappWeb.UserForgotPasswordLive do
   use RadioappWeb, :live_view
 
   alias Radioapp.Accounts
+
   import RadioappWeb.LiveHelpers
 
   def render(assigns) do
@@ -22,7 +23,7 @@ defmodule RadioappWeb.UserForgotPasswordLive do
       </.simple_form>
     </div>
     """
-  end
+  end     
 
   def mount(params, %{"subdomain" => tenant}, socket) do
     socket =

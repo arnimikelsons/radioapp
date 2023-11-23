@@ -217,4 +217,102 @@ defmodule Radioapp.Admin do
     Category.changeset(category, attrs)
   end
 
+
+  alias Radioapp.Admin.Defaults
+
+  @doc """
+  Returns the list of defaults.
+
+  ## Examples
+
+      iex> list_defaults()
+      [%Defaults{}, ...]
+
+  """
+  def list_defaults(tenant) do
+    Repo.all(Defaults, prefix: Triplex.to_prefix(tenant))
+  end
+
+  @doc """
+  Gets a single defaults.
+
+  Raises `Ecto.NoResultsError` if the Defaults does not exist.
+
+  ## Examples
+
+      iex> get_defaults!(123)
+      %Defaults{}
+
+      iex> get_defaults!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_defaults!(tenant) do
+    Repo.one(Defaults, prefix: Triplex.to_prefix(tenant))
+  end
+
+  @doc """
+  Creates a defaults.
+
+  ## Examples
+
+      iex> create_defaults(%{field: value})
+      {:ok, %Defaults{}}
+
+      iex> create_defaults(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_defaults(attrs \\ %{}, tenant) do
+    %Defaults{}
+    |> Defaults.changeset(attrs)
+    |> Repo.insert(prefix: Triplex.to_prefix(tenant))
+  end
+
+  @doc """
+  Updates a defaults.
+
+  ## Examples
+
+      iex> update_defaults(defaults, %{field: new_value})
+      {:ok, %Defaults{}}
+
+      iex> update_defaults(defaults, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_defaults(%Defaults{} = defaults, attrs) do
+    defaults
+    |> Defaults.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a defaults.
+
+  ## Examples
+
+      iex> delete_defaults(defaults)
+      {:ok, %Defaults{}}
+
+      iex> delete_defaults(defaults)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_defaults(%Defaults{} = defaults) do
+    Repo.delete(defaults)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking defaults changes.
+
+  ## Examples
+
+      iex> change_defaults(defaults)
+      %Ecto.Changeset{data: %Defaults{}}
+
+  """
+  def change_defaults(%Defaults{} = defaults, attrs \\ %{}) do
+    Defaults.changeset(defaults, attrs)
+  end
 end

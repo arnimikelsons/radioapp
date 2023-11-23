@@ -18,4 +18,28 @@ defmodule Radioapp.AdminFixtures do
 
     category
   end
+
+  @doc """
+  Generate a defaults.
+  """
+  def defaults_fixture(attrs \\ %{}) do
+    {:ok, defaults} =
+      attrs
+      |> Enum.into(%{
+        callsign: "some callsign",
+        from_email: "some from_email",
+        from_email_name: "some from_email_name",
+        logo_path: "some logo_path",
+        org_name: "some org_name",
+        phone: "some phone",
+        playout_url: "some playout_url",
+        privacy_policy_url: "some privacy_policy_url",
+        support_email: "some support_email",
+        tos_url: "some tos_url",
+        website_url: "some website_url"
+      })
+      |> Radioapp.Admin.create_defaults()
+
+    defaults
+  end
 end
