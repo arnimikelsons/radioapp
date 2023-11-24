@@ -12,7 +12,7 @@ defmodule RadioappWeb.LogLive.Index do
     tenant = Map.fetch!(session, "subdomain")
 
     socket =
-      assign_defaults(session, socket)
+      assign_stationdefaults(session, socket)
       |> assign(:tenant, tenant)
     program = Station.get_program!(program_id, tenant)
     {:ok,

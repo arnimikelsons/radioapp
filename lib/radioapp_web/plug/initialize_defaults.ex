@@ -1,4 +1,4 @@
-defmodule RadioappWeb.Plug.InitializeDefaults do
+defmodule RadioappWeb.Plug.InitializeStationdefaults do
   import Plug.Conn
 
   alias Radioapp.Admin
@@ -6,13 +6,13 @@ defmodule RadioappWeb.Plug.InitializeDefaults do
   def init(default), do: default
 
   def call(conn, _opts) do
-    defaults =
+    stationdefaults =
       conn
       |> RadioappWeb.get_tenant()
-      |> Admin.get_defaults!()
+      |> Admin.get_stationdefaults!()
 
     conn
-    |> put_private(:defaults, defaults)
-    |> assign(:defaults, defaults)
+    |> put_private(:stationdefaults, stationdefaults)
+    |> assign(:stationdefaults, stationdefaults)
   end
 end

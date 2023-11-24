@@ -4,7 +4,7 @@ defmodule RadioappWeb.LiveHelpers do
   alias Radioapp.Accounts
   alias Radioapp.Accounts.User
 
-  def assign_defaults(session, socket) do
+  def assign_stationdefaults(session, socket) do
     socket =
       socket
       |> assign_new(:current_user, fn ->

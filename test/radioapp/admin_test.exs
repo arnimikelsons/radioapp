@@ -1,7 +1,7 @@
 defmodule Radioapp.AdminTest do
   use Radioapp.DataCase
   alias Radioapp.Factory
-  alias Radioapp.Admin.{Category, Link, Defaults}
+  alias Radioapp.Admin.{Category, Link, Stationdefaults}
   alias Radioapp.Admin
 
   @tenant "sample"
@@ -112,75 +112,75 @@ defmodule Radioapp.AdminTest do
     end
   end
 
-  describe "defaults" do
+  describe "stationdefaults" do
 
     @invalid_attrs %{callsign: nil, from_email: nil, from_email_name: nil, logo_path: nil, org_name: nil, phone: nil, playout_url: nil, privacy_policy_url: nil, support_email: nil, tos_url: nil, website_url: nil}
 
-    test "list_defaults/0 returns all defaults" do
-      defaults = Factory.insert(:defaults, [], prefix: @prefix)
-      assert Admin.list_defaults(@tenant) == [defaults]
+    test "list_stationdefaults/0 returns all stationdefaults" do
+      stationdefaults = Factory.insert(:stationdefaults, [], prefix: @prefix)
+      assert Admin.list_stationdefaults(@tenant) == [stationdefaults]
     end
 
-    test "get_defaults!/1 returns the defaults with given id" do
-      defaults = Factory.insert(:defaults, [], prefix: @prefix)
-      assert Admin.get_defaults!(@tenant) == defaults
+    test "get_stationdefaults!/1 returns the stationdefaults with given id" do
+      stationdefaults = Factory.insert(:stationdefaults, [], prefix: @prefix)
+      assert Admin.get_stationdefaults!(@tenant) == stationdefaults
     end
 
-    test "create_defaults/1 with valid data creates a defaults" do
+    test "create_stationdefaults/1 with valid data creates a stationdefaults" do
       valid_attrs = %{callsign: "some callsign", from_email: "some from_email", from_email_name: "some from_email_name", logo_path: "some logo_path", org_name: "some org_name", phone: "some phone", playout_url: "some playout_url", privacy_policy_url: "some privacy_policy_url", support_email: "some support_email", tos_url: "some tos_url", website_url: "some website_url"}
 
-      assert {:ok, %Defaults{} = defaults} = Admin.create_defaults(valid_attrs, @tenant)
-      assert defaults.callsign == "some callsign"
-      assert defaults.from_email == "some from_email"
-      assert defaults.from_email_name == "some from_email_name"
-      assert defaults.logo_path == "some logo_path"
-      assert defaults.org_name == "some org_name"
-      assert defaults.phone == "some phone"
-      assert defaults.playout_url == "some playout_url"
-      assert defaults.privacy_policy_url == "some privacy_policy_url"
-      assert defaults.support_email == "some support_email"
-      assert defaults.tos_url == "some tos_url"
-      assert defaults.website_url == "some website_url"
+      assert {:ok, %Stationdefaults{} = stationdefaults} = Admin.create_stationdefaults(valid_attrs, @tenant)
+      assert stationdefaults.callsign == "some callsign"
+      assert stationdefaults.from_email == "some from_email"
+      assert stationdefaults.from_email_name == "some from_email_name"
+      assert stationdefaults.logo_path == "some logo_path"
+      assert stationdefaults.org_name == "some org_name"
+      assert stationdefaults.phone == "some phone"
+      assert stationdefaults.playout_url == "some playout_url"
+      assert stationdefaults.privacy_policy_url == "some privacy_policy_url"
+      assert stationdefaults.support_email == "some support_email"
+      assert stationdefaults.tos_url == "some tos_url"
+      assert stationdefaults.website_url == "some website_url"
     end
 
-    test "create_defaults/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Admin.create_defaults(@invalid_attrs)
+    test "create_stationdefaults/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Admin.create_stationdefaults(@invalid_attrs)
     end
 
-    test "update_defaults/2 with valid data updates the defaults" do
-      defaults = Factory.insert(:defaults, [], prefix: @prefix)
+    test "update_stationdefaults/2 with valid data updates the stationdefaults" do
+      stationdefaults = Factory.insert(:stationdefaults, [], prefix: @prefix)
 
       update_attrs = %{callsign: "some updated callsign", from_email: "some updated from_email", from_email_name: "some updated from_email_name", logo_path: "some updated logo_path", org_name: "some updated org_name", phone: "some updated phone", playout_url: "some updated playout_url", privacy_policy_url: "some updated privacy_policy_url", support_email: "some updated support_email", tos_url: "some updated tos_url", website_url: "some updated website_url"}
 
-      assert {:ok, %Defaults{} = defaults} = Admin.update_defaults(defaults, update_attrs)
-      assert defaults.callsign == "some updated callsign"
-      assert defaults.from_email == "some updated from_email"
-      assert defaults.from_email_name == "some updated from_email_name"
-      assert defaults.logo_path == "some updated logo_path"
-      assert defaults.org_name == "some updated org_name"
-      assert defaults.phone == "some updated phone"
-      assert defaults.playout_url == "some updated playout_url"
-      assert defaults.privacy_policy_url == "some updated privacy_policy_url"
-      assert defaults.support_email == "some updated support_email"
-      assert defaults.tos_url == "some updated tos_url"
-      assert defaults.website_url == "some updated website_url"
+      assert {:ok, %Stationdefaults{} = stationdefaults} = Admin.update_stationdefaults(stationdefaults, update_attrs)
+      assert stationdefaults.callsign == "some updated callsign"
+      assert stationdefaults.from_email == "some updated from_email"
+      assert stationdefaults.from_email_name == "some updated from_email_name"
+      assert stationdefaults.logo_path == "some updated logo_path"
+      assert stationdefaults.org_name == "some updated org_name"
+      assert stationdefaults.phone == "some updated phone"
+      assert stationdefaults.playout_url == "some updated playout_url"
+      assert stationdefaults.privacy_policy_url == "some updated privacy_policy_url"
+      assert stationdefaults.support_email == "some updated support_email"
+      assert stationdefaults.tos_url == "some updated tos_url"
+      assert stationdefaults.website_url == "some updated website_url"
     end
 
-    test "update_defaults/2 with invalid data returns error changeset" do
-      defaults = Factory.insert(:defaults, [], prefix: @prefix)
-      assert {:error, %Ecto.Changeset{}} = Admin.update_defaults(defaults, @invalid_attrs)
-      assert defaults == Admin.get_defaults!(@tenant)
+    test "update_stationdefaults/2 with invalid data returns error changeset" do
+      stationdefaults = Factory.insert(:stationdefaults, [], prefix: @prefix)
+      assert {:error, %Ecto.Changeset{}} = Admin.update_stationdefaults(stationdefaults, @invalid_attrs)
+      assert stationdefaults == Admin.get_stationdefaults!(@tenant)
     end
 
-    test "delete_defaults/1 deletes the defaults" do
-      defaults = Factory.insert(:defaults, [], prefix: @prefix)
-      assert {:ok, %Defaults{}} = Admin.delete_defaults(defaults)
-      assert Admin.get_defaults!(@tenant) == nil 
+    test "delete_stationdefaults/1 deletes the stationdefaults" do
+      stationdefaults = Factory.insert(:stationdefaults, [], prefix: @prefix)
+      assert {:ok, %Stationdefaults{}} = Admin.delete_stationdefaults(stationdefaults)
+      assert Admin.get_stationdefaults!(@tenant) == nil 
     end
 
-    test "change_defaults/1 returns a defaults changeset" do
-      defaults = Factory.insert(:defaults, [], prefix: @prefix)
-      assert %Ecto.Changeset{} = Admin.change_defaults(defaults)
+    test "change_stationdefaults/1 returns a stationdefaults changeset" do
+      stationdefaults = Factory.insert(:stationdefaults, [], prefix: @prefix)
+      assert %Ecto.Changeset{} = Admin.change_stationdefaults(stationdefaults)
     end
   end
 end

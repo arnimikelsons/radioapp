@@ -9,7 +9,7 @@ defmodule RadioappWeb.LinkLive.Show do
     tenant = Map.fetch!(session, "subdomain")
 
     socket =
-      assign_defaults(session, socket)
+      assign_stationdefaults(session, socket)
       |> assign(:tenant, tenant)
 
     {:ok, socket}

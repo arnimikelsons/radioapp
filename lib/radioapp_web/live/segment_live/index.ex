@@ -17,7 +17,7 @@ defmodule RadioappWeb.SegmentLive.Index do
       ) do
     tenant = Map.fetch!(session, "subdomain")
     socket =
-      assign_defaults(session, socket)
+      assign_stationdefaults(session, socket)
       |> assign(:tenant, tenant)
 
     current_role = socket.assigns.current_user.role

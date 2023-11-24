@@ -218,101 +218,101 @@ defmodule Radioapp.Admin do
   end
 
 
-  alias Radioapp.Admin.Defaults
+  alias Radioapp.Admin.Stationdefaults
 
   @doc """
-  Returns the list of defaults.
+  Returns the list of stationdefaults.
 
   ## Examples
 
-      iex> list_defaults()
-      [%Defaults{}, ...]
+      iex> list_stationdefaults()
+      [%Stationdefaults{}, ...]
 
   """
-  def list_defaults(tenant) do
-    Repo.all(Defaults, prefix: Triplex.to_prefix(tenant))
+  def list_stationdefaults(tenant) do
+    Repo.all(Stationdefaults, prefix: Triplex.to_prefix(tenant))
   end
 
   @doc """
-  Gets a single defaults.
+  Gets a single stationdefaults.
 
-  Raises `Ecto.NoResultsError` if the Defaults does not exist.
+  Raises `Ecto.NoResultsError` if the Stationdefaults does not exist.
 
   ## Examples
 
-      iex> get_defaults!(123)
-      %Defaults{}
+      iex> get_stationdefaults!(123)
+      %Stationdefaults{}
 
-      iex> get_defaults!(456)
+      iex> get_stationdefaults!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_defaults!(tenant) do
-    Repo.one(Defaults, prefix: Triplex.to_prefix(tenant))
+  def get_stationdefaults!(tenant) do
+    Repo.one(Stationdefaults, prefix: Triplex.to_prefix(tenant))
   end
 
   @doc """
-  Creates a defaults.
+  Creates a stationdefaults.
 
   ## Examples
 
-      iex> create_defaults(%{field: value})
-      {:ok, %Defaults{}}
+      iex> create_stationdefaults(%{field: value})
+      {:ok, %Stationdefaults{}}
 
-      iex> create_defaults(%{field: bad_value})
+      iex> create_stationdefaults(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_defaults(attrs \\ %{}, tenant) do
-    %Defaults{}
-    |> Defaults.changeset(attrs)
+  def create_stationdefaults(attrs \\ %{}, tenant) do
+    %Stationdefaults{}
+    |> Stationdefaults.changeset(attrs)
     |> Repo.insert(prefix: Triplex.to_prefix(tenant))
   end
 
   @doc """
-  Updates a defaults.
+  Updates a stationdefaults.
 
   ## Examples
 
-      iex> update_defaults(defaults, %{field: new_value})
-      {:ok, %Defaults{}}
+      iex> update_stationdefaults(stationdefaults, %{field: new_value})
+      {:ok, %Stationdefaults{}}
 
-      iex> update_defaults(defaults, %{field: bad_value})
+      iex> update_stationdefaults(stationdefaults, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_defaults(%Defaults{} = defaults, attrs) do
-    defaults
-    |> Defaults.changeset(attrs)
+  def update_stationdefaults(%Stationdefaults{} = stationdefaults, attrs) do
+    stationdefaults
+    |> Stationdefaults.changeset(attrs)
     |> Repo.update()
   end
 
   @doc """
-  Deletes a defaults.
+  Deletes a stationdefaults.
 
   ## Examples
 
-      iex> delete_defaults(defaults)
-      {:ok, %Defaults{}}
+      iex> delete_stationdefaults(stationdefaults)
+      {:ok, %Stationdefaults{}}
 
-      iex> delete_defaults(defaults)
+      iex> delete_stationdefaults(stationdefaults)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_defaults(%Defaults{} = defaults) do
-    Repo.delete(defaults)
+  def delete_stationdefaults(%Stationdefaults{} = stationdefaults) do
+    Repo.delete(stationdefaults)
   end
 
   @doc """
-  Returns an `%Ecto.Changeset{}` for tracking defaults changes.
+  Returns an `%Ecto.Changeset{}` for tracking stationdefaults changes.
 
   ## Examples
 
-      iex> change_defaults(defaults)
-      %Ecto.Changeset{data: %Defaults{}}
+      iex> change_stationdefaults(stationdefaults)
+      %Ecto.Changeset{data: %Stationdefaults{}}
 
   """
-  def change_defaults(%Defaults{} = defaults, attrs \\ %{}) do
-    Defaults.changeset(defaults, attrs)
+  def change_stationdefaults(%Stationdefaults{} = stationdefaults, attrs \\ %{}) do
+    Stationdefaults.changeset(stationdefaults, attrs)
   end
 end

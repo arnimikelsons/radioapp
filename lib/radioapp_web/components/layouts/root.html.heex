@@ -60,8 +60,8 @@
           <a class="navbar-brand logo-img d-block" href="/">
 
 
-              <%= if false and @conn.private.defaults != nil and @conn.private.defaults.logo_path != nil do %>
-                <img src={@conn.private.defaults.logo_path} alt={"#{@conn.private.defaults.org_name} logo"} />
+              <%= if false and @conn.private.stationdefaults != nil and @conn.private.stationdefaults.logo_path != nil do %>
+                <img src={@conn.private.stationdefaults.logo_path} alt={"#{@conn.private.stationdefaults.org_name} logo"} />
               <% else  %>
                 <img src="/images/radioapp_logo.png" alt="RadioApp Logo" />
               <% end %>
@@ -101,14 +101,14 @@
             <% end %>
           </ul>
         </nav>
-        <%= if false and @conn.private.defaults != nil and @conn.private.defaults.playout_url != nil and @conn.private.defaults.playout_type != nil do %>
+        <%= if false and @conn.private.stationdefaults != nil and @conn.private.stationdefaults.playout_url != nil and @conn.private.stationdefaults.playout_type != nil do %>
 
           <div class="audio-container">
-            <p class="text-center">Radio Player streaming <%= @conn.private.defaults.callsign %></p>
+            <p class="text-center">Radio Player streaming <%= @conn.private.stationdefaults.callsign %></p>
             <div id="audio-player" class="audio-player" role="region" aria-label="Player">
               <div id="audio-ignore">
                 <audio id="music" crossorigin="anonymous" preload="auto">
-                  <source src={@conn.private.defaults.playout_url} type={@conn.private.defaults.playout_type} />
+                  <source src={@conn.private.stationdefaults.playout_url} type={@conn.private.stationdefaults.playout_type} />
                 </audio>
               </div>
               <div class="first-row row">

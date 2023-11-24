@@ -50,7 +50,7 @@ defmodule RadioappWeb.UserInvitationLive do
     tenant = Map.fetch!(session, "subdomain")
     host = Map.fetch!(session, "host")
     socket =
-      assign_defaults(session, socket)
+      assign_stationdefaults(session, socket)
       |> assign(:host, host)
 
 
