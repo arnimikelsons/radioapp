@@ -14,7 +14,7 @@ defmodule RadioappWeb.LogLive.Show do
         socket
       ) do
     tenant = Map.fetch!(session, "subdomain")
-    socket = assign_defaults(session, socket)
+    socket = assign_stationdefaults(session, socket)
     current_role = socket.assigns.current_user.role
 
     {:ok,

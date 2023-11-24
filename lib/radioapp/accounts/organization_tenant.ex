@@ -11,7 +11,7 @@ defmodule Radioapp.Accounts.OrganizationTenant do
       Triplex.create_schema(tenant, Repo, fn tenant, repo ->
         {:ok, _} = Triplex.migrate(tenant, repo)
 
-        seed_defaults(attrs, tenant)
+        seed_stationdefaults(attrs, tenant)
       end)
 
     case result do
@@ -28,7 +28,7 @@ defmodule Radioapp.Accounts.OrganizationTenant do
         {:error, reason}
     end
   end
-  def seed_defaults(attrs, tenant) do
+  def seed_stationdefaults(attrs, tenant) do
 
     Repo.transaction(fn ->
       with {:ok, org} <- Accounts.create_org(attrs),
@@ -61,11 +61,11 @@ defmodule Radioapp.Accounts.OrganizationTenant do
            {:ok, _} <- create_link(tenant, %{icon: "fa-brands fa-instagram", type: "Instagram" }),
            {:ok, _} <- create_link(tenant, %{icon: "fa-brands fa-tiktok", type: "TikTok" }),
            
-           {:ok, _} <- create_defaults(tenant) do
+           {:ok, _} <- create_stationdefaults(tenant) do
 
 
           #{:ok, _} <- create_textfield(tenant),
-          #{:ok, _} <- create_defaults(tenant) do
+          #{:ok, _} <- create_stationdefaults(tenant) do
           #{:ok, _} <- create_worker_user(tenant) do
          org
         else
@@ -151,8 +151,8 @@ defmodule Radioapp.Accounts.OrganizationTenant do
   #   )
   # end
 
-  defp create_defaults(tenant) do
-    Admin.create_defaults(
+  defp create_stationdefaults(tenant) do
+    Admin.create_stationdefaults(
       %{
         callsign: "RadioApp",
         from_email: "radioapp@northernvillage.net",

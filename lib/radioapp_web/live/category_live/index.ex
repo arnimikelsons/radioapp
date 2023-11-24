@@ -10,7 +10,7 @@ defmodule RadioappWeb.CategoryLive.Index do
   def mount(_params, session, socket) do
     tenant = Map.fetch!(session, "subdomain")
     socket =
-      assign_defaults(session, socket)
+      assign_stationdefaults(session, socket)
       |> assign(:tenant, tenant)
     
 
