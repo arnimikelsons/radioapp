@@ -90,5 +90,7 @@ defmodule Radioapp.MixProject do
   #   MIX_ENV=test mix tenant.create sample
   # And also run this:
   #   source .env
+  # Try running this too for tenant migrations:
+  #   MIX_ENV=test mix triplex.migrate
 
 end

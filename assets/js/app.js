@@ -30,7 +30,10 @@ import topbar from "../vendor/topbar"
   var pauseBtn = document.getElementById('player-pause'); // id for pause
   
   // play button event listenter
-  pButton.addEventListener("click", play);
+  if (pButton !== null) {
+    pButton.addEventListener("click", play);
+  }
+
   // Play and Pause
   function play() {
     // start music
@@ -92,36 +95,40 @@ import topbar from "../vendor/topbar"
     `;
   }
   
-  volume.addEventListener("input", () => {
-      music.volume = volume.value; 
-      savedVolume = volume.value;
-      if (isMuted) {
-           unMute();
-      }
-      if (volume.value > 0.0 && volume.value <= 0.5) {
-        lowVolume();
-      }
-      if (volume.value >= 0.6 ) {
-        highVolume();
-      }
-      if (volume.value == 0.0) {
-          mute();
-      }
-  });
+  if (volume !== null) {
+    volume.addEventListener("input", () => {
+        music.volume = volume.value; 
+        savedVolume = volume.value;
+        if (isMuted) {
+            unMute();
+        }
+        if (volume.value > 0.0 && volume.value <= 0.5) {
+          lowVolume();
+        }
+        if (volume.value >= 0.6 ) {
+          highVolume();
+        }
+        if (volume.value == 0.0) {
+            mute();
+        }
+    });
+  }
   
-  muteControl.addEventListener("click", () => {
-      if (isMuted) {
-        // Unmute the stream
-        music.volume = savedVolume;
-        volume.value = savedVolume;
-        unMute();
-      } else {
-          // Mute the stream
-          music.volume = 0.0;
-          volume.value = 0.0;
-          mute();
-      }
-  });
+  if (muteControl !== null) {
+    muteControl.addEventListener("click", () => {
+        if (isMuted) {
+          // Unmute the stream
+          music.volume = savedVolume;
+          volume.value = savedVolume;
+          unMute();
+        } else {
+            // Mute the stream
+            music.volume = 0.0;
+            volume.value = 0.0;
+            mute();
+        }
+    });
+}
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, {
