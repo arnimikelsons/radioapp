@@ -49,6 +49,6 @@ defmodule RadioappWeb.Endpoint do
   plug Plug.Session, @session_options
   plug CORSPlug
   plug RadioappWeb.Plugs.Subdomain
-  #plug RadioappWeb.Plug.InitializeStationdefaults
+  plug RadioappWeb.Plug.InitializeStationdefaults
   plug RadioappWeb.Router
 end
