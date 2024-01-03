@@ -81,7 +81,7 @@ defmodule RadioappWeb.UserInvitationLive do
       {:user_added_to_tenant, user} ->
         if user.confirmed_at do
           url = "https://#{host}"
-          {:ok, _} = UserNotifier.deliver_invited_to_tenant_email(user, url)
+          {:ok, _} = UserNotifier.deliver_invited_to_tenant_email(user, tenant, url)
         else 
           Accounts.deliver_user_invitation_instructions(
             user,

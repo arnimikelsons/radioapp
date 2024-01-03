@@ -1,7 +1,7 @@
 defmodule Radioapp.Accounts.UserNotifier do
   import Swoosh.Email
 
-  alias Radioapp.Mailer
+  alias Radioapp.{Mailer, Admin}
 
   # Delivers the email using the application mailer.
   defp deliver(recipient, subject, body) do
@@ -80,6 +80,7 @@ defmodule Radioapp.Accounts.UserNotifier do
     """)
   end
   def deliver_invitation_instructions(user, tenant, url) do
+    station_defaults = Admin.get_stationdefaults!(tenant)
     url = String.replace(url, "://", "://#{tenant}.")
     deliver(user.email, "Invitation to Radio App", """
 
@@ -87,7 +88,7 @@ defmodule Radioapp.Accounts.UserNotifier do
 
     Hi #{user.email},
 
-    You are invited to join the CFRC online App to manage your radio program. Click on the following link to join:
+    You are invited to join the #{station_defaults.callsign} online App to manage your radio program. Click on the following link to join:
 
     #{url}
 
@@ -97,15 +98,15 @@ defmodule Radioapp.Accounts.UserNotifier do
     """)
   end
 
-  def deliver_invited_to_tenant_email(user, url) do
-
+  def deliver_invited_to_tenant_email(user, tenant, url) do
+    station_defaults = Admin.get_stationdefaults!(tenant)
     deliver(user.email, "Invitation to Radio App", """
 
     ==============================
 
     Hi #{user.email},
 
-    You are invited to join the CFRC online App to manage your radio program. Click on the following link to join:
+    You are invited to join the #{station_defaults.callsign} online App to manage your radio program. Click on the following link to join:
 
     #{url}
 
