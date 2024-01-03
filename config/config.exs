@@ -27,7 +27,8 @@ config :radioapp, RadioappWeb.Endpoint,
     "//ncra.radioapp.ca", 
     "//nv.radioapp.ca",
     "//demo.radioapp.ca",
-    "//chuo.radioapp.ca"
+    "//chuo.radioapp.ca",
+    "//cick.radioapp.ca"
   ]
 
 # Configures the mailer
