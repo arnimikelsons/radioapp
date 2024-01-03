@@ -17,7 +17,9 @@ defmodule RadioappWeb.SegmentLiveTest do
     hit: true,
     instrumental: false,
     new_music: true,
-    song_title: "some song title"
+    song_title: "some song title",
+    indigenous_artist: true,
+    emerging_artist: false
   }
   @update_attrs %{
     artist: "some updated artist",
@@ -28,7 +30,9 @@ defmodule RadioappWeb.SegmentLiveTest do
     hit: false,
     instrumental: true,
     new_music: false,
-    song_title: "some updated song title"
+    song_title: "some updated song title",
+    indigenous_artist: false,
+    emerging_artist: true
   }
 
   @invalid_attrs %{
@@ -40,7 +44,9 @@ defmodule RadioappWeb.SegmentLiveTest do
     hit: false,
     instrumental: false,
     new_music: false,
-    song_title: nil
+    song_title: nil,
+    indigenous_artist: false,
+    emerging_artist: false
   }
   describe "Connection Tests" do
     test "disconnected and connected render without authentication should redirect to login page",

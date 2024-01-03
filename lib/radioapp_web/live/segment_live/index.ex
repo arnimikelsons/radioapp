@@ -26,7 +26,7 @@ defmodule RadioappWeb.SegmentLive.Index do
     talking_seconds = Station.talking_segments(log, tenant)
     talking = Station.formatted_length(talking_seconds)
     segments = Station.list_segments_for_log(log, tenant)
-    [new_music, can_con_music, instrumental_music, hit_music] = Station.track_minutes(log, tenant)
+    [new_music, can_con_music, instrumental_music, hit_music, indigenous_artist, emerging_artist] = Station.track_minutes(log, tenant)
 
     {:ok,
      assign(socket,
@@ -38,7 +38,9 @@ defmodule RadioappWeb.SegmentLive.Index do
        hit_music: hit_music,
        instrumental_music: instrumental_music,
        can_con_music: can_con_music,
-       current_role: current_role, 
+       current_role: current_role,
+       indigenous_artist: indigenous_artist,
+       emerging_artist: emerging_artist,
        tenant: tenant
      )}
   end

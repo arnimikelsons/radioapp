@@ -445,7 +445,9 @@ defmodule Radioapp.Station do
         new_music: s.new_music,
         instrumental: s.instrumental,
         can_con: s.can_con,
-        hit: s.hit
+        hit: s.hit,
+        indigenous_artist: s.indigenous_artist,
+        emerging_artist: s.emerging_artist
       }
     )
     |> Repo.all(prefix: Triplex.to_prefix(tenant))
@@ -574,7 +576,42 @@ defmodule Radioapp.Station do
         _ -> Decimal.round(Decimal.from_float(hit_tracks / count_music_tracks * 100))
       end
 
-    [new_music, can_con_music, instrumental_music, hit_music]
+    [indigenous_tracks] =
+      from(s in Segment,
+        left_join: c in assoc(s, :category),
+        where: [log_id: ^log.id],
+        where: s.indigenous_artist == true,
+        where: c.code >= "20",
+        where: c.code <= "39",
+        select: count(s.id)
+      )
+      |> Repo.all(prefix: Triplex.to_prefix(tenant))
+
+    indigenous_artist =
+      case count_music_tracks do
+        0 -> 0
+        _ -> Decimal.round(Decimal.from_float(indigenous_tracks / count_music_tracks * 100))
+      end
+
+
+    [emerging_tracks] =
+      from(s in Segment,
+        left_join: c in assoc(s, :category),
+        where: [log_id: ^log.id],
+        where: s.emerging_artist == true,
+        where: c.code >= "20",
+        where: c.code <= "39",
+        select: count(s.id)
+      )
+      |> Repo.all(prefix: Triplex.to_prefix(tenant))
+
+    emerging_artist =
+      case count_music_tracks do
+        0 -> 0
+        _ -> Decimal.round(Decimal.from_float(emerging_tracks / count_music_tracks * 100))
+      end
+
+    [new_music, can_con_music, instrumental_music, hit_music, indigenous_artist, emerging_artist]
   end
 
   @doc """

@@ -80,7 +80,9 @@ defmodule RadioappWeb.LogController do
           :new_music,
           :instrumental,
           :can_con,
-          :hit
+          :hit,
+          :indigenous_artist, 
+          :emerging_artist
         ],
         logs
       )

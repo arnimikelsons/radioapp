@@ -13,6 +13,8 @@ defmodule Radioapp.Station.Segment do
     field :hit, :boolean
     field :instrumental, :boolean
     field :new_music, :boolean
+    field :indigenous_artist, :boolean
+    field :emerging_artist, :boolean
     field :start_time, :time
     field :song_title, :string
     field :duration, :string, virtual: true
@@ -34,6 +36,8 @@ defmodule Radioapp.Station.Segment do
       :hit,
       :instrumental,
       :new_music,
+      :indigenous_artist,
+      :emerging_artist,
       :start_time,
       :song_title,
       :category_id,
