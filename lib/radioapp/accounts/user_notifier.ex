@@ -91,8 +91,8 @@ defmodule Radioapp.Accounts.UserNotifier do
     You are invited to join the #{station_defaults.callsign} online App to manage your radio program. Click on the following link to join:
 
     #{url}
-
-    Please contact <a href="mailto:radioapp@northernvillage.net">radioapp@northernvillage.net</a> if you have any questions.
+    
+    Please contact #{station_defaults.support_email} if you have any questions.
 
     ==============================
     """)
@@ -100,17 +100,19 @@ defmodule Radioapp.Accounts.UserNotifier do
 
   def deliver_invited_to_tenant_email(user, tenant, url) do
     station_defaults = Admin.get_stationdefaults!(tenant)
+    
     deliver(user.email, "Invitation to Radio App", """
 
     ==============================
 
     Hi #{user.email},
 
-    You are invited to join the #{station_defaults.callsign} online App to manage your radio program. Click on the following link to join:
+   
+    You are invited to join the #{station_defaults.callsign}. Logs by Date Range</.link></p> online App to manage your radio program. Click on the following link to join:
 
     #{url}
 
-    Please contact <a href="mailto:radioapp@northernvillage.net">radioapp@northernvillage.net</a> if you have any questions.
+    Please contact #{station_defaults.support_email} if you have any questions.
 
     ==============================
     """)

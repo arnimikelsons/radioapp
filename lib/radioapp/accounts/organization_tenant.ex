@@ -159,6 +159,7 @@ defmodule Radioapp.Accounts.OrganizationTenant do
         from_email_name: "RadioApp",
         logo_path: "/images/radioapp_logo.png",
         org_name: "radioApp",
+        support_email: "radioapp@northernvillage.net",
         playout_type: "audio/mpeg"
       },
       tenant
