@@ -12,7 +12,8 @@ Show Segments for <.link navigate={~p"/programs/#{@program}"}><%= @program.name 
   <:col :let={segment} label="New"><%= if segment.new_music do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
   <:col :let={segment} label="Inst"><%= if segment.instrumental do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
   <:col :let={segment} label="Can"><%= if segment.can_con do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
-  <:col :let={segment} label="Hit"><%= if segment.hit do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+  <:col :let={segment} label="Indg"><%= if segment.indigenous_artist do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+  <:col :let={segment} label="Emrg"><%= if segment.emerging_artist do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
   <:action :let={segment}>
     <div class="sr-only">
       <.link navigate={~p"/programs/#{@program}/logs/#{@log}/segments/#{segment}"}>Show</.link>
@@ -40,6 +41,8 @@ Show Segments for <.link navigate={~p"/programs/#{@program}"}><%= @program.name 
     <p>Instrumental Music: <%= @instrumental_music %>%</p>
     <p>Canadian Content: <%= @can_con_music %>%</p>
     <p>Hit Music: <%= @hit_music %>%</p>
+    <p>Indigenous Artist: <%= @indigenous_artist %>%</p>
+    <p>Emerging Artist: <%= @emerging_artist %>%</p>
   </div>
 </div>
 

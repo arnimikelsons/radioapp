@@ -37,6 +37,8 @@ defmodule RadioappWeb.SegmentLive.FormComponent do
         <.input field={{f, :hit}} type="checkbox" label="Hit" />
         <.input field={{f, :instrumental}} type="checkbox" label="Instrumental" />
         <.input field={{f, :new_music}} type="checkbox" label="New Music" />
+        <.input field={{f, :indigenous_artist}} type="checkbox" label="Indigenous Artist" />
+        <.input field={{f, :emerging_artist}} type="checkbox" label="Emerging Artist" />
 
         <:actions>
           <.button phx-disable-with="Saving...">Save Segment</.button>

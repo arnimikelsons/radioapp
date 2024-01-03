@@ -78,6 +78,8 @@ end
       hit: sequence(:hit, [true, false]),
       instrumental: sequence(:instrumental, [true, false]),
       new_music: sequence(:new_music, [true, false]),
+      indigenous_artist: sequence(:indigenous_artist, [true, false]),
+      emerging_artist: sequence(:emerging_artist, [true, false]),
       start_time: time_now,
       song_title: Faker.Pizza.style()
     }

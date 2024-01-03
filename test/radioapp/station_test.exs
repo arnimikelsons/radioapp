@@ -386,7 +386,9 @@ defmodule Radioapp.StationTest do
       hit: true,
       instrumental: false,
       new_music: true,
-      song_title: "some song title"
+      song_title: "some song title",
+      indigenous_artist: true,
+      emerging_artist: false
     }
     @update_attrs %{
       artist: "some updateed artist",
@@ -398,7 +400,9 @@ defmodule Radioapp.StationTest do
       hit: false,
       instrumental: true,
       new_music: false,
-      song_title: "some updated song title"
+      song_title: "some updated song title",
+      indigenous_artist: false,
+      emerging_artist: true
     }
     @invalid_attrs %{
       artist: nil,
@@ -409,7 +413,9 @@ defmodule Radioapp.StationTest do
       hit: false,
       instrumental: false,
       new_music: false,
-      song_title: nil
+      song_title: nil,
+      indigenous_artist: false,
+      emerging_artist: false
     }
 
     test "list_segments/0 returns all segments" do
@@ -451,6 +457,8 @@ defmodule Radioapp.StationTest do
       assert segment.instrumental == false
       assert segment.new_music == true
       assert segment.song_title == "some song title"
+      assert segment.indigenous_artist == true
+      assert segment.emerging_artist == false
     end
 
     test "create_segment/1 with invalid data returns error changeset" do
@@ -471,6 +479,8 @@ defmodule Radioapp.StationTest do
       assert segment.instrumental == true
       assert segment.new_music == false
       assert segment.song_title == "some updated song title"
+      assert segment.indigenous_artist == false
+      assert segment.emerging_artist == true
     end
 
     test "update_segment/2 with invalid data returns error changeset" do
