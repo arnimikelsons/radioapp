@@ -37,7 +37,7 @@ defmodule RadioappWeb.StationdefaultsController do
 
   def edit(conn, %{}) do
     tenant = RadioappWeb.get_tenant(conn)
-    stationdefaults = Admin.get_stationdefaults!(tenant) 
+    stationdefaults = Admin.get_stationdefaults!(tenant)
       if stationdefaults == nil do
         {:ok, _stationdefaults} =
           Admin.create_stationdefaults(
@@ -49,11 +49,13 @@ defmodule RadioappWeb.StationdefaultsController do
               logo_path: "/images/radioapp_logo.png"
             },
             tenant
-          )   
+          )
     end
     stationdefaults = Admin.get_stationdefaults!(tenant)
     changeset = Admin.change_stationdefaults(stationdefaults)
-    render(conn, :edit, stationdefaults: stationdefaults, changeset: changeset)
+    timezones = Tzdata.zone_list()
+
+    render(conn, :edit, stationdefaults: stationdefaults, changeset: changeset, timezones: timezones)
   end
 
   def update(conn, %{"stationdefaults" => stationdefaults_params}) do

@@ -3,6 +3,7 @@ defmodule RadioappWeb.TimeslotController do
 
   alias Radioapp.Station
   alias Radioapp.Station.{Timeslot}
+  alias Radioapp.Admin
 
   def index(conn, _params) do
     tenant = RadioappWeb.get_tenant(conn)
@@ -14,14 +15,16 @@ defmodule RadioappWeb.TimeslotController do
   def index_by_day(conn, %{"id" => id}) do
     tenant = RadioappWeb.get_tenant(conn)
     timeslots_by_day = Station.list_timeslots_by_day(id, tenant)
-    day =  String.to_integer(id)
+    day = String.to_integer(id)
     current_user = conn.assigns.current_user
     render(conn, :schedule, timeslots_by_day: timeslots_by_day, day: day, current_user: current_user, tenant: tenant)
   end
 
   def index_by_day(conn, _params) do
+
     tenant = RadioappWeb.get_tenant(conn)
-    now = DateTime.to_naive(Timex.now("America/Toronto"))
+    %{timezone: timezone} = Admin.get_stationdefaults!(tenant)
+    now = DateTime.to_naive(Timex.now(timezone))
     day = Timex.weekday(now)
 
     timeslots_by_day = Station.list_timeslots_by_day(day, tenant)

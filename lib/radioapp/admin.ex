@@ -149,7 +149,7 @@ defmodule Radioapp.Admin do
   def get_category!(id, tenant) do
     Category
     |> Repo.get!(id, prefix: Triplex.to_prefix(tenant))
-    |> Repo.preload(:segments) 
+    |> Repo.preload(:segments)
   end
 
   @doc """

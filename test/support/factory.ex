@@ -1,6 +1,11 @@
 defmodule Radioapp.Factory do
   use ExMachina.Ecto, repo: Radioapp.Repo
 
+  alias Radioapp.Admin
+
+  @tenant "sample"
+  @prefix Triplex.to_prefix(@tenant)
+
   def unique_user_email, do: "user#{System.unique_integer()}@nvlocal.net"
   def valid_user_password, do: "hello world!"
 
@@ -32,7 +37,6 @@ end
   end
 
   def timeslot_factory() do
-
     %Radioapp.Station.Timeslot{
       day: 1,
       starttime: ~T[18:00:00],
@@ -42,8 +46,9 @@ end
   end
 
   def timeslot_now_factory() do
-    now = DateTime.to_naive(Timex.now("America/Toronto"))
-    time_now = DateTime.to_time(Timex.now("America/Toronto"))
+    %{timezone: timezone} = Admin.get_stationdefaults!(@tenant)
+    now = DateTime.to_naive(Timex.now(timezone))
+    time_now = DateTime.to_time(Timex.now(timezone))
     weekday = Timex.weekday(now)
 
     %Radioapp.Station.Timeslot{
@@ -54,8 +59,9 @@ end
   end
 
   def log_factory do
-    date_now = DateTime.to_date(Timex.now("America/Toronto"))
-    time_now = DateTime.to_time(Timex.now("America/Toronto"))
+    %{timezone: timezone} = Admin.get_stationdefaults!(@tenant)
+    date_now = DateTime.to_date(Timex.now(timezone))
+    time_now = DateTime.to_time(Timex.now(timezone))
 
     %Radioapp.Station.Log{
       host_name: Faker.Superhero.name(),
@@ -68,7 +74,9 @@ end
     }
   end
   def segment_factory do
-    time_now = DateTime.to_time(Timex.now("America/Toronto"))
+    timezone = "Canada/Newfoundland"
+    insert(:stationdefaults, [timezone: timezone, callsign: "CLDP" ], prefix: @prefix)
+    time_now = DateTime.to_time(Timex.now(timezone))
 
     %Radioapp.Station.Segment{
       artist: Faker.Person.En.name(),
@@ -120,6 +128,7 @@ end
       from_email_name: "some email name",
       logo_path: "/images/radioapp_logo.png",
       org_name: "some org name",
+      timezone: "America/Toronto",
       phone: "some phone",
       playout_url: "some playout_url",
       privacy_policy_url: "some privacy policy url",
