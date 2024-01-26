@@ -19,7 +19,7 @@
       <%= for timeslot <- @timeslots do %>
         <%= #Link only when logged in %>
         <p><%= Timex.day_name(timeslot.day) %>, <%= timeslot.starttimereadable %> for <%= timeslot.runtime %> minutes.
-        <%= if @current_user do%><%= if @user_role == "admin" do %>
+        <%= if @current_user do%><%= if @user_role == "admin" or @user_role == "super_admin" do %>
           <.link href={~p"/programs/#{@program}/timeslots/#{timeslot}/edit"}>Edit</.link>    
           <.link href={~p"/programs/#{@program}/timeslots/#{timeslot}"} method="delete" data-confirm="Are you sure?">
             Delete
@@ -27,7 +27,7 @@
         <% end %><% end %></p>
       <% end %>
 
-      <%= if @current_user do%><%= if @user_role == "admin" do %>
+      <%= if @current_user do%><%= if @user_role == "admin" or @user_role == "super_admin" do %>
         <.link class="m-2" href={~p"/programs/#{@program}/timeslots/new"}>New Time Slot</.link>
       <% end %><% end %>
       <h3>Genre: <%= @program.genre %></h3>
