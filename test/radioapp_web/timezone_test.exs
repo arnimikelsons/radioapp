@@ -6,8 +6,8 @@ defmodule RadioappWeb.TimezoneTest do
 
   # alias Radioapp.Factory
 
-  @tenant "sample"
-  @prefix Triplex.to_prefix(@tenant)
+  # @tenant "sample"
+  # @prefix Triplex.to_prefix(@tenant)
 
   # describe "LiveViews" do
   #   test "The currently playing program in the timezone of the station is displayed", %{conn: conn} do
