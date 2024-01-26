@@ -17,8 +17,8 @@ defmodule RadioappWeb.PlayerLive do
         saved: 1.0,
         playing: false
       )
-      socket = assign_show(socket)
 
+    socket = assign_show(socket)
     if socket.assigns.live_action == :pop do
       socket = assign(socket, page_title: "Pop-Up Player")
       socket = assign(socket, layout: {RadioappWeb.Layouts, "live_player"})
@@ -52,7 +52,6 @@ defmodule RadioappWeb.PlayerLive do
     tenant = socket.assigns.tenant
     showName = Station.get_program_from_time(tenant)
     startTime = Station.get_program_now_start_time(tenant)
-
     assign(socket,
       show_name: showName,
       show_start: startTime
@@ -61,7 +60,7 @@ defmodule RadioappWeb.PlayerLive do
 
   def render(assigns) do
     ~H"""
-      <div class="third-row row">
+      <div class="third-row row TESTING">
         <div>
           <h3>Now Playing</h3>
           <h2 class="text-xl font-medium text-black pop-up-title"><%= @show_name %></h2>

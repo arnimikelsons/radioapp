@@ -2,7 +2,6 @@ defmodule RadioappWeb.Api.ProgramControllerTest do
   use RadioappWeb.ConnCase
 
   alias Radioapp.Factory
-  alias Radioapp.Admin
 
   @tenant "sample"
   @prefix Triplex.to_prefix(@tenant)

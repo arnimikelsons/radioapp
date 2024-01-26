@@ -1,8 +1,6 @@
 defmodule Radioapp.Factory do
   use ExMachina.Ecto, repo: Radioapp.Repo
 
-  alias Radioapp.Admin
-
   @tenant "sample"
   @prefix Triplex.to_prefix(@tenant)
 
@@ -46,7 +44,9 @@ end
   end
 
   def timeslot_now_factory() do
-    %{timezone: timezone} = Admin.get_stationdefaults!(@tenant)
+    timezone = "Canada/Eastern"
+    insert(:stationdefaults, [timezone: timezone, callsign: "CLDP" ], prefix: @prefix)
+
     now = DateTime.to_naive(Timex.now(timezone))
     time_now = DateTime.to_time(Timex.now(timezone))
     weekday = Timex.weekday(now)
@@ -59,7 +59,9 @@ end
   end
 
   def log_factory do
-    %{timezone: timezone} = Admin.get_stationdefaults!(@tenant)
+    timezone = "Canada/Pacific"
+    insert(:stationdefaults, [timezone: timezone, callsign: "CLDP" ], prefix: @prefix)
+
     date_now = DateTime.to_date(Timex.now(timezone))
     time_now = DateTime.to_time(Timex.now(timezone))
 
@@ -74,21 +76,19 @@ end
     }
   end
   def segment_factory do
-    timezone = "Canada/Newfoundland"
-    insert(:stationdefaults, [timezone: timezone, callsign: "CLDP" ], prefix: @prefix)
-    time_now = DateTime.to_time(Timex.now(timezone))
+    some_time = DateTime.to_time(Timex.now("Canada/Pacific"))
 
     %Radioapp.Station.Segment{
       artist: Faker.Person.En.name(),
       can_con: sequence(:can_con, [true, false]),
       catalogue_number: Integer.to_string(Faker.random_between(10000, 99999)),
-      end_time: Time.add(time_now, 3, :minute),
+      end_time: Time.add(some_time, 3, :minute),
       hit: sequence(:hit, [true, false]),
       instrumental: sequence(:instrumental, [true, false]),
       new_music: sequence(:new_music, [true, false]),
       indigenous_artist: sequence(:indigenous_artist, [true, false]),
       emerging_artist: sequence(:emerging_artist, [true, false]),
-      start_time: time_now,
+      start_time: some_time,
       song_title: Faker.Pizza.style()
     }
   end
@@ -131,6 +131,7 @@ end
       timezone: "America/Toronto",
       phone: "some phone",
       playout_url: "some playout_url",
+      playout_type: "some playout type",
       privacy_policy_url: "some privacy policy url",
       support_email: "some support email",
       tos_url: "some tos",

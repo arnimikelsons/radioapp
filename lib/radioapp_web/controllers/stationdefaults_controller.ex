@@ -46,6 +46,7 @@ defmodule RadioappWeb.StationdefaultsController do
               from_email: "radioapp@northernvillage.net",
               from_email_name: "RadioApp",
               org_name: tenant,
+              timezone: "Canada/Eastern",
               logo_path: "/images/radioapp_logo.png"
             },
             tenant
@@ -69,7 +70,7 @@ defmodule RadioappWeb.StationdefaultsController do
         |> redirect(to: ~p"/stationdefaults/#{stationdefaults}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, :edit, stationdefaults: stationdefaults, changeset: changeset)
+        render(conn, :edit, stationdefaults: stationdefaults, changeset: changeset, timezones: Tzdata.zone_list())
     end
   end
 

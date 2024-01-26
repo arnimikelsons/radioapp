@@ -4,7 +4,6 @@ defmodule RadioappWeb.TimeslotControllerTest do
   alias Radioapp.Factory
   alias Radioapp.Repo
   alias Radioapp.Station.Timeslot
-  alias Radioapp.Admin
 
   @tenant "sample"
   @prefix Triplex.to_prefix(@tenant)
@@ -14,7 +13,7 @@ defmodule RadioappWeb.TimeslotControllerTest do
   describe "index" do
 
     test "lists all timeslots by day", %{conn: conn} do
-      program =Factory.insert(:program, [], prefix: @prefix)
+      program = Factory.insert(:program, [], prefix: @prefix)
       timeslot1 = Factory.insert(:timeslot, [program: program, day: 1], prefix: @prefix)
       _timeslot2 = Factory.insert(:timeslot, [day: 2], prefix: @prefix)
 
@@ -24,7 +23,8 @@ defmodule RadioappWeb.TimeslotControllerTest do
 
     test "lists all timeslots by day for today", %{conn: conn} do
       program = Factory.insert(:program, [], prefix: @prefix)
-      %{timezone: timezone} = Admin.get_stationdefaults!(@tenant)
+      timezone = "Canada/Eastern"
+      Factory.insert(:stationdefaults, [timezone: timezone, callsign: "CLDP" ], prefix: @prefix)
 
       now = DateTime.to_naive(Timex.now(timezone))
       day = Timex.weekday(now)

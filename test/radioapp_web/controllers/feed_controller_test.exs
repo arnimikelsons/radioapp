@@ -2,7 +2,6 @@ defmodule RadioappWeb.FeedControllerTest do
   use RadioappWeb.ConnCase
 
   alias Radioapp.Factory
-  alias Radioapp.Admin
 
   @tenant "sample"
   @prefix Triplex.to_prefix(@tenant)
@@ -17,7 +16,8 @@ defmodule RadioappWeb.FeedControllerTest do
     end
 
     test "Shows the Currently Playing Show Name", %{conn: conn} do
-      %{timezone: timezone} = Admin.get_stationdefaults!(@tenant)
+      timezone = "America/Vancouver"
+      Factory.insert(:stationdefaults, [timezone: timezone, callsign: "CLDP" ], prefix: @prefix)
 
       now = DateTime.to_naive(Timex.now(timezone))
       time_now = DateTime.to_time(Timex.now(timezone))

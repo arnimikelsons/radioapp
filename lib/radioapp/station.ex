@@ -84,19 +84,20 @@ defmodule Radioapp.Station do
 
   def get_program_from_time(tenant) do
 
-    %{timezone: timezone} = Admin.get_stationdefaults!(tenant)
+    %{timezone: timezone} = Admin.get_timezone!(tenant)
     now = DateTime.to_naive(Timex.now(timezone))
     time_now = DateTime.to_time(Timex.now(timezone))
     weekday = Timex.weekday(now)
 
-    from(t in Timeslot,
+    query = from(t in Timeslot,
       join: p in assoc(t, :program),
       where: t.day == ^weekday,
       where: t.starttime <= ^time_now,
       where: t.endtime > ^time_now,
       select: p.name
     )
-    |> Repo.all(prefix: Triplex.to_prefix(tenant))
+
+    Repo.all(query, prefix: Triplex.to_prefix(tenant))
 
   end
 
@@ -112,7 +113,7 @@ defmodule Radioapp.Station do
   end
 
   def get_program_now_start_time(tenant) do
-    %{timezone: timezone} = Admin.get_stationdefaults!(tenant)
+    %{timezone: timezone} = Admin.get_timezone!(tenant)
     now = DateTime.to_naive(Timex.now(timezone))
     time_now = DateTime.to_time(Timex.now(timezone))
     weekday = Timex.weekday(now)

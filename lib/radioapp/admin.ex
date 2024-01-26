@@ -251,6 +251,17 @@ defmodule Radioapp.Admin do
     Repo.one(Stationdefaults, prefix: Triplex.to_prefix(tenant))
   end
 
+  def get_timezone!(tenant) do
+    stationdefaults = Repo.all(Stationdefaults, prefix: Triplex.to_prefix(tenant))
+    case stationdefaults do
+      [] ->
+        %{timezone: "Canada/Eastern"}
+      [%{timezone: timezone}] ->
+        %{timezone: timezone}
+      [%{timezone: timezone} | _ ] ->
+        %{timezone: timezone}
+    end
+  end
   @doc """
   Creates a stationdefaults.
 
