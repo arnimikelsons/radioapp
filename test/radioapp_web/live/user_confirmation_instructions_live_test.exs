@@ -6,6 +6,10 @@ defmodule RadioappWeb.UserConfirmationInstructionsLiveTest do
 
   alias Radioapp.Accounts
   alias Radioapp.Repo
+  alias Radioapp.Factory
+
+  @tenant "sample"
+  @prefix Triplex.to_prefix(@tenant)
 
   setup do
     %{user: user_fixture()}
@@ -18,6 +22,8 @@ defmodule RadioappWeb.UserConfirmationInstructionsLiveTest do
     end
 
     test "sends a new confirmation token", %{conn: conn, user: user} do
+      Factory.insert(:stationdefaults, [], prefix: @prefix)
+
       {:ok, lv, _html} = live(conn, ~p"/users/confirm")
 
       {:ok, conn} =
@@ -33,6 +39,8 @@ defmodule RadioappWeb.UserConfirmationInstructionsLiveTest do
     end
 
     test "does not send confirmation token if user is confirmed", %{conn: conn, user: user} do
+      Factory.insert(:stationdefaults, [], prefix: @prefix)
+
       Repo.update!(Accounts.User.confirm_changeset(user))
 
       {:ok, lv, _html} = live(conn, ~p"/users/confirm")
@@ -50,6 +58,8 @@ defmodule RadioappWeb.UserConfirmationInstructionsLiveTest do
     end
 
     test "does not send confirmation token if email is invalid", %{conn: conn} do
+      Factory.insert(:stationdefaults, [], prefix: @prefix)
+
       {:ok, lv, _html} = live(conn, ~p"/users/confirm")
 
       {:ok, conn} =

@@ -12,11 +12,12 @@
   <.input field={{f, :from_email_name}} type="text" label="From email name" />
   <.input field={{f, :logo_path}} type="text" label="Logo path" />
   <.input field={{f, :org_name}} type="text" label="Org name" />
+  <.input field={{f, :timezone}} options={( [ "Canada/Eastern" | @timezones ] )} type="select" label="Timezone * (required)" placeholder="Please Select" required />
   <.input field={{f, :privacy_policy_url}} type="text" label="Privacy policy url" />
   <.input field={{f, :support_email}} type="text" label="Support email" />
   <.input field={{f, :phone}} type="text" label="Phone" />
   <.input field={{f, :playout_url}} type="text" label="Playout url" />
-  <.input field={{f, :playout_type}} type="text" label="Playout type" />
+  <.input field={{f, :playout_type}} options={( [ "audio/mpeg", "audio/ogg", "audio/wav" ] )} type="select" label="Playout type" />
   <.input field={{f, :tos_url}} type="text" label="Tos url" />
   <.input field={{f, :website_url}} type="text" label="Website url" />
   <:actions>

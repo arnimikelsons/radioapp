@@ -5,6 +5,7 @@ defmodule Radioapp.Station do
 
   import Ecto.Query, warn: false
   alias Radioapp.Repo
+  alias Radioapp.Admin
 
   alias Radioapp.Station.{Program, Timeslot, Segment, Log, Image}
 
@@ -78,6 +79,28 @@ defmodule Radioapp.Station do
     |> Repo.all(prefix: Triplex.to_prefix(tenant))
   end
 
+  # A new one that includes helper functions to determine now playing show
+  # based on Timezone set in stationdefaults
+
+  def get_program_from_time(tenant) do
+
+    %{timezone: timezone} = Admin.get_timezone!(tenant)
+    now = DateTime.to_naive(Timex.now(timezone))
+    time_now = DateTime.to_time(Timex.now(timezone))
+    weekday = Timex.weekday(now)
+
+    query = from(t in Timeslot,
+      join: p in assoc(t, :program),
+      where: t.day == ^weekday,
+      where: t.starttime <= ^time_now,
+      where: t.endtime > ^time_now,
+      select: p.name
+    )
+
+    Repo.all(query, prefix: Triplex.to_prefix(tenant))
+
+  end
+
   def get_program_now_start_time(weekday, time_now, tenant) do
     from(t in Timeslot,
       join: p in assoc(t, :program),
@@ -88,6 +111,23 @@ defmodule Radioapp.Station do
     )
     |> Repo.all(prefix: Triplex.to_prefix(tenant))
   end
+
+  def get_program_now_start_time(tenant) do
+    %{timezone: timezone} = Admin.get_timezone!(tenant)
+    now = DateTime.to_naive(Timex.now(timezone))
+    time_now = DateTime.to_time(Timex.now(timezone))
+    weekday = Timex.weekday(now)
+
+    from(t in Timeslot,
+    join: p in assoc(t, :program),
+    where: t.day == ^weekday,
+    where: t.starttime <= ^time_now,
+    where: t.endtime >= ^time_now,
+    select: t.starttimereadable
+  )
+  |> Repo.all(prefix: Triplex.to_prefix(tenant))
+  end
+
 
   @doc """
   Creates a program.
@@ -742,7 +782,7 @@ defmodule Radioapp.Station do
   end
 
   def create_image_from_plug_upload(%Program{} = program, %Plug.Upload{} = upload, tenant) do
-    
+
     uuid = Ecto.UUID.generate()
     remote_path = "radioapp/#{tenant}/#{uuid}-#{upload.filename}"
 

@@ -13,14 +13,16 @@ defmodule RadioappWeb.Api.ProgramControllerTest do
   describe "show" do
 
     test "Gets the currently playing show", %{conn: conn} do
+      timezone = "America/Vancouver"
+      Factory.insert(:stationdefaults, [timezone: timezone, callsign: "CLDP" ], prefix: @prefix)
 
-      now = DateTime.to_naive(Timex.now("America/Toronto"))
-      time_now = DateTime.to_time(Timex.now("America/Toronto"))
+      now = DateTime.to_naive(Timex.now(timezone))
+      time_now = DateTime.to_time(Timex.now(timezone))
       weekday = Timex.weekday(now)
       endtime = Time.add(time_now, 60, :minute)
 
        # Given a program
-       program =Factory.insert(:program, [], prefix: @prefix)
+       program = Factory.insert(:program, [], prefix: @prefix)
 
       name = program.name
       # When we create a timeslot for right now

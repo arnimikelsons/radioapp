@@ -9,6 +9,7 @@ defmodule RadioappWeb.UserConfirmationLiveTest do
   alias Radioapp.Factory
 
   @tenant "sample"
+  @prefix Triplex.to_prefix(@tenant)
 
   setup %{conn: conn} do
     user = Factory.insert(:user, roles: %{@tenant => "admin"}, confirmed_at: nil)
@@ -22,6 +23,8 @@ defmodule RadioappWeb.UserConfirmationLiveTest do
     end
 
     test "confirms the given token once", %{conn: conn, user: user} do
+      Factory.insert(:stationdefaults, [], prefix: @prefix)
+
       token =
         extract_user_token(fn url ->
           Accounts.deliver_user_confirmation_instructions(user, url)
@@ -79,7 +82,8 @@ defmodule RadioappWeb.UserConfirmationLiveTest do
     end
 
     test "does not confirm email with invalid token", %{conn: conn, user: user} do
-      
+      Factory.insert(:stationdefaults, [], prefix: @prefix)
+
       {:ok, lv, _html} = live(conn, ~p"/users/confirm/invalid-token")
 
       {:ok, conn} =

@@ -8,6 +8,7 @@ defmodule Radioapp.Admin.Stationdefaults do
     field :from_email_name, :string
     field :logo_path, :string
     field :org_name, :string
+    field :timezone, :string
     field :phone, :string
     field :playout_url, :string
     field :playout_type, :string
@@ -22,8 +23,8 @@ defmodule Radioapp.Admin.Stationdefaults do
   @doc false
   def changeset(stationdefaults, attrs) do
     stationdefaults
-    |> cast(attrs, [:callsign, :from_email, :from_email_name, :logo_path, :org_name, :privacy_policy_url, :support_email, :phone, :playout_url, :playout_type, :tos_url, :website_url])
-    |> validate_required([:callsign, #:from_email, :from_email_name, :logo_path, :org_name, :privacy_policy_url, :support_email, :phone, :playout_url, :playout_type, :tos_url, :website_url
+    |> cast(attrs, [:callsign, :from_email, :from_email_name, :logo_path, :org_name, :timezone, :privacy_policy_url, :support_email, :phone, :playout_url, :playout_type, :tos_url, :website_url])
+    |> validate_required([:callsign, :timezone #, :from_email, :from_email_name, :logo_path, :org_name, :privacy_policy_url, :support_email, :phone, :playout_url, :playout_type, :tos_url, :website_url
     ])
   end
 end

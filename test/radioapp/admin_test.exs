@@ -23,7 +23,7 @@ defmodule Radioapp.AdminTest do
     end
 
     test "create_link/1 with valid data creates a link" do
-      
+
       assert {:ok, %Link{} = link} = Admin.create_link(@valid_attrs, @tenant)
       assert link.icon == "some icon"
       assert link.type == "some type"
@@ -88,7 +88,7 @@ defmodule Radioapp.AdminTest do
 
     test "update_category/2 with valid data updates the category" do
       category = Factory.insert(:category, [], prefix: @prefix)
-      
+
       assert {:ok, %Category{} = category} = Admin.update_category(category, @update_attrs)
       assert category.code == "some updated code"
       assert category.name == "some updated name"
@@ -127,7 +127,7 @@ defmodule Radioapp.AdminTest do
     end
 
     test "create_stationdefaults/1 with valid data creates a stationdefaults" do
-      valid_attrs = %{callsign: "some callsign", from_email: "some from_email", from_email_name: "some from_email_name", logo_path: "some logo_path", org_name: "some org_name", phone: "some phone", playout_url: "some playout_url", privacy_policy_url: "some privacy_policy_url", support_email: "some support_email", tos_url: "some tos_url", website_url: "some website_url"}
+      valid_attrs = %{callsign: "some callsign", from_email: "some from_email", from_email_name: "some from_email_name", logo_path: "some logo_path", org_name: "some org_name", timezone: "some timezone", phone: "some phone", playout_url: "some playout_url", privacy_policy_url: "some privacy_policy_url", support_email: "some support_email", tos_url: "some tos_url", website_url: "some website_url"}
 
       assert {:ok, %Stationdefaults{} = stationdefaults} = Admin.create_stationdefaults(valid_attrs, @tenant)
       assert stationdefaults.callsign == "some callsign"
@@ -135,6 +135,7 @@ defmodule Radioapp.AdminTest do
       assert stationdefaults.from_email_name == "some from_email_name"
       assert stationdefaults.logo_path == "some logo_path"
       assert stationdefaults.org_name == "some org_name"
+      assert stationdefaults.timezone == "some timezone"
       assert stationdefaults.phone == "some phone"
       assert stationdefaults.playout_url == "some playout_url"
       assert stationdefaults.privacy_policy_url == "some privacy_policy_url"
@@ -175,7 +176,7 @@ defmodule Radioapp.AdminTest do
     test "delete_stationdefaults/1 deletes the stationdefaults" do
       stationdefaults = Factory.insert(:stationdefaults, [], prefix: @prefix)
       assert {:ok, %Stationdefaults{}} = Admin.delete_stationdefaults(stationdefaults)
-      assert Admin.get_stationdefaults!(@tenant) == nil 
+      assert Admin.get_stationdefaults!(@tenant) == nil
     end
 
     test "change_stationdefaults/1 returns a stationdefaults changeset" do
