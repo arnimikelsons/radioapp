@@ -13,7 +13,7 @@ defmodule RadioappWeb.TimeslotControllerTest do
   describe "index" do
 
     test "lists all timeslots by day", %{conn: conn} do
-      program =Factory.insert(:program, [], prefix: @prefix)
+      program = Factory.insert(:program, [], prefix: @prefix)
       timeslot1 = Factory.insert(:timeslot, [program: program, day: 1], prefix: @prefix)
       _timeslot2 = Factory.insert(:timeslot, [day: 2], prefix: @prefix)
 
@@ -22,8 +22,11 @@ defmodule RadioappWeb.TimeslotControllerTest do
     end
 
     test "lists all timeslots by day for today", %{conn: conn} do
-      program =Factory.insert(:program, [], prefix: @prefix)
-      now = DateTime.to_naive(Timex.now("America/Toronto"))
+      program = Factory.insert(:program, [], prefix: @prefix)
+      timezone = "Canada/Eastern"
+      Factory.insert(:stationdefaults, [timezone: timezone, callsign: "CLDP" ], prefix: @prefix)
+
+      now = DateTime.to_naive(Timex.now(timezone))
       day = Timex.weekday(now)
 
       timeslot = Factory.insert(:timeslot, [program: program, day: day], prefix: @prefix)
@@ -62,9 +65,9 @@ defmodule RadioappWeb.TimeslotControllerTest do
       conn = get(conn, ~p"/timeslots")
       assert html_response(conn, 200) =~ "Listing Timeslots"
     end
-    
 
-    
+
+
     test "renders form", %{conn: conn} do
 
       program = Factory.insert(:program, [], prefix: @prefix)
@@ -82,16 +85,16 @@ defmodule RadioappWeb.TimeslotControllerTest do
           starttime: "14:30",
           runtime: "90"
         )
-        
+
       day = Timex.day_name(Map.get(attrs, "day") || Map.get(attrs, :day))
 
       conn = post(conn, ~p"/programs/#{program.id}/timeslots", timeslot: attrs)
-      
+
       # Then we are redirected to the program index page with the new timeslot
       assert %{id: _id} = redirected_params(conn)
       assert redirected_to(conn) == ~p"/programs/#{program.id}"
-      
-      
+
+
       # And the show template is rendered
       conn = get(conn, ~p"/programs/#{program.id}")
       assert html_response(conn, 200) =~ day
@@ -129,7 +132,7 @@ defmodule RadioappWeb.TimeslotControllerTest do
           day: 2,
           starttime: ~T[04:00:00],
           runtime: 30,
-          endtime: ~T[04:30:00]], 
+          endtime: ~T[04:30:00]],
           prefix: @prefix
         )
 

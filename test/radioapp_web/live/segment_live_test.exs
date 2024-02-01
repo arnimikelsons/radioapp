@@ -73,11 +73,11 @@ defmodule RadioappWeb.SegmentLiveTest do
     end
 
     test "lists all segments", %{conn: conn} do
-      
       program = Factory.insert(:program, [], prefix: @prefix)
       log = Factory.insert(:log, [program: program], prefix: @prefix)
       category = Factory.insert(:category, [], prefix: @prefix)
       segment = Factory.insert(:segment, [log: log, category: category], prefix: @prefix)
+
       {:ok, _index_live, html} = live(conn, ~p"/programs/#{program}/logs/#{log}/segments")
 
       assert html =~ "Listing Segments"

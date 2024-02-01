@@ -6,6 +6,7 @@ defmodule RadioappWeb.UserSessionControllerTest do
 
   @tenant "sample"
   @another_tenant "not_sample"
+  @prefix Triplex.to_prefix(@tenant)
 
   @super_admin Radioapp.super_admin_role()
   @admin_tenant Radioapp.admin_tenant()
@@ -16,6 +17,8 @@ defmodule RadioappWeb.UserSessionControllerTest do
 
   describe "POST /users/log_in" do
     test "logs the user in", %{conn: conn, user: user} do
+      Factory.insert(:stationdefaults, [], prefix: @prefix)
+
       conn =
         post(conn, ~p"/users/log_in", %{
           "user" => %{"email" => user.email, "password" => valid_user_password()}
@@ -117,8 +120,10 @@ defmodule RadioappWeb.UserSessionControllerTest do
     setup do
       %{user: Factory.insert(:user, roles: %{@admin_tenant => @super_admin})}
     end
-    
+
     test "login with super_admin", %{conn: conn, user: user} do
+      Factory.insert(:stationdefaults, [], prefix: @prefix)
+
       conn =
         post(conn, ~p"/users/log_in", %{
           "user" => %{"email" => user.email, "password" => valid_user_password()}

@@ -3,8 +3,10 @@ defmodule RadioappWeb.UserLoginLiveTest do
 
   import Phoenix.LiveViewTest
   import Radioapp.AccountsFixtures
+  alias Radioapp.Factory
 
   @tenant "sample"
+  @prefix Triplex.to_prefix(@tenant)
 
   describe "Log in page" do
     test "renders log in page", %{conn: conn} do
@@ -15,6 +17,8 @@ defmodule RadioappWeb.UserLoginLiveTest do
     end
 
     test "redirects if already logged in", %{conn: conn} do
+      Factory.insert(:stationdefaults, [], prefix: @prefix)
+
       result =
         conn
         |> log_in_user(user_fixture())

@@ -6,6 +6,10 @@ defmodule RadioappWeb.UserForgotPasswordLiveTest do
 
   alias Radioapp.Accounts
   alias Radioapp.Repo
+  alias Radioapp.Factory
+
+  @tenant "sample"
+  @prefix Triplex.to_prefix(@tenant)
 
   describe "Forgot password page" do
     test "renders email page", %{conn: conn} do
@@ -16,6 +20,8 @@ defmodule RadioappWeb.UserForgotPasswordLiveTest do
     end
 
     test "redirects if already logged in", %{conn: conn} do
+      Factory.insert(:stationdefaults, [], prefix: @prefix)
+
       result =
         conn
         |> log_in_user(user_fixture())
@@ -28,6 +34,7 @@ defmodule RadioappWeb.UserForgotPasswordLiveTest do
 
   describe "Reset link" do
     setup do
+      Factory.insert(:stationdefaults, [], prefix: @prefix)
       %{user: user_fixture()}
     end
 

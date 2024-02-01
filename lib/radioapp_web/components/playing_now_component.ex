@@ -18,19 +18,14 @@ defmodule RadioappWeb.PlayingNowComponent do
 
   def render(assigns) do
     ~H"""
-    <span><%= @show_name %></span>
+    <span id="playing-now-component"><%= @show_name %></span>
     """
   end
 
   defp assign_show(socket) do
     tenant = socket.assigns.tenant
-    now = DateTime.to_naive(Timex.now("America/Toronto"))
-    time_now = DateTime.to_time(Timex.now("America/Toronto"))
-    weekday = Timex.weekday(now)
-
-    showName = Station.get_program_from_time(weekday, time_now, tenant)
-    startTime = Station.get_program_now_start_time(weekday, time_now, tenant)
-
+    showName = Station.get_program_from_time(tenant)
+    startTime = Station.get_program_now_start_time(tenant)
     showName =
     if showName == [] do
       "No Show Available"
