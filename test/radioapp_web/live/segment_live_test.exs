@@ -17,6 +17,7 @@ defmodule RadioappWeb.SegmentLiveTest do
     hit: true,
     instrumental: false,
     new_music: true,
+    socan_type: "Feature",
     song_title: "some song title",
     indigenous_artist: true,
     emerging_artist: false
@@ -30,6 +31,7 @@ defmodule RadioappWeb.SegmentLiveTest do
     hit: false,
     instrumental: true,
     new_music: false,
+    socan_type: "Background",
     song_title: "some updated song title",
     indigenous_artist: false,
     emerging_artist: true
@@ -44,6 +46,7 @@ defmodule RadioappWeb.SegmentLiveTest do
     hit: false,
     instrumental: false,
     new_music: false,
+    socan_type: " ",
     song_title: nil,
     indigenous_artist: false,
     emerging_artist: false

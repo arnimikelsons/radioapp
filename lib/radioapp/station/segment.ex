@@ -16,6 +16,7 @@ defmodule Radioapp.Station.Segment do
     field :indigenous_artist, :boolean
     field :emerging_artist, :boolean
     field :start_time, :time
+    field :socan_type, :string
     field :song_title, :string
     field :duration, :string, virtual: true
 
@@ -39,6 +40,7 @@ defmodule Radioapp.Station.Segment do
       :indigenous_artist,
       :emerging_artist,
       :start_time,
+      :socan_type,
       :song_title,
       :category_id,
       :duration

@@ -81,6 +81,7 @@ end
       indigenous_artist: sequence(:indigenous_artist, [true, false]),
       emerging_artist: sequence(:emerging_artist, [true, false]),
       start_time: time_now,
+      socan_type: sequence(:socan_type, [" ", "Background", "Feature", "Theme"]),
       song_title: Faker.Pizza.style()
     }
   end

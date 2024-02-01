@@ -33,6 +33,13 @@ defmodule RadioappWeb.SegmentLive.FormComponent do
           options={@list_categories}
         />
         <.input field={{f, :catalogue_number}} type="text" label="Catalogue #" />
+        <.input
+          field={{f, :socan_type}}
+          type="select"
+          label="Select SOCAN Music Type"
+          options=
+          {([" ": " ", "Background": "Background", "Feature": "Feature","Theme": "Theme"])}
+        />
         <.input field={{f, :can_con}} type="checkbox" label="Can Con" />
         <.input field={{f, :hit}} type="checkbox" label="Hit" />
         <.input field={{f, :instrumental}} type="checkbox" label="Instrumental" />

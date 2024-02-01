@@ -442,6 +442,7 @@ defmodule Radioapp.Station do
         artist: s.artist,
         song_title: s.song_title,
         catalogue_number: s.catalogue_number,
+        socan_type: s.socan_type,
         new_music: s.new_music,
         instrumental: s.instrumental,
         can_con: s.can_con,
