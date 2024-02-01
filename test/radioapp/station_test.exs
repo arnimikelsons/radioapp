@@ -386,6 +386,7 @@ defmodule Radioapp.StationTest do
       hit: true,
       instrumental: false,
       new_music: true,
+      socan_type: "some socan type",
       song_title: "some song title",
       indigenous_artist: true,
       emerging_artist: false
@@ -400,6 +401,7 @@ defmodule Radioapp.StationTest do
       hit: false,
       instrumental: true,
       new_music: false,
+      socan_type: "some updated socan type",
       song_title: "some updated song title",
       indigenous_artist: false,
       emerging_artist: true
@@ -413,6 +415,7 @@ defmodule Radioapp.StationTest do
       hit: false,
       instrumental: false,
       new_music: false,
+      socan_type: nil,
       song_title: nil,
       indigenous_artist: false,
       emerging_artist: false
@@ -456,6 +459,7 @@ defmodule Radioapp.StationTest do
       assert segment.hit == true
       assert segment.instrumental == false
       assert segment.new_music == true
+      assert segment.socan_type == "some socan type"
       assert segment.song_title == "some song title"
       assert segment.indigenous_artist == true
       assert segment.emerging_artist == false
@@ -478,6 +482,7 @@ defmodule Radioapp.StationTest do
       assert segment.hit == false
       assert segment.instrumental == true
       assert segment.new_music == false
+      assert segment.socan_type == "some updated socan type"
       assert segment.song_title == "some updated song title"
       assert segment.indigenous_artist == false
       assert segment.emerging_artist == true
