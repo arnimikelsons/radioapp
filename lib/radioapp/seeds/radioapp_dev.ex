@@ -1,6 +1,7 @@
 defmodule Radioapp.Seeds.RadioappDev do
 
   alias Radioapp.Accounts
+  alias Radioapp.Admin
 
   # NOTE: Add email_confirmed_at to user changeset to seed working logins; remove after running
   def run(tenant) do
@@ -24,7 +25,19 @@ defmodule Radioapp.Seeds.RadioappDev do
       password: "super-duper-secret",
       hashed_password: Bcrypt.hash_pwd_salt("super-secret"),
     }) 
-
+    {:ok, _} = Admin.create_stationdefaults(
+      %{
+        callsign: "RadioApp",
+        from_email: "radioapp@northernvillage.net",
+        from_email_name: "RadioApp",
+        logo_path: "/images/radioapp_logo.png",
+        org_name: "radioApp",
+        support_email: "radioapp@northernvillage.net",
+        playout_type: "audio/mpeg",
+        timezone: "Canada/Eastern"
+      },
+      tenant
+    )
 
 
 

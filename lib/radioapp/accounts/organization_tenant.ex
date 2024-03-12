@@ -160,7 +160,8 @@ defmodule Radioapp.Accounts.OrganizationTenant do
         logo_path: "/images/radioapp_logo.png",
         org_name: "radioApp",
         support_email: "radioapp@northernvillage.net",
-        playout_type: "audio/mpeg"
+        playout_type: "audio/mpeg",
+        timezone: "Canada/Eastern"
       },
       tenant
     )
