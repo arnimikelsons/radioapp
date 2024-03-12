@@ -8,6 +8,7 @@ Show Segments for <.link navigate={~p"/programs/#{@program}"}><%= @program.name 
   <:col :let={segment} label="Artist"><%= segment.artist %></:col>
   <:col :let={segment} label="Song Title"><%= segment.song_title %></:col>
   <:col :let={segment} label="Category"><%= if segment.category != nil do %><%= segment.category.code %><% end %></:col>
+  <:col :let={segment} label="SOCAN"><%= segment.socan_type %></:col>
   <:col :let={segment} label="Catalogue #"><%= segment.catalogue_number %></:col>
   <:col :let={segment} label="New"><%= if segment.new_music do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
   <:col :let={segment} label="Inst"><%= if segment.instrumental do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
