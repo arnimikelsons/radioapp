@@ -36,6 +36,21 @@
       <% end %>
     </:action>
 </.table>
+
+<%!-- <.simple_form :let={f} action={~p"/programs/#{@program}/logs"} multipart>
+  <.input field={{f, :image}} type="file" label="CSV Upload for logs" required />
+  <:actions>
+    <.button>Upload CSV</.button>
+  </:actions>
+</.simple_form> --%>
+<section phx-drop-target={@uploads.csv.ref}>
+  <.simple_form id="upload-form" phx-submit="save" phx-change="validate">
+    <.live_file_input upload={@uploads.csv} />
+    <:actions>
+      <.button>Upload A CSV</.button>
+    </:actions>
+  </.simple_form>
+</section>
 <div class="mt-9">
   <p >For support submitting your logs, please email <a href={"mailto:radioapp@northernvillage.net?subject=Logs for #{@program.name} on [add date]"}>radioapp@northernvillage.net</a></p>
 </div>

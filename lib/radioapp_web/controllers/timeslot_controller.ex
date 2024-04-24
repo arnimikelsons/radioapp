@@ -21,7 +21,6 @@ defmodule RadioappWeb.TimeslotController do
   end
 
   def index_by_day(conn, _params) do
-
     tenant = RadioappWeb.get_tenant(conn)
     %{timezone: timezone} = Admin.get_stationdefaults!(tenant)
     now = DateTime.to_naive(Timex.now(timezone))

@@ -82,12 +82,19 @@ defmodule RadioappWeb.LogController do
           :instrumental,
           :can_con,
           :hit,
-          :indigenous_artist, 
+          :indigenous_artist,
           :emerging_artist
         ],
         logs
       )
       |> Enum.join()
+
+    decoded = "../../../test/docs/valid.csv"
+      |> Path.expand(__DIR__)
+      |> File.stream!()
+      |> CSV.decode!()
+      |> Enum.take(2)
+    IO.inspect(decoded, label: "DECODED")
 
     conn
     |> send_download(

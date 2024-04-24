@@ -86,11 +86,10 @@ defmodule Radioapp.MixProject do
 
   # Testing note:
   # Tests rely on the existence of a tenant name 'sample'.
-  # You must run this command before testing will work:
+  # You may need to run these commands before testing will work:
+  #   MIX_ENV=test mix ecto.reset
   #   MIX_ENV=test mix tenant.create sample
-  # And also run this:
   #   source .env
-  # Try running this too for tenant migrations:
   #   MIX_ENV=test mix triplex.migrate
 
 end

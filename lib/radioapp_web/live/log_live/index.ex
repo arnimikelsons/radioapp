@@ -17,8 +17,9 @@ defmodule RadioappWeb.LogLive.Index do
     program = Station.get_program!(program_id, tenant)
     {:ok,
       socket
-      |> assign(:logs, list_logs_for_program(program, tenant))}
-
+      |> assign(:logs, list_logs_for_program(program, tenant))
+      |> assign(:uploaded_files, [])
+      |> allow_upload(:csv, accept: ~w(.csv), max_entries: 2)}
   end
 
   @impl true
@@ -29,7 +30,7 @@ defmodule RadioappWeb.LogLive.Index do
   defp apply_action(socket, :new, %{
     "program_id" => program_id
   }) do
-    
+
     tenant = socket.assigns.tenant
     program = Station.get_program!(program_id, tenant)
 
@@ -79,8 +80,35 @@ defmodule RadioappWeb.LogLive.Index do
     {:noreply, assign(socket, :logs, list_logs_for_program(program, tenant))}
   end
 
+  def handle_event("validate", _params, socket) do
+    {:noreply, socket}
+  end
+
+  def handle_event("save", _params, socket) do
+    uploaded_files =
+      consume_uploaded_entries(socket, :csv, fn %{path: path}, _entry ->
+        # dest = Path.join(Application.app_dir(:radioapp, "priv/static/uploads"), Path.basename(path))
+        # You will need to create `priv/static/uploads` for `File.cp!/2` to work.
+        # File.cp!(path, dest)
+
+        csv = path
+          |> Path.expand(__DIR__)
+          |> File.stream!()
+          |> CSV.decode!()
+          |> Enum.take(2)
+        # IO.inspect(decoded, label: "UPLOADED CSV")
+        dbg(csv)
+
+        {:ok, csv}
+      end)
+
+    {:noreply, update(socket, :uploaded_files, &(&1 ++ uploaded_files))}
+  end
+
   defp list_logs_for_program(program, tenant) do
     Station.list_logs_for_program(program, tenant)
   end
+
+
 
 end
