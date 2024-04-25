@@ -42,7 +42,10 @@ defmodule RadioappWeb.SegmentLive.Index do
        indigenous_artist: indigenous_artist,
        emerging_artist: emerging_artist,
        tenant: tenant
-     )}
+     )
+      |> assign(:uploaded_files, [])
+      |> assign(file_chooser_text: "No file selected")
+      |> allow_upload(:csv, accept: ~w(.csv), max_entries: 3)}
   end
 
   @impl true
@@ -104,7 +107,42 @@ defmodule RadioappWeb.SegmentLive.Index do
     {:noreply, assign(socket, :segments, list_segments(tenant))}
   end
 
+  def handle_event("validate", _params, socket) do
+    if socket.assigns.uploaded_files == [] do
+      {:noreply, assign(socket, :file_choose_text, "No file selected")}
+    else
+      {:noreply, assign(socket, :file_choose_text, "")}
+    end
+  end
+
+  def handle_event("cancel-upload", %{"ref" => ref}, socket) do
+    {:noreply, cancel_upload(socket, :csv, ref)}
+  end
+
+  def handle_event("save", _params, socket) do
+    uploaded_files =
+      consume_uploaded_entries(socket, :csv, fn %{path: path}, _entry ->
+
+        csv = path
+          |> Path.expand(__DIR__)
+          |> File.stream!()
+          |> CSV.decode!()
+          |> Enum.take_while(fn _x -> true end)
+        dbg(csv)
+
+
+
+        {:ok, csv}
+      end)
+
+    {:noreply, update(socket, :uploaded_files, &(&1 ++ uploaded_files))}
+  end
+
   defp list_segments(tenant) do
     Station.list_segments(tenant)
   end
+
+  defp error_to_string(:too_large), do: "Too large"
+  defp error_to_string(:too_many_files), do: "You have selected too many files"
+  defp error_to_string(:not_accepted), do: "You have selected an unacceptable file type"
 end

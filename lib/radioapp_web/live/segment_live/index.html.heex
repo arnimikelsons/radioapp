@@ -29,6 +29,7 @@ Show Segments for <.link navigate={~p"/programs/#{@program}"}><%= @program.name 
     <% end %>
   </:action>
 </.table>
+
 <div class="mt-4 text-right">
   <.link patch={~p"/programs/#{@program}/logs/#{@log}/segments/new"}>
     <.button>New Segment</.button>
@@ -46,6 +47,42 @@ Show Segments for <.link navigate={~p"/programs/#{@program}"}><%= @program.name 
     <p>Emerging Artist: <%= @emerging_artist %>%</p>
   </div>
 </div>
+
+<section phx-drop-target={@uploads.csv.ref} class="border-solid border border-slate-500 rounded p-4 inline-block">
+
+  <.simple_form id="upload-form" phx-submit="save" phx-change="validate">
+    <%!-- <h5 class="text-center">Upload a CSV</h5>
+    <p>Drag and Drop a CSV file or click Browse to select files</p> --%>
+    <%!-- <label for={@uploads.csv.ref}>CSV</label>
+    <.live_file_input upload={@uploads.csv} /> --%>
+
+    <%!-- render each avatar entry --%>
+    <%= for entry <- @uploads.csv.entries do %>
+      <article class="upload-entry"> 
+      <p><%= entry.client_name %></p>
+        <%!-- entry.progress will update automatically for in-flight entries --%>
+        <progress value={entry.progress} max="100"> <%= entry.progress %>% </progress>
+        <%!-- a regular click event whose handler will invoke Phoenix.LiveView.cancel_upload/3 --%>
+        <button type="button" phx-click="cancel-upload" phx-value-ref={entry.ref} aria-label="cancel">&times;</button>
+        <%!-- Phoenix.Component.upload_errors/2 returns a list of error atoms --%>
+        <%= for err <- upload_errors(@uploads.csv, entry) do %>
+          <p class="alert alert-danger"><%= error_to_string(err) %></p>
+        <% end %>
+
+      </article>
+    <% end %>
+
+    <.live_file_input upload={@uploads.csv} class="hidden" />
+
+    <label for={@uploads.csv.ref} class="button">
+        attach files
+    </label>
+  
+    <:actions>
+      <.button>Upload</.button>
+    </:actions>
+  </.simple_form>
+</section>
 
 <.modal
   :if={@live_action in [:new, :edit]}
