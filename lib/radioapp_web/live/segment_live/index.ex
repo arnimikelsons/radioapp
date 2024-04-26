@@ -5,6 +5,7 @@ defmodule RadioappWeb.SegmentLive.Index do
   alias Radioapp.Station.Segment
   alias Radioapp.Admin
   import RadioappWeb.LiveHelpers
+  alias Radioapp.CSV.Importer
 
   @impl true
   def mount(
@@ -128,9 +129,9 @@ defmodule RadioappWeb.SegmentLive.Index do
           |> File.stream!()
           |> CSV.decode!()
           |> Enum.take_while(fn _x -> true end)
-        dbg(csv)
+        # dbg(csv)
 
-
+        Importer.csv_row_to_table_record(csv)
 
         {:ok, csv}
       end)

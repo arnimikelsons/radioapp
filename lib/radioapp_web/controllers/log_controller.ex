@@ -89,12 +89,6 @@ defmodule RadioappWeb.LogController do
       )
       |> Enum.join()
 
-    decoded = "../../../test/docs/valid.csv"
-      |> Path.expand(__DIR__)
-      |> File.stream!()
-      |> CSV.decode!()
-      |> Enum.take(2)
-    IO.inspect(decoded, label: "DECODED")
 
     conn
     |> send_download(
