@@ -50,7 +50,7 @@ Show Segments for <.link navigate={~p"/programs/#{@program}"}><%= @program.name 
 
 <section phx-drop-target={@uploads.csv.ref} class="border-solid border border-slate-500 rounded p-4 inline-block">
 
-  <.simple_form id="upload-form" phx-submit="save" phx-change="validate">
+  <.simple_form id="upload-form" phx-submit="upload" phx-change="validate">
     <%!-- <h5 class="text-center">Upload a CSV</h5>
     <p>Drag and Drop a CSV file or click Browse to select files</p> --%>
     <%!-- <label for={@uploads.csv.ref}>CSV</label>

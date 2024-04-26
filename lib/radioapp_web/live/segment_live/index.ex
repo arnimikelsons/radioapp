@@ -45,7 +45,6 @@ defmodule RadioappWeb.SegmentLive.Index do
        tenant: tenant
      )
       |> assign(:uploaded_files, [])
-      |> assign(file_chooser_text: "No file selected")
       |> allow_upload(:csv, accept: ~w(.csv), max_entries: 3)}
   end
 
@@ -109,18 +108,16 @@ defmodule RadioappWeb.SegmentLive.Index do
   end
 
   def handle_event("validate", _params, socket) do
-    if socket.assigns.uploaded_files == [] do
-      {:noreply, assign(socket, :file_choose_text, "No file selected")}
-    else
-      {:noreply, assign(socket, :file_choose_text, "")}
-    end
+      {:noreply, socket}
   end
 
   def handle_event("cancel-upload", %{"ref" => ref}, socket) do
     {:noreply, cancel_upload(socket, :csv, ref)}
   end
 
-  def handle_event("save", _params, socket) do
+  def handle_event("upload", _params, socket) do
+    tenant = socket.assigns.tenant
+    log = socket.assigns.log
     uploaded_files =
       consume_uploaded_entries(socket, :csv, fn %{path: path}, _entry ->
 
@@ -130,13 +127,18 @@ defmodule RadioappWeb.SegmentLive.Index do
           |> CSV.decode!()
           |> Enum.take_while(fn _x -> true end)
         # dbg(csv)
-
-        Importer.csv_row_to_table_record(csv)
+        Importer.csv_row_to_table_record(csv, socket.assigns.log, socket.assigns.tenant)
 
         {:ok, csv}
       end)
+      dbg(uploaded_files)
+      segments = Station.list_segments_for_log(log, tenant)
+    # {:noreply, update(socket, :uploaded_files, &(&1 ++ uploaded_files))}
+    {:noreply,
+      assign(socket,
+        segments: segments,
+        uploaded_files: &(&1 ++ uploaded_files))}
 
-    {:noreply, update(socket, :uploaded_files, &(&1 ++ uploaded_files))}
   end
 
   defp list_segments(tenant) do
