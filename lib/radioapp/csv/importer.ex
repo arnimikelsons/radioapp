@@ -1,6 +1,7 @@
 defmodule Radioapp.CSV.Importer do
 
   alias Radioapp.Station
+  alias Radioapp.Admin
 
   def csv_row_to_table_record(data, log, tenant) do
     column_names = get_column_names(data)
@@ -23,7 +24,29 @@ defmodule Radioapp.CSV.Importer do
   end
 
   defp add_segment_to_log(row, log, tenant) do
-    Station.create_segment(log, row, tenant)
+    row = add_category_id_to_attrs(row, tenant)
 
+    case Station.create_segment(log, row, tenant) do
+      {:ok, segment} ->
+        dbg(segment)
+      {:error, msg} ->
+        dbg(msg)
+    end
+
+  end
+
+  defp add_category_id_to_attrs(row, tenant) do
+    list_categories = Admin.list_categories_dropdown(tenant)
+    {_category_string, category_id} = Enum.find(list_categories, fn tuple ->
+      # catlist = elem(tuple, 0)
+      String.contains?(
+        row["category"],
+        [List.first(
+            elem(tuple, 0)),
+            List.last(elem(tuple, 0))]
+      )
+    end)
+
+    Map.put(row, "category_id", category_id)
   end
 end

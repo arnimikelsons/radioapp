@@ -131,9 +131,7 @@ defmodule RadioappWeb.SegmentLive.Index do
 
         {:ok, csv}
       end)
-      dbg(uploaded_files)
       segments = Station.list_segments_for_log(log, tenant)
-    # {:noreply, update(socket, :uploaded_files, &(&1 ++ uploaded_files))}
     {:noreply,
       assign(socket,
         segments: segments,

@@ -48,14 +48,8 @@ Show Segments for <.link navigate={~p"/programs/#{@program}"}><%= @program.name 
   </div>
 </div>
 
-<section phx-drop-target={@uploads.csv.ref} class="border-solid border border-slate-500 rounded p-4 inline-block">
-
-  <.simple_form id="upload-form" phx-submit="upload" phx-change="validate">
-    <%!-- <h5 class="text-center">Upload a CSV</h5>
-    <p>Drag and Drop a CSV file or click Browse to select files</p> --%>
-    <%!-- <label for={@uploads.csv.ref}>CSV</label>
-    <.live_file_input upload={@uploads.csv} /> --%>
-
+<section class="p-2" phx-drop-target={@uploads.csv.ref} class="border-solid border border-slate-500 rounded p-4 inline-block">
+  <.simple_form class="dropzone" id="upload-form" phx-submit="upload" phx-change="validate">
     <%!-- render each avatar entry --%>
     <%= for entry <- @uploads.csv.entries do %>
       <article class="upload-entry"> 
@@ -75,7 +69,9 @@ Show Segments for <.link navigate={~p"/programs/#{@program}"}><%= @program.name 
     <.live_file_input upload={@uploads.csv} class="hidden" />
 
     <label for={@uploads.csv.ref} class="button">
-        attach files
+        Drag & Drop
+        <br>
+        or browse image files
     </label>
   
     <:actions>
