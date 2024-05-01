@@ -37,16 +37,22 @@ defmodule Radioapp.CSV.Importer do
 
   defp add_category_id_to_attrs(row, tenant) do
     list_categories = Admin.list_categories_dropdown(tenant)
-    {_category_string, category_id} = Enum.find(list_categories, fn tuple ->
-      # catlist = elem(tuple, 0)
-      String.contains?(
-        row["category"],
-        [List.first(
-            elem(tuple, 0)),
-            List.last(elem(tuple, 0))]
-      )
-    end)
+    dbg(list_categories)
+    case Enum.find(list_categories, fn tuple ->
+          String.contains?(
+            row["category"],
+            [List.first(
+                elem(tuple, 0)),
+                List.last(elem(tuple, 0))]
+          )
+        end) do
+      {_category_string, category_id} ->
+        Map.put(row, "category_id", category_id)
 
-    Map.put(row, "category_id", category_id)
+      nil ->
+        {:error}
+    end
+
+    # Map.put(row, "category_id", category_id)
   end
 end

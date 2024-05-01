@@ -137,7 +137,7 @@ defmodule RadioappWeb.SegmentLiveTest do
       assert html =~ "some updated song title"
     end
 
-    test "deletes segment in listing", %{conn: conn} do
+    test "Disable delete segment button", %{conn: conn} do
       program = Factory.insert(:program, [], prefix: @prefix)
       log = Factory.insert(:log, [program: program], prefix: @prefix)
       category = Factory.insert(:category, [], prefix: @prefix)
@@ -146,6 +146,31 @@ defmodule RadioappWeb.SegmentLiveTest do
       {:ok, _index_live, html} = live(conn, ~p"/programs/#{program}/logs/#{log}/segments")
 
       refute html =~ "Delete"
+
+    end
+
+    test "Successfully upload a CSV file", %{conn: conn} do
+      program = Factory.insert(:program, [], prefix: @prefix)
+      log = Factory.insert(:log, [program: program], prefix: @prefix)
+      category = Factory.insert(:category,
+        [code: "21",
+        name: "Music",
+        segments: []],
+        prefix: @prefix)
+
+      {:ok, index_live, _html}= live(conn, ~p"/programs/#{program}/logs/#{log}/segments")
+
+      csv = file_input(index_live, "#upload-form", :csv, [%{
+        name: "sample_csv.csv",
+        content: File.read!("test/support/files/sample_csv.csv"),
+        type: "text/csv"
+      }])
+
+      assert render_upload(csv, "sample_csv.csv") =~ "sample_csv.csv"
+
+      assert index_live
+        |> element("#upload-form")
+        |> render_submit(%{csv: csv}) =~ "Schmidt"
 
     end
   end
