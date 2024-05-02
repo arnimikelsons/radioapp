@@ -123,8 +123,8 @@ defmodule RadioappWeb.SegmentLive.FormComponent do
     log = socket.assigns.log
 
     case Station.create_segment(log, segment_params, tenant) do
-      {:ok, segment} ->
-        dbg(segment)
+      {:ok, _segment} ->
+        # dbg(segment)
         {:noreply,
          socket
          |> put_flash(:info, "Segment created successfully")

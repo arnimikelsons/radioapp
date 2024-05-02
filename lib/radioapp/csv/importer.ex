@@ -28,9 +28,11 @@ defmodule Radioapp.CSV.Importer do
 
     case Station.create_segment(log, row, tenant) do
       {:ok, segment} ->
-        dbg(segment)
+        # dbg(segment)
+        :ok
       {:error, msg} ->
-        dbg(msg)
+        # dbg(msg)
+        :ok
     end
 
   end

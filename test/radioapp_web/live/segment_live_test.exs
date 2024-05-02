@@ -152,7 +152,7 @@ defmodule RadioappWeb.SegmentLiveTest do
     test "Successfully upload a CSV file", %{conn: conn} do
       program = Factory.insert(:program, [], prefix: @prefix)
       log = Factory.insert(:log, [program: program], prefix: @prefix)
-      category = Factory.insert(:category,
+      Factory.insert(:category,
         [code: "21",
         name: "Music",
         segments: []],
@@ -161,18 +161,45 @@ defmodule RadioappWeb.SegmentLiveTest do
       {:ok, index_live, _html}= live(conn, ~p"/programs/#{program}/logs/#{log}/segments")
 
       csv = file_input(index_live, "#upload-form", :csv, [%{
-        name: "sample_csv.csv",
-        content: File.read!("test/support/files/sample_csv.csv"),
+        name: "valid.csv",
+        content: File.read!("test/support/files/valid.csv"),
         type: "text/csv"
       }])
 
-      assert render_upload(csv, "sample_csv.csv") =~ "sample_csv.csv"
+      assert render_upload(csv, "valid.csv") =~ "valid.csv"
 
       assert index_live
         |> element("#upload-form")
         |> render_submit(%{csv: csv}) =~ "Schmidt"
+    end
+
+    test "incorrect column in CSV upload returns error", %{conn: conn} do
+      program = Factory.insert(:program, [], prefix: @prefix)
+      log = Factory.insert(:log, [program: program], prefix: @prefix)
+      Factory.insert(:category,
+        [code: "21",
+        name: "FooBar",
+        segments: []],
+        prefix: @prefix)
+
+      {:ok, index_live, _html} = live(conn, ~p"/programs/#{program}/logs/#{log}/segments")
+
+      csv = file_input(index_live, "#upload-form", :csv, [%{
+        name: "invalid.csv",
+        content: File.read!("test/support/files/invalid.csv"),
+        type: "text/csv"
+      }])
+
+      assert render_upload(csv, "invalid.csv") =~ "invalid.csv"
+
+      index_live = index_live
+        |> element("#upload-form")
+        |> render_submit(%{csv: csv})
+
+      assert index_live =~ "The CSV file contained error(s)."
 
     end
+
   end
 
   describe "Delete for Admin" do

@@ -126,12 +126,13 @@ defmodule RadioappWeb.SegmentLive.Index do
           |> File.stream!()
           |> CSV.decode!()
           |> Enum.take_while(fn _x -> true end)
-        # dbg(csv)
+
         Importer.csv_row_to_table_record(csv, socket.assigns.log, socket.assigns.tenant)
 
         {:ok, csv}
       end)
-      segments = Station.list_segments_for_log(log, tenant)
+
+    segments = Station.list_segments_for_log(log, tenant)
     {:noreply,
       assign(socket,
         segments: segments,

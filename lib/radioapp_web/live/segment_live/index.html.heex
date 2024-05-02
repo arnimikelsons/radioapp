@@ -60,7 +60,6 @@ Show Segments for <.link navigate={~p"/programs/#{@program}"}><%= @program.name 
         <button type="button" phx-click="cancel-upload" phx-value-ref={entry.ref} aria-label="cancel">&times;</button>
         <%!-- Phoenix.Component.upload_errors/2 returns a list of error atoms --%>
         <%= for err <- upload_errors(@uploads.csv, entry) do %>
-          <%= dbg(err) %>
           <p class="alert alert-danger"><%= error_to_string(err) %></p>
         <% end %>
       </article>
