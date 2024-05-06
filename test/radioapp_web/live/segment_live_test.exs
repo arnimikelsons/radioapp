@@ -173,7 +173,7 @@ defmodule RadioappWeb.SegmentLiveTest do
         |> render_submit(%{csv: csv}) =~ "Schmidt"
     end
 
-    test "incorrect column in CSV upload returns error", %{conn: conn} do
+    test "incorrect column header in CSV returns error", %{conn: conn} do
       program = Factory.insert(:program, [], prefix: @prefix)
       log = Factory.insert(:log, [program: program], prefix: @prefix)
       Factory.insert(:category,
@@ -196,7 +196,7 @@ defmodule RadioappWeb.SegmentLiveTest do
         |> element("#upload-form")
         |> render_submit(%{csv: csv})
 
-      assert index_live =~ "The CSV file contained error(s)."
+      assert index_live =~ "The CSV file contained error(s) in the column names."
 
     end
 

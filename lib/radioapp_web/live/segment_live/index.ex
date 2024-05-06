@@ -44,7 +44,6 @@ defmodule RadioappWeb.SegmentLive.Index do
        emerging_artist: emerging_artist,
        tenant: tenant
      )
-      |> assign(:uploaded_files, [])
       |> allow_upload(:csv, accept: ~w(.csv), max_entries: 3)}
   end
 
@@ -116,28 +115,32 @@ defmodule RadioappWeb.SegmentLive.Index do
   end
 
   def handle_event("upload", _params, socket) do
+
     tenant = socket.assigns.tenant
     log = socket.assigns.log
-    uploaded_files =
-      consume_uploaded_entries(socket, :csv, fn %{path: path}, _entry ->
 
-        csv = path
-          |> Path.expand(__DIR__)
-          |> File.stream!()
-          |> CSV.decode!()
-          |> Enum.take_while(fn _x -> true end)
+    [csv] = consume_uploaded_entries(socket, :csv, fn %{path: path}, _entry ->
+      csv = path
+        |> Path.expand(__DIR__)
+        |> File.stream!()
+        |> CSV.decode!()
+        |> Enum.take_while(fn _x -> true end)
+      {:ok, csv}
+    end)
 
-        Importer.csv_row_to_table_record(csv, socket.assigns.log, socket.assigns.tenant)
+    case Importer.csv_row_to_table_record(csv, log, tenant) do
+      {:ok, _} ->
+        segments = Station.list_segments_for_log(log, tenant)
+        {:noreply,
+          socket
+            |> put_flash(:info, "CSV Uploaded successfully")
+            |> assign(segments: segments)}
 
-        {:ok, csv}
-      end)
-
-    segments = Station.list_segments_for_log(log, tenant)
-    {:noreply,
-      assign(socket,
-        segments: segments,
-        uploaded_files: &(&1 ++ uploaded_files))}
-
+      {:error, reason} ->
+        {:noreply,
+          socket
+            |> put_flash(:error, reason)}
+    end
   end
 
   defp list_segments(tenant) do
