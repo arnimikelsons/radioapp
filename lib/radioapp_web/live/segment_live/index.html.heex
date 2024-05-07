@@ -48,8 +48,8 @@ Show Segments for <.link navigate={~p"/programs/#{@program}"}><%= @program.name 
   </div>
 </div>
 
-<section class="p-2" phx-drop-target={@uploads.csv.ref} class="border-solid border border-slate-500 rounded p-4 inline-block">
-  <.simple_form class="dropzone" id="upload-form" phx-submit="upload" phx-change="validate">
+<section class="p-2" class="border-solid border border-slate-500 rounded p-4 inline-block">
+  <.simple_form class="dropzone" id="upload-form" phx-submit="upload" phx-change="validate" phx-drop-target={@uploads.csv.ref}>
     <%!-- render each avatar entry --%>
     <%= for entry <- @uploads.csv.entries do %>
       <article class="upload-entry"> 

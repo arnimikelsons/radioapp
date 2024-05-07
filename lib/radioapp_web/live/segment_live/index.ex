@@ -44,6 +44,7 @@ defmodule RadioappWeb.SegmentLive.Index do
        emerging_artist: emerging_artist,
        tenant: tenant
      )
+      |> assign(:uploads_loaded, false)
       |> allow_upload(:csv, accept: ~w(.csv), max_entries: 3)}
   end
 

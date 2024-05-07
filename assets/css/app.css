@@ -2206,11 +2206,13 @@ input:checked+.slider:before {
   color: #64748b;
   font-size: .875em;
   text-align: center;
-  cursor: pointer;
 }
 .dropzone:hover {
   color: #3e4c67;
   border-color: #64748b;
+}
+.dropzone label {
+  cursor: pointer;
 }
 
 /**** RESPONSIVE HOOKS ****/
