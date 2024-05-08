@@ -96,6 +96,11 @@ defmodule RadioappWeb.SegmentLive.Index do
     |> assign(:segment, nil)
   end
 
+  defp apply_action(socket, :upload_instructions, _params) do
+    socket
+    |> assign(:page_title, "Upload Instructions")
+  end
+
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
     tenant = socket.assigns.tenant
@@ -108,6 +113,7 @@ defmodule RadioappWeb.SegmentLive.Index do
   end
 
   def handle_event("validate", _params, socket) do
+      dbg(socket.assigns.uploads.csv.entries)
       {:noreply, socket}
   end
 

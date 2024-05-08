@@ -2199,6 +2199,13 @@ input:checked+.slider:before {
 }
 
 /* CSV Upload drag and drop zone */
+/* .col-flex {
+  display: flex;
+  width:100%;
+}
+.col-flex section {
+  width: 100%;
+} */
 .dropzone {
   padding: 10px;
   border-radius: 4px;
@@ -2214,6 +2221,12 @@ input:checked+.slider:before {
 .dropzone label {
   cursor: pointer;
 }
+.upload-btn {
+  
+}
+.no-uploads.upload-btn {
+
+} 
 
 /**** RESPONSIVE HOOKS ****/
 
@@ -2714,11 +2727,6 @@ input:checked+.slider:before {
 }
 
 /* Desktop */
-@media (min-width: 900px) {
-  .dropzone {
-    width: 50%;
-  }
-}
 @media (min-width: 960px) {
 
   .navbar-brand,
@@ -2846,13 +2854,6 @@ input:checked+.slider:before {
   .container,
   .container-sm {
     max-width: 1060px;
-  }
-}
-
-/* Extra Extra Large */
-@media (min-width: 1400px) {
-  .dropzone {
-    width: 30%;
   }
 }
 
