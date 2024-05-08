@@ -29,6 +29,7 @@ Show Segments for <.link navigate={~p"/programs/#{@program}"}><%= @program.name 
     <% end %>
   </:action>
 </.table>
+
 <div class="mt-4 text-right">
   <.link patch={~p"/programs/#{@program}/logs/#{@log}/segments/new"}>
     <.button>New Segment</.button>
@@ -46,6 +47,93 @@ Show Segments for <.link navigate={~p"/programs/#{@program}"}><%= @program.name 
     <p>Emerging Artist: <%= @emerging_artist %>%</p>
   </div>
 </div>
+
+<%= if @tenant == "admin" or @tenant == "demo" or @tenant == "sample" do %>
+
+  <div class="flex flex-wrap">
+    <section class="p-2 w-full md:w-1/2 lg:w-1/3">
+      <.simple_form class="dropzone" id="upload-form" phx-submit="upload" phx-change="validate" phx-drop-target={@uploads.csv.ref}>
+        <%!-- render each avatar entry --%>
+        <%= for entry <- @uploads.csv.entries do %>
+          <article class="upload-entry"> 
+          <p><%= entry.client_name %></p>
+            <%!-- entry.progress will update automatically for in-flight entries --%>
+            <progress value={entry.progress} max="100"> <%= entry.progress %>% </progress>
+            <%!-- a regular click event whose handler will invoke Phoenix.LiveView.cancel_upload/3 --%>
+            <button type="button" phx-click="cancel-upload" phx-value-ref={entry.ref} aria-label="cancel">&times;</button>
+            <%!-- Phoenix.Component.upload_errors/2 returns a list of error atoms --%>
+            <%= for err <- upload_errors(@uploads.csv, entry) do %>
+              <p class="alert alert-danger"><%= error_to_string(err) %></p>
+            <% end %>
+          </article>
+        <% end %>
+        <div :for={err <- upload_errors(@uploads.csv)} class="alert alert-danger">
+          <%= error_to_string(err) %>
+        </div>
+        <.live_file_input upload={@uploads.csv} class="hidden" />
+        <label for={@uploads.csv.ref} class="button">
+            Drag & Drop
+            <br>
+            or browse files
+        </label>
+      
+        <:actions>
+          <%= if @uploads.csv.entries == [] do %>
+            <.button class="upload-btn no-uploads">Upload</.button>
+          <% else %>
+            <.button class="upload-btn">Upload</.button>  
+          <% end %>
+        </:actions>
+      </.simple_form>
+    </section>
+
+    <section class="p-2 w-full md:w-1/2 lg:w-2/3 flex flex-col items-start justify-start">
+      <p class="pt-4 text-base">
+        <a href="/images/radioapp_sample_csv.csv" class="mt-5">Download a sample CSV</a>
+      </p>
+      <p class="text-base">
+        <.link patch={~p"/programs/#{@program}/logs/#{@log}/segments/upload_instructions"}>
+          Find out more
+        </.link>
+      </p>
+    </section>
+  </div>
+  <.modal
+    :if={@live_action in [:upload_instructions]}
+    id="segment-modal"
+    show
+    on_cancel={JS.navigate(~p"/programs/#{@program}/logs/#{@log}/segments")}
+  >
+    <div>
+      <.header>
+        Upload Instructions 
+        <:subtitle>How to upload a CSV to your log</:subtitle>
+      </.header>
+      <ul class="list-disc list-inside">
+        <li class="mb-2"><a href="/images/radioapp_sample_csv.csv">Download the sample CSV</a> and open it in your spreadsheet software (Google Sheets, Excel, Numbers, etc.)
+        </li>
+        <li class="mb-2">
+          Required column headers: 
+            <ol class="list-decimal list-inside ml-4">
+              <li>artist</li>
+              <li>song_title</li>
+              <li>start_time</li>
+              <li>end_time</li>
+              <li>category</li>
+            </ol>
+        </li>
+        <li class="mb-2">You can remove any of the other column headers.</li>
+        <li class="mb-2">Remove the sample rows of data and enter your data into these rows, completing every column.</li>
+        <li class="mb-2">Checkmark data (yes/no) must be written as 'true' or 'false'.</li>
+        <li class="mb-2">When you are complete, export the file in CSV format.</li>
+        <li class="mb-2">Use this page to drag and drop or click to browse your computer for the finished file, then click Upload.</li>
+        <li class="mb-2">Only one file can be uploaded at a time.</li>
+      </ul>
+    </div>
+  </.modal>
+
+<% end %>
+
 
 <.modal
   :if={@live_action in [:new, :edit]}

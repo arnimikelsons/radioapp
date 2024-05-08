@@ -688,6 +688,7 @@ defmodule Radioapp.Station do
 
   """
   def create_segment(%Log{} = log, attrs \\ %{}, tenant) do
+
     log
     |> Ecto.build_assoc(:segments)
     |> Segment.changeset(attrs)

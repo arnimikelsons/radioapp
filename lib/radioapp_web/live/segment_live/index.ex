@@ -5,6 +5,7 @@ defmodule RadioappWeb.SegmentLive.Index do
   alias Radioapp.Station.Segment
   alias Radioapp.Admin
   import RadioappWeb.LiveHelpers
+  alias Radioapp.CSV.Importer
 
   @impl true
   def mount(
@@ -42,7 +43,9 @@ defmodule RadioappWeb.SegmentLive.Index do
        indigenous_artist: indigenous_artist,
        emerging_artist: emerging_artist,
        tenant: tenant
-     )}
+     )
+      |> assign(:uploads_loaded, false)
+      |> allow_upload(:csv, accept: ~w(.csv), max_entries: 3)}
   end
 
   @impl true
@@ -93,6 +96,11 @@ defmodule RadioappWeb.SegmentLive.Index do
     |> assign(:segment, nil)
   end
 
+  defp apply_action(socket, :upload_instructions, _params) do
+    socket
+    |> assign(:page_title, "Upload Instructions")
+  end
+
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
     tenant = socket.assigns.tenant
@@ -104,7 +112,48 @@ defmodule RadioappWeb.SegmentLive.Index do
     {:noreply, assign(socket, :segments, list_segments(tenant))}
   end
 
+  def handle_event("validate", _params, socket) do
+      {:noreply, socket}
+  end
+
+  def handle_event("cancel-upload", %{"ref" => ref}, socket) do
+    {:noreply, cancel_upload(socket, :csv, ref)}
+  end
+
+  def handle_event("upload", _params, socket) do
+
+    tenant = socket.assigns.tenant
+    log = socket.assigns.log
+
+    [csv] = consume_uploaded_entries(socket, :csv, fn %{path: path}, _entry ->
+      csv = path
+        |> Path.expand(__DIR__)
+        |> File.stream!()
+        |> CSV.decode!()
+        |> Enum.take_while(fn _x -> true end)
+      {:ok, csv}
+    end)
+
+    case Importer.csv_row_to_table_record(csv, log, tenant) do
+      {:ok, _} ->
+        segments = Station.list_segments_for_log(log, tenant)
+        {:noreply,
+          socket
+            |> put_flash(:info, "CSV Uploaded successfully")
+            |> assign(segments: segments)}
+
+      {:error, reason} ->
+        {:noreply,
+          socket
+            |> put_flash(:error, reason)}
+    end
+  end
+
   defp list_segments(tenant) do
     Station.list_segments(tenant)
   end
+
+  defp error_to_string(:too_large), do: "Too large"
+  defp error_to_string(:too_many_files), do: "You have selected too many files"
+  defp error_to_string(:not_accepted), do: "You have selected an unacceptable file type"
 end

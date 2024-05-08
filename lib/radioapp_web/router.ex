@@ -150,6 +150,7 @@ defmodule RadioappWeb.Router do
     live "/programs/:program_id/logs/:log_id/segments", SegmentLive.Index, :index
     live "/programs/:program_id/logs/:log_id/segments/new", SegmentLive.Index, :new
     live "/programs/:program_id/logs/:log_id/segments/:id/edit", SegmentLive.Index, :edit
+    live "/programs/:program_id/logs/:log_id/segments/upload_instructions", SegmentLive.Index, :upload_instructions
 
     live "/programs/:program_id/logs/:log_id/segments/:id", SegmentLive.Show, :show
     live "/programs/:program_id/logs/:log_id/segments/:id/show/edit", SegmentLive.Show, :edit

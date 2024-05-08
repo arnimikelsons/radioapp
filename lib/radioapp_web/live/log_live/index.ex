@@ -18,7 +18,6 @@ defmodule RadioappWeb.LogLive.Index do
     {:ok,
       socket
       |> assign(:logs, list_logs_for_program(program, tenant))}
-
   end
 
   @impl true
@@ -29,7 +28,7 @@ defmodule RadioappWeb.LogLive.Index do
   defp apply_action(socket, :new, %{
     "program_id" => program_id
   }) do
-    
+
     tenant = socket.assigns.tenant
     program = Station.get_program!(program_id, tenant)
 
@@ -82,5 +81,7 @@ defmodule RadioappWeb.LogLive.Index do
   defp list_logs_for_program(program, tenant) do
     Station.list_logs_for_program(program, tenant)
   end
+
+
 
 end

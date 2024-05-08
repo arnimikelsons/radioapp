@@ -16,8 +16,8 @@ defmodule RadioappWeb.LinkLive.Show do
   end
 
   @impl true
-  def handle_params(%{"id" => id}, session, socket) do
-    tenant = Map.fetch!(session, "subdomain")
+  def handle_params(%{"id" => id}, _url, socket) do
+    tenant = socket.assigns.tenant
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))

@@ -2198,6 +2198,36 @@ input:checked+.slider:before {
   overflow: hidden;
 }
 
+/* CSV Upload drag and drop zone */
+/* .col-flex {
+  display: flex;
+  width:100%;
+}
+.col-flex section {
+  width: 100%;
+} */
+.dropzone {
+  padding: 10px;
+  border-radius: 4px;
+  border: 2px dashed #aab6c7;
+  color: #64748b;
+  font-size: .875em;
+  text-align: center;
+}
+.dropzone:hover {
+  color: #3e4c67;
+  border-color: #64748b;
+}
+.dropzone label {
+  cursor: pointer;
+}
+.upload-btn {
+  
+}
+.no-uploads.upload-btn {
+
+} 
+
 /**** RESPONSIVE HOOKS ****/
 
 /* Keep in mind mobile-first styles get applied 
@@ -2826,9 +2856,6 @@ input:checked+.slider:before {
     max-width: 1060px;
   }
 }
-
-/* Extra Extra Large */
-@media (min-width: 1400px) {}
 
 /* Super Large */
 @media (min-width: 1920px) {}

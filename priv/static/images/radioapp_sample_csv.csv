@@ -1,0 +1,5 @@
+start_time,end_time,artist,song_title,category,socan_type,catalogue_number,new_music,instrumental,can_con,hit,indigenous_artist,emerging_artist
+10:50:00,11:00:00,Eric Chenaux,This Ain't Life,21-Pop/Rock/Popular/Generic,Feature,19992,true,false,true,false,false,false
+11:00:00,11:05:00,Cousins,Ocean,21-Pop/Rock/Popular/Generic,Feature,34598,false,false,true,false,false,false
+11:05:00,11:10:00,Snotty Nose Rez Kids,I'm Good,21-Pop/Rock/Popular/Generic,Feature,30303,false,false,true,true,true,false
+

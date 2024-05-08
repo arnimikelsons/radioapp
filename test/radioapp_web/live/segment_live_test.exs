@@ -137,7 +137,7 @@ defmodule RadioappWeb.SegmentLiveTest do
       assert html =~ "some updated song title"
     end
 
-    test "deletes segment in listing", %{conn: conn} do
+    test "Disable delete segment button", %{conn: conn} do
       program = Factory.insert(:program, [], prefix: @prefix)
       log = Factory.insert(:log, [program: program], prefix: @prefix)
       category = Factory.insert(:category, [], prefix: @prefix)
@@ -147,6 +147,82 @@ defmodule RadioappWeb.SegmentLiveTest do
 
       refute html =~ "Delete"
 
+    end
+
+    test "Successfully upload a CSV file", %{conn: conn} do
+      program = Factory.insert(:program, [], prefix: @prefix)
+      log = Factory.insert(:log, [program: program], prefix: @prefix)
+      Factory.insert(:category,
+        [code: "21",
+        name: "Music",
+        segments: []],
+        prefix: @prefix)
+
+      {:ok, index_live, _html}= live(conn, ~p"/programs/#{program}/logs/#{log}/segments")
+
+      csv = file_input(index_live, "#upload-form", :csv, [%{
+        name: "valid.csv",
+        content: File.read!("test/support/files/valid.csv"),
+        type: "text/csv"
+      }])
+
+      assert render_upload(csv, "valid.csv") =~ "valid.csv"
+
+      assert index_live
+        |> element("#upload-form")
+        |> render_submit(%{csv: csv}) =~ "Schmidt"
+    end
+
+    test "invalid column header in CSV returns error", %{conn: conn} do
+      program = Factory.insert(:program, [], prefix: @prefix)
+      log = Factory.insert(:log, [program: program], prefix: @prefix)
+      Factory.insert(:category,
+        [code: "21",
+        name: "FooBar",
+        segments: []],
+        prefix: @prefix)
+
+      {:ok, index_live, _html} = live(conn, ~p"/programs/#{program}/logs/#{log}/segments")
+
+      csv = file_input(index_live, "#upload-form", :csv, [%{
+        name: "invalid.csv",
+        content: File.read!("test/support/files/invalid.csv"),
+        type: "text/csv"
+      }])
+
+      assert render_upload(csv, "invalid.csv") =~ "invalid.csv"
+
+      index_live = index_live
+        |> element("#upload-form")
+        |> render_submit(%{csv: csv})
+
+      assert index_live =~ "The CSV file contained error(s) in the column names."
+    end
+
+    test "missing required column header in CSV returns error", %{conn: conn} do
+      program = Factory.insert(:program, [], prefix: @prefix)
+      log = Factory.insert(:log, [program: program], prefix: @prefix)
+      Factory.insert(:category,
+        [code: "21",
+        name: "FooBar",
+        segments: []],
+        prefix: @prefix)
+
+      {:ok, index_live, _html} = live(conn, ~p"/programs/#{program}/logs/#{log}/segments")
+
+      csv = file_input(index_live, "#upload-form", :csv, [%{
+        name: "missing-column.csv",
+        content: File.read!("test/support/files/missing-column.csv"),
+        type: "text/csv"
+      }])
+
+      assert render_upload(csv, "missing-column.csv") =~ "missing-column.csv"
+
+      index_live = index_live
+        |> element("#upload-form")
+        |> render_submit(%{csv: csv})
+
+      assert index_live =~ "The CSV file contained error(s) in the column names."
     end
   end
 

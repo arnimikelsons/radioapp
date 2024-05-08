@@ -82,12 +82,13 @@ defmodule RadioappWeb.LogController do
           :instrumental,
           :can_con,
           :hit,
-          :indigenous_artist, 
+          :indigenous_artist,
           :emerging_artist
         ],
         logs
       )
       |> Enum.join()
+
 
     conn
     |> send_download(
