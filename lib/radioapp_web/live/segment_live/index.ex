@@ -113,7 +113,6 @@ defmodule RadioappWeb.SegmentLive.Index do
   end
 
   def handle_event("validate", _params, socket) do
-      dbg(socket.assigns.uploads.csv.entries)
       {:noreply, socket}
   end
 
