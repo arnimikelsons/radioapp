@@ -89,7 +89,7 @@ Show Segments for <.link navigate={~p"/programs/#{@program}"}><%= @program.name 
 
     <section class="p-2 w-full md:w-1/2 lg:w-2/3 flex flex-col items-start justify-start">
       <p class="text-base">
-        <a href="/images/radioapp_sample_csv.csv" class="mt-5">Download a sample CSV</a>
+        <a href="https://radioapp.ca/help" target="_blank" class="mt-5">Download a sample CSV</a>
       </p>
       <p class="text-base">
         <.link patch={~p"/programs/#{@program}/logs/#{@log}/segments/upload_instructions"}>
@@ -110,7 +110,8 @@ Show Segments for <.link navigate={~p"/programs/#{@program}"}><%= @program.name 
         <:subtitle>How to upload a CSV to your log</:subtitle>
       </.header>
       <ul class="list-disc list-inside">
-        <li class="mb-2"><a href="/images/radioapp_sample_csv.csv">Download the sample CSV</a> and open it in your spreadsheet software (Google Sheets, Excel, Numbers, etc.)
+        <li class="mb-2"><a href="https://radioapp.ca/help" target="_blank" class="mt-5">Download a sample CSV</a>
+ and open it in your spreadsheet software (Google Sheets, Excel, Numbers, etc.)
         </li>
         <li class="mb-2">
           Required column headers: 
