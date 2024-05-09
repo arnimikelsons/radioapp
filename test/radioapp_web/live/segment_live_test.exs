@@ -168,9 +168,17 @@ defmodule RadioappWeb.SegmentLiveTest do
 
       assert render_upload(csv, "valid.csv") =~ "valid.csv"
 
-      assert index_live
+      {:ok, conn} = index_live
         |> element("#upload-form")
-        |> render_submit(%{csv: csv}) =~ "Schmidt"
+        |> render_submit(%{csv: csv})
+        |> follow_redirect(conn,  ~p"/programs/#{program}/logs/#{log}/segments")
+
+        assert get_flash(conn, :info) =~ "CSV Uploaded successfully"
+        assert_redirected index_live, ~p"/programs/#{program}/logs/#{log}/segments"
+
+        {:ok, _result_live, html}= live(conn, ~p"/programs/#{program}/logs/#{log}/segments")
+        assert html =~ "Schmidt"
+
     end
 
     test "invalid column header in CSV returns error", %{conn: conn} do
@@ -192,11 +200,14 @@ defmodule RadioappWeb.SegmentLiveTest do
 
       assert render_upload(csv, "invalid.csv") =~ "invalid.csv"
 
-      index_live = index_live
+      {:ok, conn} = index_live
         |> element("#upload-form")
         |> render_submit(%{csv: csv})
+        |> follow_redirect(conn, ~p"/programs/#{program}/logs/#{log}/segments")
 
-      assert index_live =~ "The CSV file contained error(s) in the column names."
+      assert get_flash(conn, :error) =~ "The CSV file contained error(s) in the column names."
+      assert_redirected index_live, ~p"/programs/#{program}/logs/#{log}/segments"
+
     end
 
     test "missing required column header in CSV returns error", %{conn: conn} do
@@ -218,11 +229,15 @@ defmodule RadioappWeb.SegmentLiveTest do
 
       assert render_upload(csv, "missing-column.csv") =~ "missing-column.csv"
 
-      index_live = index_live
+      {:ok, conn} = index_live
         |> element("#upload-form")
         |> render_submit(%{csv: csv})
+        |> follow_redirect(conn, ~p"/programs/#{program}/logs/#{log}/segments")
 
-      assert index_live =~ "The CSV file contained error(s) in the column names."
+      # assert index_live =~ "The CSV file contained error(s) in the column names."
+      assert get_flash(conn, :error) =~ "The CSV file contained error(s) in the column names."
+      assert_redirected index_live, ~p"/programs/#{program}/logs/#{log}/segments"
+
     end
   end
 
