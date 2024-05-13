@@ -51,8 +51,11 @@ defmodule RadioappWeb.ProgramController do
     end
     user = conn.assigns.current_user
     user_role = if user != nil do
-      Map.get(user.roles, tenant)
-
+      
+      case Map.get(user.roles, tenant) do
+        nil -> Map.get(user.roles, "admin")
+        _ -> Map.get(user.roles, tenant)
+      end
     end
 
     render(conn, :show, timeslots: timeslots, program: program, image: image, user_role: user_role)
