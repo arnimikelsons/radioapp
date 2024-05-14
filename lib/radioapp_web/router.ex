@@ -39,7 +39,13 @@ defmodule RadioappWeb.Router do
   # Other scopes may use custom stacks.
   scope "/api", RadioappWeb do
      pipe_through :api
-     get "/shows", Api.ProgramApiController, :show
+
+    # Set up API requests from client websites to display now playing show
+    get "/shows", Api.ProgramApiController, :show
+
+    # Handle API requests from playout software to add segments to log
+    resources "/songs", Api.SongController
+
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

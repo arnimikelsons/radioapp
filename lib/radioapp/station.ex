@@ -695,6 +695,14 @@ defmodule Radioapp.Station do
     |> Repo.insert(prefix: Triplex.to_prefix(tenant))
   end
 
+  def create_segment_api(%Log{} = log, attrs \\ %{}, tenant) do
+
+    log
+    |> Ecto.build_assoc(:segments)
+    |> Segment.changeset_api(attrs)
+    |> Repo.insert(prefix: Triplex.to_prefix(tenant))
+  end
+
   @doc """
   Updates a segment.
 

@@ -49,6 +49,30 @@ defmodule Radioapp.Station.Segment do
     |> validate_required([:artist, :end_time, :start_time, :song_title, :category_id])
   end
 
+  def changeset_api(segment, attrs) do
+    segment
+    |> cast(attrs, [
+      :artist,
+      :can_con,
+      :catalogue_number,
+      :end_time,
+      :hit,
+      :instrumental,
+      :new_music,
+      :indigenous_artist,
+      :emerging_artist,
+      :start_time,
+      :socan_type,
+      :song_title,
+      :category_id,
+      :duration
+    ])
+    |> normalize_duration()
+    |> validate_required([:artist, :song_title])
+  end
+
+
+
   def change_end_time(changeset) do
     start_time = get_field(changeset, :start_time)
     duration = get_field(changeset, :duration) || 0
