@@ -659,7 +659,7 @@ defmodule Radioapp.AccountsTest do
   end
 
   describe "update user through admin/2" do
-    
+
     test "update_user/2 with valid data updates the user" do
       user= Factory.insert(:user, roles: %{@tenant => :user})
 
@@ -749,4 +749,15 @@ defmodule Radioapp.AccountsTest do
       assert %Ecto.Changeset{} = Accounts.change_org(org)
     end
   end
+
+  describe "create_user_api_token/1 and fetch_user_by_api_token/1" do
+    test "creates and fetches by token" do
+      user = user_fixture()
+      # user = Factory.insert(:user, roles: %{})
+      token = Accounts.create_user_api_token(user)
+      assert Accounts.fetch_user_by_api_token(token) == {:ok, user}
+      assert Accounts.fetch_user_by_api_token("invalid") == :error
+    end
+  end
+
 end
