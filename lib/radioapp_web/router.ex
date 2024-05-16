@@ -37,6 +37,10 @@ defmodule RadioappWeb.Router do
     plug EnsureRolePlug, [:super_admin]
   end
 
+  pipeline :api_admin do
+    plug EnsureRolePlug, [:admin]
+  end
+
   pipeline :tenant_in_session do
     plug RadioappWeb.Plugs.SessionTenant
   end
@@ -190,6 +194,13 @@ defmodule RadioappWeb.Router do
       get "/admin/logs", LogController, :index
       post "/admin/logs/search", LogController, :search
       post "/admin/logs/export", LogController, :export
+
+  end
+
+  scope "/", RadioappWeb do
+    pipe_through [:browser, :require_authenticated_user, :api_admin, :tenant_in_session]
+      live "/admin/apikey", ApikeyLive.Index, :index
+      live "/admin/apikey/new", ApikeyLive.Index, :new
 
   end
 

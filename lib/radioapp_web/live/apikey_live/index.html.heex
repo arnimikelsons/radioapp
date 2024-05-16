@@ -1,0 +1,44 @@
+<div class="max-w-2xl mx-auto">
+  <.header>
+    API KEYS
+    <:actions>
+      <.link patch={~p"/admin/apikey/new"}>
+        <.button>Create a new API Key</.button>
+      </.link>
+    </:actions>
+  </.header>
+</div>
+
+<.modal
+  :if={@live_action in [:new]}
+  id="api-key-modal"
+  show
+  on_cancel={JS.navigate(~p"/admin/apikey")}
+>
+  <div>
+      <.header>
+        <%= @page_title %>
+        <:subtitle>Use this form to generate a new API Key.</:subtitle>
+      </.header>
+
+      <.simple_form
+        id="apikey-form"
+        phx-change="validate"
+        phx-submit="save"
+      >
+        <p>Click the button below to generate a new API Key. Once generated, you will need to write it down or copy it somewhere safe.
+        You will not be able to access it again in the future. It will be valid for 365 days, unless you change your email address or delete your user account. </p>
+        <:actions>
+          <.button phx-disable-with="Generating...">Generate a New API Key</.button>
+        </:actions>
+      </.simple_form>
+    </div>
+  
+</.modal>
+
+
+   
+ 
+
+
+
