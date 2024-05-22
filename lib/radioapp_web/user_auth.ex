@@ -256,7 +256,7 @@ defmodule RadioappWeb.UserAuth do
 
   defp signed_in_path(_conn), do: ~p"/"
 
-  def fetch_api_user(conn, _opts) do
+  def fetch_api_user_from_bearer_token(conn, _opts) do
     with ["Bearer " <> token] <- get_req_header(conn, "authorization"),
         {:ok, user} <- Accounts.fetch_user_by_api_token(token) do
       assign(conn, :current_user, user)
@@ -267,4 +267,19 @@ defmodule RadioappWeb.UserAuth do
         |> halt()
     end
   end
+
+  def fetch_api_user(conn, _opts) do
+    # How to get token from params
+    with %{params: %{"token" => token}} <- fetch_query_params(conn),
+        {:ok, user} <- Accounts.fetch_user_by_api_token(token) do
+      assign(conn, :current_user, user)
+    else
+      _ ->
+        conn
+        |> send_resp(:unauthorized, "No access for you")
+        |> halt()
+    end
+  end
+
+
 end

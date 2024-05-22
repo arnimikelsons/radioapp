@@ -15,7 +15,7 @@ defmodule RadioappWeb.Api.SongController do
   end
 
   # def index(conn, song_params) do
-  def new(conn, %{"artist" => artist, "title" => title, "token" => "145876"}) do
+  def new(conn, %{"artist" => artist, "title" => title}) do
     tenant = RadioappWeb.get_tenant(conn)
     log = Station.get_log!(5, tenant)
 

@@ -12,6 +12,7 @@ defmodule RadioappWeb.ApikeyLive.Index do
     socket =
       assign_stationdefaults(session, socket)
       |> assign(:tenant, tenant)
+      |> assign(:token, nil)
 
     {:ok, socket}
   end
@@ -48,15 +49,19 @@ defmodule RadioappWeb.ApikeyLive.Index do
   end
 
   def handle_event("save", _, socket) do
-    dbg(socket)
     # tenant = socket.assigns.tenant
     token = Accounts.create_user_api_token(socket.assigns.current_user)
     dbg(token)
+    socket = assign(socket, :token, token)
+    dbg(socket)
+
 
     {:noreply,
-    socket
-    |> put_flash(:info, "API Key generated successfully")
-    |> push_navigate(to: ~p"/admin/apikey")}
+      socket
+      # |> assign(:token, token)
+      |> put_flash(:info, "API Key generated successfully")
+      # |> push_navigate(to: ~p"/admin/apikey")
+    }
 
   end
 end
