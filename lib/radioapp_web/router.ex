@@ -162,7 +162,6 @@ defmodule RadioappWeb.Router do
     live "/programs/:program_id/logs/:id", LogLive.Show, :show
     live "/programs/:program_id/logs/:id/show/edit", LogLive.Show, :edit
 
-    #live "/segments", SegmentLive.Index, :index
     live "/programs/:program_id/logs/:log_id/segments", SegmentLive.Index, :index
     live "/programs/:program_id/logs/:log_id/segments/new", SegmentLive.Index, :new
     live "/programs/:program_id/logs/:log_id/segments/:id/edit", SegmentLive.Index, :edit
@@ -172,6 +171,11 @@ defmodule RadioappWeb.Router do
     live "/programs/:program_id/logs/:log_id/segments/:id/show/edit", SegmentLive.Show, :edit
 
     get "/admin", PageController, :admin
+
+    # Add PlayoutSegment resources
+    live "/playout_segments", PlayoutSegmentLive.Index, :index
+    live "/playout_segments/:id/edit", PlayoutSegmentLive.Index, :edit
+
   end
 
 

@@ -2,45 +2,31 @@ defmodule RadioappWeb.Api.SongController do
   use RadioappWeb, :controller
 
   alias Radioapp.Station
-  alias Radioapp.Station.Segment
+  alias Radioapp.Station.PlayoutSegment
+  alias Radioapp.Admin
 
   action_fallback RadioappWeb.FallbackController
 
   def index(conn, _song_params) do
     tenant = RadioappWeb.get_tenant(conn)
-    log = Station.get_log!(5, tenant)
     dbg("index called")
-    segments = Station.list_segments_for_log(log, tenant)
-    render(conn, :index, segments: segments)
+    playout_segments = Station.list_playout_segments(tenant)
+    render(conn, :index, playout_segments: playout_segments)
   end
 
-  # def index(conn, song_params) do
   def new(conn, %{"artist" => artist, "title" => title}) do
     tenant = RadioappWeb.get_tenant(conn)
-    log = Station.get_log!(5, tenant)
-
     dbg("new called")
 
-    with {:ok, %Segment{} = segment} <- Station.create_segment_api(log, %{song_title: title, artist: artist}, tenant) do
+    #Get the start time based on the time it is now in the tenant's time zone
+    %{timezone: timezone} = Admin.get_timezone!(tenant)
+    time_now = DateTime.to_time(Timex.now(timezone))
+
+    with {:ok, %PlayoutSegment{} = playout_segment} <- Station.create_playout_segment(%{song_title: title, artist: artist, start_time: time_now}, tenant) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", ~p"/api/songs/#{segment}")
-      |> render(:show, segment: segment)
-    end
-
-  end
-
-  def create(conn, song_params) do
-
-    tenant = RadioappWeb.get_tenant(conn)
-    log = Station.get_log!(5, tenant)
-    dbg("create called")
-
-    with {:ok, %Segment{} = segment} <- Station.create_segment_api(log, song_params, tenant) do
-      conn
-      |> put_status(:created)
-      |> put_resp_header("location", ~p"/api/songs/#{segment}")
-      |> render(:show, song: segment)
+      |> put_resp_header("location", ~p"/api/songs/#{playout_segment}")
+      |> render(:show, playout_segment: playout_segment)
     end
 
   end
@@ -48,9 +34,23 @@ defmodule RadioappWeb.Api.SongController do
   def show(conn, %{"id" => id}) do
     tenant = RadioappWeb.get_tenant(conn)
 
-    segment = Station.get_segment!(id, tenant)
-    render(conn, :show, segment: segment)
+    playout_segment = Station.get_playout_segment!(id, tenant)
+    render(conn, :show, playout_segment: playout_segment)
   end
+
+  # def create(conn, song_params) do
+
+  #   tenant = RadioappWeb.get_tenant(conn)
+  #   log = Station.get_log!(5, tenant)
+  #   dbg("create called")
+
+  #   with {:ok, %Segment{} = segment} <- Station.create_segment_api(log, song_params, tenant) do
+  #     conn
+  #     |> put_status(:created)
+  #     |> put_resp_header("location", ~p"/api/songs/#{segment}")
+  #     |> render(:show, song: segment)
+  #   end
+  # end
 
   # def update(conn, %{"id" => id, "song" => song_params}) do
   #   song = Play.get_song!(id)
@@ -67,4 +67,5 @@ defmodule RadioappWeb.Api.SongController do
   #     send_resp(conn, :no_content, "")
   #   end
   # end
+
 end

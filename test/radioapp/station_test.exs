@@ -620,7 +620,8 @@ defmodule Radioapp.StationTest do
     end
 
     test "change_playout_segment/1 returns a playout_segment changeset" do
-
+      playout_segment = Factory.insert(:playout_segment, [], prefix: @prefix)
+      assert %Ecto.Changeset{} = Station.change_playout_segment(playout_segment)
     end
 
   end

@@ -156,7 +156,7 @@ defmodule RadioappWeb.SegmentLive.Index do
     Station.list_segments(tenant)
   end
 
-  defp error_to_string(:too_large), do: "Too large"
-  defp error_to_string(:too_many_files), do: "You have selected too many files"
-  defp error_to_string(:not_accepted), do: "You have selected an unacceptable file type"
+  defp error_to_string(:too_large), do: "The file is too large."
+  defp error_to_string(:too_many_files), do: "You have selected too many files."
+  defp error_to_string(:not_accepted), do: "You have selected an incorrect file type."
 end

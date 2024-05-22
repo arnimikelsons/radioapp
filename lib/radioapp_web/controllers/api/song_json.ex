@@ -2,27 +2,28 @@ defmodule RadioappWeb.Api.SongJSON do
 
   # alias Data.Play.Song
 
-  alias Radioapp.Station.Segment
+  alias Radioapp.Station.PlayoutSegment
 
   @doc """
   Renders a list of songs.
   """
-  def index(%{segments: segments}) do
-    %{data: for(segment <- segments, do: data(segment))}
+  def index(%{playout_segments: playout_segments}) do
+    %{data: for(playout_segment <- playout_segments, do: data(playout_segment))}
   end
 
   @doc """
   Renders a single song.
   """
-  def show(%{segment: segment}) do
-    %{data: data(segment)}
+  def show(%{playout_segment: playout_segment}) do
+    %{data: data(playout_segment)}
   end
 
-  defp data(%Segment{} = segment) do
+  defp data(%PlayoutSegment{} = playout_segment) do
     %{
-      id: segment.id,
-      artist: segment.artist,
-      song_title: segment.song_title
+      id: playout_segment.id,
+      artist: playout_segment.artist,
+      song_title: playout_segment.song_title,
+      start_time: playout_segment.start_time
     }
   end
 end

@@ -836,6 +836,18 @@ defmodule Radioapp.Station do
     Repo.delete(playout_segment)
   end
 
+    @doc """
+  Returns an `%Ecto.Changeset{}` for tracking playout_segment changes.
+
+  ## Examples
+
+      iex> change_playout_segment(playout_segment)
+      %Ecto.Changeset{data: %PlayoutSegment{}}
+
+  """
+  def change_playout_segment(%PlayoutSegment{} = playout_segment, attrs \\ %{}) do
+    PlayoutSegment.changeset(playout_segment, attrs)
+  end
 
   @doc """
   Returns the list of images.
