@@ -2,7 +2,7 @@ defmodule RadioappWeb.PlayoutSegmentLive.Index do
   use RadioappWeb, :live_view
 
   alias Radioapp.Station
-  alias Radioapp.Station.PlayoutSegment
+  # alias Radioapp.Station.PlayoutSegment
   alias Radioapp.Admin
   import RadioappWeb.LiveHelpers
 
