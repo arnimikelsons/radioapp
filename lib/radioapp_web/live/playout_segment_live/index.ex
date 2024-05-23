@@ -70,12 +70,35 @@ defmodule RadioappWeb.PlayoutSegmentLive.Index do
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
     tenant = socket.assigns.tenant
-    segment = Station.get_segment!(id, tenant)
-    if socket.assigns.current_user.role == :admin do
-      {:ok, _} = Station.delete_segment(segment)
+    playout_segment = Station.get_playout_segment!(id, tenant)
+
+    dbg(socket.assigns.current_user)
+
+    case socket.assigns.current_user.roles do
+      %{^tenant => "admin"} ->
+
+        case Station.delete_playout_segment(playout_segment) do
+          {:ok, _} ->
+            {:noreply, assign(socket, :playout_segments, list_playout_segments(tenant))}
+          _ ->
+            {:error,
+              socket
+              |> put_flash(:error, "Wasn't able to delete the playout segment.")}
+        end
+
+      _ ->
+        {:error,
+          socket
+          |> put_flash(:error, "Cannot delete a segment unless you are an admin.")}
+
+
     end
 
-    {:noreply, assign(socket, :segments, list_playout_segments(tenant))}
+
+
+
+
+
   end
 
   defp list_playout_segments(tenant) do

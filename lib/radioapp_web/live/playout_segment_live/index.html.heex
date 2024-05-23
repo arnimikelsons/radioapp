@@ -17,16 +17,16 @@ Playout System
   <:col :let={playout_segment} label="Emrg"><%= if playout_segment.emerging_artist do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
   <:action :let={playout_segment}>
     <div class="sr-only">
-      <.link navigate={~p"/playout_segments/#{playout_segment}"}>Show</.link>
+      <%!-- <.link navigate={~p"/playout_segments/#{playout_segment}"}>Show</.link> --%>
     </div>
-    <.link patch={~p"/playout_segments/#{playout_segment}/edit"}>Edit Segment</.link>
+    <.link patch={~p"/playout_segments/#{playout_segment}/edit"}><button>Edit</button></.link>
   </:action>
   <:action :let={playout_segment}>
-    <%= if @current_user.role == :admin do %>
+    <%!-- <%= if @current_user.role == :admin do %> --%>
       <.link phx-click={JS.push("delete", value: %{id: playout_segment.id})} data-confirm="Are you sure?">
         Delete
       </.link>
-    <% end %>
+    <%!-- <% end %> --%>
   </:action>
 </.table>
 
