@@ -16,7 +16,7 @@ defmodule RadioappWeb.PlayoutSegmentLive.FormComponent do
       <.simple_form
         :let={f}
         for={@changeset}
-        id="segment-form"
+        id="playout-segment-form"
         phx-target={@myself}
         phx-change="validate"
         phx-submit="save"
@@ -71,7 +71,7 @@ defmodule RadioappWeb.PlayoutSegmentLive.FormComponent do
   end
 
   @impl true
-  def handle_event("validate", %{"playout_segment" => playout_segment_params} = params, socket) do
+  def handle_event("validate", %{"playout_segment" => playout_segment_params}, socket) do
     changeset =
       socket.assigns.playout_segment
       |> Station.change_playout_segment(playout_segment_params)

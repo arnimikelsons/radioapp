@@ -18,14 +18,23 @@ defmodule RadioappWeb.PlayoutSegmentLive.Index do
       |> assign(:tenant, tenant)
 
     current_role = socket.assigns.current_user.role
-
     playout_segments = Station.list_playout_segments(tenant)
+    current_user = socket.assigns.current_user
+
+
+    user_role =
+      if Map.get(current_user.roles, tenant) == nil do
+        Map.get(current_user.roles, "admin")
+      else
+        Map.get(current_user.roles, tenant)
+      end
 
     {:ok,
      assign(socket,
        playout_segments: playout_segments,
        current_role: current_role,
-       tenant: tenant
+       tenant: tenant,
+       user_role: user_role
      )}
   end
 
@@ -71,8 +80,6 @@ defmodule RadioappWeb.PlayoutSegmentLive.Index do
   def handle_event("delete", %{"id" => id}, socket) do
     tenant = socket.assigns.tenant
     playout_segment = Station.get_playout_segment!(id, tenant)
-
-    dbg(socket.assigns.current_user)
 
     case socket.assigns.current_user.roles do
       %{^tenant => "admin"} ->

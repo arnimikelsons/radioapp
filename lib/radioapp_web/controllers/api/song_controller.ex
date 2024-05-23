@@ -9,14 +9,12 @@ defmodule RadioappWeb.Api.SongController do
 
   def index(conn, _song_params) do
     tenant = RadioappWeb.get_tenant(conn)
-    dbg("index called")
     playout_segments = Station.list_playout_segments(tenant)
     render(conn, :index, playout_segments: playout_segments)
   end
 
   def new(conn, %{"artist" => artist, "title" => title}) do
     tenant = RadioappWeb.get_tenant(conn)
-    dbg("new called")
 
     #Get the start time based on the time it is now in the tenant's time zone
     %{timezone: timezone} = Admin.get_timezone!(tenant)

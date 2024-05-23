@@ -22,11 +22,11 @@ Playout System
     <.link patch={~p"/playout_segments/#{playout_segment}/edit"}><button>Edit</button></.link>
   </:action>
   <:action :let={playout_segment}>
-    <%!-- <%= if @current_user.role == :admin do %> --%>
-      <.link phx-click={JS.push("delete", value: %{id: playout_segment.id})} data-confirm="Are you sure?">
+    <%= if @user_role == "admin" do %>
+      <.link id={"playout-segment-#{playout_segment.id}"} phx-click={JS.push("delete", value: %{id: playout_segment.id})} data-confirm="Are you sure?">
         Delete
       </.link>
-    <%!-- <% end %> --%>
+    <% end %>
   </:action>
 </.table>
 

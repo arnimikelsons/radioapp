@@ -25,9 +25,6 @@ defmodule RadioappWeb.Api.SongControllerTest do
       timezone = "America/Vancouver"
       Factory.insert(:stationdefaults, [timezone: timezone, callsign: "CLDP" ], prefix: @prefix)
 
-      now = DateTime.to_naive(Timex.now(timezone))
-      time_now = DateTime.to_time(Timex.now(timezone))
-
       conn = get(conn, ~p"/api/songs/new?artist=Some Artist&title=Some Song&token=#{token}")
       assert %{
         "artist" => "Some Artist"
@@ -36,26 +33,35 @@ defmodule RadioappWeb.Api.SongControllerTest do
 
     end
 
-    test "Gets the currently playing show", %{conn: conn} do
+    test "Gets the list of playout segments", %{conn: conn} do
+
+      # First create a user to create a valid api-token and test that it works
+      user = user_fixture()
+      token = Accounts.create_user_api_token(user)
+      assert Accounts.fetch_user_by_api_token(token) == {:ok, user}
+      # Setup a timezone and get the now time
       timezone = "America/Vancouver"
       Factory.insert(:stationdefaults, [timezone: timezone, callsign: "CLDP" ], prefix: @prefix)
-
       now = DateTime.to_naive(Timex.now(timezone))
-      time_now = DateTime.to_time(Timex.now(timezone))
-      weekday = Timex.weekday(now)
-      endtime = Time.add(time_now, 60, :minute)
+      # insert a song
+      expected_artist = "An artist name"
+      expected_song_title = "A song title"
+      conn = get(conn, ~p"/api/songs/new?artist=#{expected_artist}&title=#{expected_song_title}&token=#{token}")
+      # make a request to the index
+      conn = get(conn, ~p"/api/songs?token=#{token}")
+      # test for the song
+      assert [%{
+        "artist" => artist,
+        "song_title" => song_title,
+        "start_time" => start_time
+      }] = json_response(conn, 200)["data"]
 
-       # Given a program
-       program = Factory.insert(:program, [], prefix: @prefix)
+      # Test the song has the correct values
+      {:ok, formatted_current_time} = Timex.format(now, "{h24}:{m}:{s}")
+      assert start_time == formatted_current_time
 
-      name = program.name
-      # When we create a timeslot for right now
-      Factory.insert(:timeslot, [program: program, day: weekday, runtime: 60, starttime: time_now, endtime: endtime], prefix: @prefix)
-
-      conn = get(conn, ~p"/api/shows")
-      assert %{
-        "current" => [^name]
-      } = json_response(conn, 200)["data"]
+      assert expected_artist == artist
+      assert expected_song_title == song_title
     end
   end
 
