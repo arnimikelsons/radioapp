@@ -1,7 +1,7 @@
 defmodule Radioapp.CSV.Importer do
 
   alias Radioapp.Station
-  alias Radioapp.Admin
+  # alias Radioapp.Admin
 
   @segment_columns [
     "artist",
@@ -19,12 +19,17 @@ defmodule Radioapp.CSV.Importer do
     "emerging_artist"
   ]
 
-  @required_columns [
+  # @required_columns [
+  #   "artist",
+  #   "end_time",
+  #   "start_time",
+  #   "song_title",
+  #   "category"
+  # ]
+
+  @relaxed_required_columns [
     "artist",
-    "end_time",
-    "start_time",
-    "song_title",
-    "category"
+    "song_title"
   ]
 
   def csv_row_to_table_record(data, log, tenant) do
@@ -74,7 +79,7 @@ defmodule Radioapp.CSV.Importer do
           Enum.member?(@segment_columns, csv_col)
         end)
         &&
-        Enum.all?(@required_columns, fn required_col ->
+        Enum.all?(@relaxed_required_columns, fn required_col ->
           Enum.member?(csv_cols, required_col)
         end)
     do
@@ -88,9 +93,10 @@ defmodule Radioapp.CSV.Importer do
   end
 
   defp add_segment_to_log(row, log, tenant) do
-    row = add_category_id_to_attrs(row, tenant)
 
-    case Station.create_segment(log, row, tenant) do
+    # row = add_category_id_to_attrs(row, tenant)
+
+    case Station.create_segment_relaxed(log, row, tenant) do
       {:ok, _segment} ->
         :ok
       {:error, _msg} ->
@@ -99,23 +105,23 @@ defmodule Radioapp.CSV.Importer do
 
   end
 
-  defp add_category_id_to_attrs(row, tenant) do
-    list_categories = Admin.list_categories_dropdown(tenant)
-    case Enum.find(list_categories, fn tuple ->
-          String.contains?(
-            row["category"],
-            [List.first(
-                elem(tuple, 0)),
-                List.last(elem(tuple, 0))]
-          )
-        end) do
-      {_category_string, category_id} ->
-        Map.put(row, "category_id", category_id)
+  # defp add_category_id_to_attrs(row, tenant) do
+  #   list_categories = Admin.list_categories_dropdown(tenant)
+  #   case Enum.find(list_categories, fn tuple ->
+  #         String.contains?(
+  #           row["category"],
+  #           [List.first(
+  #               elem(tuple, 0)),
+  #               List.last(elem(tuple, 0))]
+  #         )
+  #       end) do
+  #     {_category_string, category_id} ->
+  #       Map.put(row, "category_id", category_id)
 
-      nil ->
-        {:error}
-    end
+  #     nil ->
+  #       {:error}
+  #   end
 
-    # Map.put(row, "category_id", category_id)
-  end
+  #   # Map.put(row, "category_id", category_id)
+  # end
 end

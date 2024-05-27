@@ -49,7 +49,7 @@ defmodule Radioapp.Station.Segment do
     |> validate_required([:artist, :end_time, :start_time, :song_title, :category_id])
   end
 
-  def changeset_api(segment, attrs) do
+  def changeset_relaxed(segment, attrs) do
     segment
     |> cast(attrs, [
       :artist,
