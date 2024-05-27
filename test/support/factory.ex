@@ -155,7 +155,8 @@ end
       privacy_policy_url: "some privacy policy url",
       support_email: "some support email",
       tos_url: "some tos",
-      website_url: "some website url"
+      website_url: "some website url",
+      csv_permission: "user"
     }
   end
 end

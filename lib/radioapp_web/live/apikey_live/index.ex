@@ -51,9 +51,7 @@ defmodule RadioappWeb.ApikeyLive.Index do
   def handle_event("save", _, socket) do
     # tenant = socket.assigns.tenant
     token = Accounts.create_user_api_token(socket.assigns.current_user)
-    dbg(token)
     socket = assign(socket, :token, token)
-    dbg(socket)
 
 
     {:noreply,

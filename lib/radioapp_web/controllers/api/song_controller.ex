@@ -40,7 +40,6 @@ defmodule RadioappWeb.Api.SongController do
 
   #   tenant = RadioappWeb.get_tenant(conn)
   #   log = Station.get_log!(5, tenant)
-  #   dbg("create called")
 
   #   with {:ok, %Segment{} = segment} <- Station.create_segment_api(log, song_params, tenant) do
   #     conn

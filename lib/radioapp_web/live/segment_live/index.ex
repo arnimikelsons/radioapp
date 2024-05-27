@@ -21,13 +21,35 @@ defmodule RadioappWeb.SegmentLive.Index do
       assign_stationdefaults(session, socket)
       |> assign(:tenant, tenant)
 
-    current_role = socket.assigns.current_user.role
+    current_user = socket.assigns.current_user
+
+    user_role =
+      if Map.get(current_user.roles, tenant) == nil do
+        Map.get(current_user.roles, "admin")
+      else
+        Map.get(current_user.roles, tenant)
+      end
 
     log = Station.get_log!(log_id, tenant)
     talking_seconds = Station.talking_segments(log, tenant)
     talking = Station.formatted_length(talking_seconds)
     segments = Station.list_segments_for_log(log, tenant)
     [new_music, can_con_music, instrumental_music, hit_music, indigenous_artist, emerging_artist] = Station.track_minutes(log, tenant)
+
+    %{csv_permission: permission} = Admin.get_stationdefaults!(tenant)
+    csv_permission =
+      case permission do
+        "admin" ->
+          if user_role == "admin" or user_role == "super_admin" do
+            true
+          else
+            false
+          end
+        "user" ->
+          true
+        "none" ->
+          false
+      end
 
     {:ok,
      assign(socket,
@@ -39,10 +61,11 @@ defmodule RadioappWeb.SegmentLive.Index do
        hit_music: hit_music,
        instrumental_music: instrumental_music,
        can_con_music: can_con_music,
-       current_role: current_role,
+       current_role: user_role,
        indigenous_artist: indigenous_artist,
        emerging_artist: emerging_artist,
-       tenant: tenant
+       tenant: tenant,
+       csv_permission: csv_permission
      )
       |> assign(:uploaded_files, [])
       |> allow_upload(:csv, accept: ~w(.csv), max_entries: 3)}
@@ -91,6 +114,7 @@ defmodule RadioappWeb.SegmentLive.Index do
     _log = Station.get_log!(log_id, tenant)
     #new_music_minutes = Station.new_music_minutes(log)
 
+
     socket
     |> assign(:page_title, "Listing Segments")
     |> assign(:segment, nil)
@@ -105,7 +129,7 @@ defmodule RadioappWeb.SegmentLive.Index do
   def handle_event("delete", %{"id" => id}, socket) do
     tenant = socket.assigns.tenant
     segment = Station.get_segment!(id, tenant)
-    if socket.assigns.current_user.role == :admin do
+    if socket.assigns.current_role == :admin do
       {:ok, _} = Station.delete_segment(segment)
     end
 
