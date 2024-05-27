@@ -16,6 +16,7 @@ defmodule Radioapp.Admin.Stationdefaults do
     field :support_email, :string
     field :tos_url, :string
     field :website_url, :string
+    field :csv_permission, :string, default: "none"
 
     timestamps()
   end

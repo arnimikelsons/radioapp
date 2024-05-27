@@ -2,7 +2,7 @@ defmodule RadioappWeb.PlayoutSegmentLive.FormComponent do
   use RadioappWeb, :live_component
 
   alias Radioapp.Station
-  # alias Radioapp.Station.PlayoutSegment
+  alias Radioapp.Station.PlayoutSegment
 
   @impl true
   def render(assigns) do
@@ -22,7 +22,7 @@ defmodule RadioappWeb.PlayoutSegmentLive.FormComponent do
         phx-submit="save"
       >
         <.input field={{f, :start_time}} type="time" label="Start Time" step="1" />
-        <%!-- <.input field={{f, :duration}} type="text" label="Duration (e.g.: 3600, 1h30m, 24s, 30m4s)" step="1" /> --%>
+        <.input field={{f, :duration}} type="text" label="Duration (e.g.: 3600, 1h30m, 24s, 30m4s)" step="1" />
         <.input field={{f, :end_time}} type="time" label="End Time" step="1" />
         <.input field={{f, :artist}} type="text" label="Artist" />
         <.input field={{f, :song_title}} type="text" label="Song Title" />
@@ -71,23 +71,23 @@ defmodule RadioappWeb.PlayoutSegmentLive.FormComponent do
   end
 
   @impl true
-  def handle_event("validate", %{"playout_segment" => playout_segment_params}, socket) do
+  def handle_event("validate", %{"playout_segment" => playout_segment_params} = params, socket) do
     changeset =
       socket.assigns.playout_segment
       |> Station.change_playout_segment(playout_segment_params)
       |> Map.put(:action, :validate)
 
-    # changeset =
-    #   case Map.get(params, "_target") do
-    #     ["segment", "duration"] ->
-    #       Segment.change_end_time(changeset)
+    changeset =
+      case Map.get(params, "_target") do
+        ["playout_segment", "duration"] ->
+          PlayoutSegment.change_end_time(changeset)
 
-    #     ["segment", "end_time"] ->
-    #       Segment.change_duration(changeset)
+        ["playout_segment", "end_time"] ->
+          PlayoutSegment.change_duration(changeset)
 
-    #     _ ->
-    #       changeset
-    #   end
+        _ ->
+          changeset
+      end
 
     {:noreply, assign(socket, :changeset, changeset)}
   end
