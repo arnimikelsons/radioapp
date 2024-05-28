@@ -94,6 +94,25 @@ end
     }
   end
 
+  def playout_segment_factory do
+    some_time = DateTime.to_time(Timex.now("Canada/Pacific"))
+
+    %Radioapp.Station.PlayoutSegment{
+      artist: Faker.Person.En.name(),
+      can_con: sequence(:can_con, [true, false]),
+      catalogue_number: Integer.to_string(Faker.random_between(10000, 99999)),
+      end_time: Time.add(some_time, 3, :minute),
+      hit: sequence(:hit, [true, false]),
+      instrumental: sequence(:instrumental, [true, false]),
+      new_music: sequence(:new_music, [true, false]),
+      indigenous_artist: sequence(:indigenous_artist, [true, false]),
+      emerging_artist: sequence(:emerging_artist, [true, false]),
+      start_time: some_time,
+      socan_type: sequence(:socan_type, [" ", "Background", "Feature", "Theme"]),
+      song_title: Faker.Pizza.style()
+    }
+  end
+
   def link_factory do
     %Radioapp.Admin.Link{
         type: Faker.Cat.En.name(),
@@ -136,7 +155,8 @@ end
       privacy_policy_url: "some privacy policy url",
       support_email: "some support email",
       tos_url: "some tos",
-      website_url: "some website url"
+      website_url: "some website url",
+      csv_permission: "user"
     }
   end
 end

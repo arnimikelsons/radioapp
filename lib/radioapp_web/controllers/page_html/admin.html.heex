@@ -11,6 +11,16 @@
       <p><.link href={~p"/stationdefaults/1/edit"}>Edit Station Defaults</.link></p>
     </div>
   <% end %>
+
+ <%= if @user_role == "admin" do %>
+  <div class="text-center">
+    <p>-- API settings --</p>
+    <p><.link href={~p"/admin/apikey"}>API Keys</.link></p>
+  </div>
+<% end %>
+
+
+
   <div class="text-center">
     <p>-- Personal settings --</p>
     <p><.link href={~p"/users/settings"}>Settings</.link></p>

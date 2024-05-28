@@ -1,77 +1,37 @@
-defmodule Radioapp.Station.Segment do
+defmodule Radioapp.Station.PlayoutSegment do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias Radioapp.Station.Log
   alias Radioapp.Admin.Category
 
-  schema "segments" do
+  schema "playout_segments" do
     field :artist, :string
-    field :can_con, :boolean
+    field :can_con, :boolean, default: false
     field :catalogue_number, :string
+    field :emerging_artist, :boolean, default: false
     field :end_time, :time
-    field :hit, :boolean
-    field :instrumental, :boolean
-    field :new_music, :boolean
-    field :indigenous_artist, :boolean
-    field :emerging_artist, :boolean
-    field :start_time, :time
+    field :hit, :boolean, default: false
+    field :indigenous_artist, :boolean, default: false
+    field :instrumental, :boolean, default: false
+    field :new_music, :boolean, default: false
     field :socan_type, :string
     field :song_title, :string
+    field :start_time, :time
     field :duration, :string, virtual: true
 
-    belongs_to :log, Log
+
     belongs_to :category, Category
 
     timestamps()
   end
 
   @doc false
-  def changeset(segment, attrs) do
-    segment
-    |> cast(attrs, [
-      :artist,
-      :can_con,
-      :catalogue_number,
-      :end_time,
-      :hit,
-      :instrumental,
-      :new_music,
-      :indigenous_artist,
-      :emerging_artist,
-      :start_time,
-      :socan_type,
-      :song_title,
-      :category_id,
-      :duration
-    ])
+  def changeset(playout_segment, attrs) do
+    playout_segment
+    |> cast(attrs, [:artist, :can_con, :catalogue_number, :end_time, :hit, :instrumental, :new_music, :indigenous_artist, :emerging_artist, :start_time, :socan_type, :song_title, :category_id, :duration])
     |> normalize_duration()
-    |> validate_required([:artist, :end_time, :start_time, :song_title, :category_id])
+    |> validate_required([:artist, :start_time, :song_title])
   end
-
-  def changeset_relaxed(segment, attrs) do
-    segment
-    |> cast(attrs, [
-      :artist,
-      :can_con,
-      :catalogue_number,
-      :end_time,
-      :hit,
-      :instrumental,
-      :new_music,
-      :indigenous_artist,
-      :emerging_artist,
-      :start_time,
-      :socan_type,
-      :song_title,
-      :category_id,
-      :duration
-    ])
-    |> normalize_duration()
-    |> validate_required([:artist, :song_title])
-  end
-
-
 
   def change_end_time(changeset) do
     start_time = get_field(changeset, :start_time)

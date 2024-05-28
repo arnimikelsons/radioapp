@@ -20,6 +20,11 @@ defmodule RadioappWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :api_auth do
+    plug :accepts, ["json"]
+    plug :fetch_api_user
+  end
+
   pipeline :user do
     plug EnsureRolePlug, [:user, :admin, :super_admin]
   end
@@ -32,6 +37,10 @@ defmodule RadioappWeb.Router do
     plug EnsureRolePlug, [:super_admin]
   end
 
+  pipeline :api_admin do
+    plug EnsureRolePlug, [:admin]
+  end
+
   pipeline :tenant_in_session do
     plug RadioappWeb.Plugs.SessionTenant
   end
@@ -39,8 +48,15 @@ defmodule RadioappWeb.Router do
   # Other scopes may use custom stacks.
   scope "/api", RadioappWeb do
      pipe_through :api
-     get "/shows", Api.ProgramApiController, :show
+    # Set up API requests from client websites to display now playing show
+    get "/shows", Api.ProgramApiController, :show
   end
+
+  scope "/api", RadioappWeb do
+    pipe_through :api_auth
+   # Handle authenticated API requests from playout software to add segments to log
+   resources "/songs", Api.SongController
+ end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:radioapp, :dev_routes) do
@@ -146,7 +162,6 @@ defmodule RadioappWeb.Router do
     live "/programs/:program_id/logs/:id", LogLive.Show, :show
     live "/programs/:program_id/logs/:id/show/edit", LogLive.Show, :edit
 
-    #live "/segments", SegmentLive.Index, :index
     live "/programs/:program_id/logs/:log_id/segments", SegmentLive.Index, :index
     live "/programs/:program_id/logs/:log_id/segments/new", SegmentLive.Index, :new
     live "/programs/:program_id/logs/:log_id/segments/:id/edit", SegmentLive.Index, :edit
@@ -156,6 +171,11 @@ defmodule RadioappWeb.Router do
     live "/programs/:program_id/logs/:log_id/segments/:id/show/edit", SegmentLive.Show, :edit
 
     get "/admin", PageController, :admin
+
+    # Add PlayoutSegment resources
+    live "/playout_segments", PlayoutSegmentLive.Index, :index
+    live "/playout_segments/:id/edit", PlayoutSegmentLive.Index, :edit
+
   end
 
 
@@ -178,6 +198,13 @@ defmodule RadioappWeb.Router do
       get "/admin/logs", LogController, :index
       post "/admin/logs/search", LogController, :search
       post "/admin/logs/export", LogController, :export
+
+  end
+
+  scope "/", RadioappWeb do
+    pipe_through [:browser, :require_authenticated_user, :api_admin, :tenant_in_session]
+      live "/admin/apikey", ApikeyLive.Index, :index
+      live "/admin/apikey/new", ApikeyLive.Index, :new
 
   end
 

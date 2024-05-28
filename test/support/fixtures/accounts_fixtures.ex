@@ -12,7 +12,8 @@ defmodule Radioapp.AccountsFixtures do
       full_name: "Some Full Name",
       short_name: "Some Short Name",
       email: unique_user_email(),
-      password: valid_user_password()
+      password: valid_user_password(),
+      roles: %{}
     })
   end
 

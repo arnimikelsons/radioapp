@@ -19,10 +19,16 @@ defmodule Radioapp.CSV.Importer do
     "emerging_artist"
   ]
 
-  @required_columns [
+  # @required_columns [
+  #   "artist",
+  #   "end_time",
+  #   "start_time",
+  #   "song_title",
+  #   "category"
+  # ]
+
+  @relaxed_required_columns [
     "artist",
-    "end_time",
-    "start_time",
     "song_title",
     "category"
   ]
@@ -74,7 +80,7 @@ defmodule Radioapp.CSV.Importer do
           Enum.member?(@segment_columns, csv_col)
         end)
         &&
-        Enum.all?(@required_columns, fn required_col ->
+        Enum.all?(@relaxed_required_columns, fn required_col ->
           Enum.member?(csv_cols, required_col)
         end)
     do
@@ -88,9 +94,10 @@ defmodule Radioapp.CSV.Importer do
   end
 
   defp add_segment_to_log(row, log, tenant) do
+
     row = add_category_id_to_attrs(row, tenant)
 
-    case Station.create_segment(log, row, tenant) do
+    case Station.create_segment_relaxed(log, row, tenant) do
       {:ok, _segment} ->
         :ok
       {:error, _msg} ->
@@ -115,7 +122,6 @@ defmodule Radioapp.CSV.Importer do
       nil ->
         {:error}
     end
-
-    # Map.put(row, "category_id", category_id)
   end
+
 end

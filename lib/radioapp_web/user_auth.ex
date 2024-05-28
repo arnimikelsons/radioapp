@@ -35,7 +35,7 @@ defmodule RadioappWeb.UserAuth do
       |> put_token_in_session(token)
       |> maybe_write_remember_me_cookie(token, params)
       |> redirect(to: user_return_to || signed_in_path(conn))
-    else 
+    else
       conn
       |> put_flash(:error, "You must accept your invitation.")
       |> maybe_store_return_to()
@@ -99,9 +99,9 @@ defmodule RadioappWeb.UserAuth do
   def fetch_current_user(conn, _opts) do
     {user_token, conn} = ensure_user_token(conn)
     user = user_token && Accounts.get_user_by_session_token(user_token)
-    
+
     assign(conn, :current_user, user)
- 
+
 
   end
 
@@ -220,7 +220,7 @@ defmodule RadioappWeb.UserAuth do
       tenant = conn.assigns[:current_tenant]
       if user.confirmed_at do
         conn
-      else 
+      else
         Accounts.deliver_user_invitation_instructions(
             user,
             tenant,
@@ -232,7 +232,7 @@ defmodule RadioappWeb.UserAuth do
         |> redirect(to: ~p"/")
         |> halt()
       end
-       
+
     else
       conn
       |> put_flash(:error, "You must log in to access this page.")
@@ -255,4 +255,31 @@ defmodule RadioappWeb.UserAuth do
   defp maybe_store_return_to(conn), do: conn
 
   defp signed_in_path(_conn), do: ~p"/"
+
+  def fetch_api_user_from_bearer_token(conn, _opts) do
+    with ["Bearer " <> token] <- get_req_header(conn, "authorization"),
+        {:ok, user} <- Accounts.fetch_user_by_api_token(token) do
+      assign(conn, :current_user, user)
+    else
+      _ ->
+        conn
+        |> send_resp(:unauthorized, "No access for you")
+        |> halt()
+    end
+  end
+
+  def fetch_api_user(conn, _opts) do
+    # How to get token from params
+    with %{params: %{"token" => token}} <- fetch_query_params(conn),
+        {:ok, user} <- Accounts.fetch_user_by_api_token(token) do
+      assign(conn, :current_user, user)
+    else
+      _ ->
+        conn
+        |> send_resp(:unauthorized, "No access for you")
+        |> halt()
+    end
+  end
+
+
 end

@@ -7,7 +7,7 @@ defmodule Radioapp.Station do
   alias Radioapp.Repo
   alias Radioapp.Admin
 
-  alias Radioapp.Station.{Program, Timeslot, Segment, Log, Image}
+  alias Radioapp.Station.{Program, Timeslot, Segment, Log, Image, PlayoutSegment}
 
   @doc """
   Returns the list of programs.
@@ -695,6 +695,14 @@ defmodule Radioapp.Station do
     |> Repo.insert(prefix: Triplex.to_prefix(tenant))
   end
 
+  def create_segment_relaxed(%Log{} = log, attrs \\ %{}, tenant) do
+
+    log
+    |> Ecto.build_assoc(:segments)
+    |> Segment.changeset_relaxed(attrs)
+    |> Repo.insert(prefix: Triplex.to_prefix(tenant))
+  end
+
   @doc """
   Updates a segment.
 
@@ -740,6 +748,105 @@ defmodule Radioapp.Station do
   """
   def change_segment(%Segment{} = segment, attrs \\ %{}) do
     Segment.changeset(segment, attrs)
+  end
+
+  @doc """
+  Creates a playout_segment.
+
+  ## Examples
+
+      iex> create_playout_segment(%{field: value})
+      {:ok, %Segment{}}
+
+      iex> create_playout_segment(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_playout_segment(attrs \\ %{}, tenant) do
+
+    %PlayoutSegment{}
+    |> PlayoutSegment.changeset(attrs)
+    |> Repo.insert(prefix: Triplex.to_prefix(tenant))
+  end
+
+  @doc """
+  Returns the list of playout_segments.
+  ## Examples
+      iex> list_playout_segments()
+      [%PlayoutSegment{}, ...]
+  """
+
+  def list_playout_segments(tenant) do
+    Repo.all(PlayoutSegment, prefix: Triplex.to_prefix(tenant))
+    |> Repo.preload([:category])
+  end
+
+
+  @doc """
+  Gets a single playout_segment.
+
+  Raises `Ecto.NoResultsError` if the PlayoutSegment does not exist.
+
+  ## Examples
+
+      iex> get_playoutsegment!(123)
+      %PlayoutSegment{}
+
+      iex> get_playout_segment!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_playout_segment!(id, tenant) do
+    PlayoutSegment
+    |> Repo.get!(id, prefix: Triplex.to_prefix(tenant))
+    |> Repo.preload([:category])
+  end
+
+  @doc """
+  Updates a playout_segment.
+
+  ## Examples
+
+      iex> update_playout_segment(playout_segment, %{field: new_value})
+      {:ok, %PlayoutSegment{}}
+
+      iex> update_playout_segment(playout_segment, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_playout_segment(%PlayoutSegment{} = playout_segment, attrs) do
+    playout_segment
+    |> PlayoutSegment.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a playout_segment.
+
+  ## Examples
+
+      iex> delete_playout_segment(playout_segment)
+      {:ok, %PlayoutSegment{}}
+
+      iex> delete_playout_segment(playout_segment)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_playout_segment(%PlayoutSegment{} = playout_segment) do
+    Repo.delete(playout_segment)
+  end
+
+    @doc """
+  Returns an `%Ecto.Changeset{}` for tracking playout_segment changes.
+
+  ## Examples
+
+      iex> change_playout_segment(playout_segment)
+      %Ecto.Changeset{data: %PlayoutSegment{}}
+
+  """
+  def change_playout_segment(%PlayoutSegment{} = playout_segment, attrs \\ %{}) do
+    PlayoutSegment.changeset(playout_segment, attrs)
   end
 
   @doc """
