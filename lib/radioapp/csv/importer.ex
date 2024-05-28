@@ -1,7 +1,7 @@
 defmodule Radioapp.CSV.Importer do
 
   alias Radioapp.Station
-  # alias Radioapp.Admin
+  alias Radioapp.Admin
 
   @segment_columns [
     "artist",
@@ -29,7 +29,8 @@ defmodule Radioapp.CSV.Importer do
 
   @relaxed_required_columns [
     "artist",
-    "song_title"
+    "song_title",
+    "category"
   ]
 
   def csv_row_to_table_record(data, log, tenant) do
@@ -94,7 +95,7 @@ defmodule Radioapp.CSV.Importer do
 
   defp add_segment_to_log(row, log, tenant) do
 
-    # row = add_category_id_to_attrs(row, tenant)
+    row = add_category_id_to_attrs(row, tenant)
 
     case Station.create_segment_relaxed(log, row, tenant) do
       {:ok, _segment} ->
@@ -105,23 +106,22 @@ defmodule Radioapp.CSV.Importer do
 
   end
 
-  # defp add_category_id_to_attrs(row, tenant) do
-  #   list_categories = Admin.list_categories_dropdown(tenant)
-  #   case Enum.find(list_categories, fn tuple ->
-  #         String.contains?(
-  #           row["category"],
-  #           [List.first(
-  #               elem(tuple, 0)),
-  #               List.last(elem(tuple, 0))]
-  #         )
-  #       end) do
-  #     {_category_string, category_id} ->
-  #       Map.put(row, "category_id", category_id)
+  defp add_category_id_to_attrs(row, tenant) do
+    list_categories = Admin.list_categories_dropdown(tenant)
+    case Enum.find(list_categories, fn tuple ->
+          String.contains?(
+            row["category"],
+            [List.first(
+                elem(tuple, 0)),
+                List.last(elem(tuple, 0))]
+          )
+        end) do
+      {_category_string, category_id} ->
+        Map.put(row, "category_id", category_id)
 
-  #     nil ->
-  #       {:error}
-  #   end
+      nil ->
+        {:error}
+    end
+  end
 
-  #   # Map.put(row, "category_id", category_id)
-  # end
 end

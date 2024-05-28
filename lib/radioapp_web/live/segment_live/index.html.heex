@@ -118,8 +118,6 @@ Show Segments for <.link navigate={~p"/programs/#{@program}"}><%= @program.name 
             <ol class="list-decimal list-inside ml-4">
               <li>artist</li>
               <li>song_title</li>
-              <li>start_time</li>
-              <li>end_time</li>
               <li>category</li>
             </ol>
         </li>
@@ -129,6 +127,8 @@ Show Segments for <.link navigate={~p"/programs/#{@program}"}><%= @program.name 
         <li class="mb-2">When you are complete, export the file in CSV format.</li>
         <li class="mb-2">Use this page to drag and drop or click to browse your computer for the finished file, then click Upload.</li>
         <li class="mb-2">Only one file can be uploaded at a time.</li>
+        <li class="mb-2">Empty rows will cause an error in uploading.</li>
+        <li class="mb-2">If a column header is present, then all cells beneath it must be filled.</li> 
       </ul>
     </div>
   </.modal>

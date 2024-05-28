@@ -215,7 +215,7 @@ defmodule RadioappWeb.SegmentLiveTest do
       %{conn: conn, user: user}
     end
 
-    test "Successfully upload a CSV file", %{conn: conn} do
+    test "Successfully upload a CSV file with category column", %{conn: conn} do
       program = Factory.insert(:program, [], prefix: @prefix)
       log = Factory.insert(:log, [program: program], prefix: @prefix)
       Factory.insert(:category,
@@ -273,7 +273,6 @@ defmodule RadioappWeb.SegmentLiveTest do
 
       assert get_flash(conn, :error) =~ "The CSV file contained error(s) in the column names."
       assert_redirected index_live, ~p"/programs/#{program}/logs/#{log}/segments"
-
     end
 
     test "missing required column header in CSV returns error", %{conn: conn} do
@@ -300,10 +299,40 @@ defmodule RadioappWeb.SegmentLiveTest do
         |> render_submit(%{csv: csv})
         |> follow_redirect(conn, ~p"/programs/#{program}/logs/#{log}/segments")
 
-      # assert index_live =~ "The CSV file contained error(s) in the column names."
       assert get_flash(conn, :error) =~ "The CSV file contained error(s) in the column names."
       assert_redirected index_live, ~p"/programs/#{program}/logs/#{log}/segments"
-
     end
+
+    # test "Successfully upload a CSV file with no category", %{conn: conn} do
+    #   program = Factory.insert(:program, [], prefix: @prefix)
+    #   log = Factory.insert(:log, [program: program], prefix: @prefix)
+    #   Factory.insert(:category,
+    #     [code: "21",
+    #     name: "Music",
+    #     segments: []],
+    #     prefix: @prefix)
+
+    #   {:ok, index_live, _html}= live(conn, ~p"/programs/#{program}/logs/#{log}/segments")
+
+    #   csv = file_input(index_live, "#upload-form", :csv, [%{
+    #     name: "no-category.csv",
+    #     content: File.read!("test/support/files/no-category.csv"),
+    #     type: "text/csv"
+    #   }])
+
+    #   assert render_upload(csv, "no-category.csv") =~ "no-category.csv"
+
+    #   {:ok, conn} = index_live
+    #     |> element("#upload-form")
+    #     |> render_submit(%{csv: csv})
+    #     |> follow_redirect(conn,  ~p"/programs/#{program}/logs/#{log}/segments")
+
+    #     assert get_flash(conn, :info) =~ "CSV Uploaded successfully"
+    #     assert_redirected index_live, ~p"/programs/#{program}/logs/#{log}/segments"
+
+    #     {:ok, _result_live, html}= live(conn, ~p"/programs/#{program}/logs/#{log}/segments")
+    #     assert html =~ "Basinski"
+
+    # end
   end
 end
