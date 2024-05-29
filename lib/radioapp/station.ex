@@ -777,7 +777,20 @@ defmodule Radioapp.Station do
   """
 
   def list_playout_segments(tenant) do
-    Repo.all(PlayoutSegment, prefix: Triplex.to_prefix(tenant))
+
+
+    # from(t in Timeslot, order_by: [asc: :day, asc: :starttime])
+    # |> Repo.all(prefix: Triplex.to_prefix(tenant))
+    # |> Repo.preload(
+    #   program: [
+    #     link1: [],
+    #     link2: [],
+    #     link3: []
+    #   ]
+    # )
+
+    from(p in PlayoutSegment, order_by: [desc: :start_time])
+    |> Repo.all(prefix: Triplex.to_prefix(tenant))
     |> Repo.preload([:category])
   end
 

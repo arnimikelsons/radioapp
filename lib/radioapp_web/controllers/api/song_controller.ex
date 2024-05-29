@@ -13,6 +13,7 @@ defmodule RadioappWeb.Api.SongController do
     render(conn, :index, playout_segments: playout_segments)
   end
 
+  # Playout System API
   def new(conn, %{"artist" => artist, "title" => title}) do
     tenant = RadioappWeb.get_tenant(conn)
 
@@ -36,18 +37,36 @@ defmodule RadioappWeb.Api.SongController do
     render(conn, :show, playout_segment: playout_segment)
   end
 
-  # def create(conn, song_params) do
+  # POST requests received from ACR Cloud
+  def create(conn, song_params) do
 
-  #   tenant = RadioappWeb.get_tenant(conn)
-  #   log = Station.get_log!(5, tenant)
+    dbg(song_params)
+    # This code works with one artist and one music entry
+    # %{ "data" => %{"metadata" => %{"music" => [%{"title" => title, "artists" => [%{"name" => artist}]}]}}} = song_params
 
-  #   with {:ok, %Segment{} = segment} <- Station.create_segment_api(log, song_params, tenant) do
-  #     conn
-  #     |> put_status(:created)
-  #     |> put_resp_header("location", ~p"/api/songs/#{segment}")
-  #     |> render(:show, song: segment)
-  #   end
-  # end
+    %{ "data" => %{"metadata" => %{"music" => music }}} = song_params
+
+    first_entry = Enum.take(music, 1)
+
+    [%{"title" => title, "artists" => artists_list }] = first_entry
+
+    first_artist = Enum.take(artists_list, 1)
+
+    [%{"name" => artist}] = first_artist
+
+
+    tenant = RadioappWeb.get_tenant(conn)
+    %{timezone: timezone} = Admin.get_timezone!(tenant)
+    time_now = DateTime.to_time(Timex.now(timezone))
+
+    with {:ok, %PlayoutSegment{} = playout_segment} <- Station.create_playout_segment(%{artist: artist, song_title: title, start_time: time_now}, tenant) do
+      conn
+      |> put_status(:created)
+      |> put_resp_header("location", ~p"/api/songs/#{playout_segment}")
+      |> render(:show, playout_segment: playout_segment)
+    end
+
+  end
 
   # def update(conn, %{"id" => id, "song" => song_params}) do
   #   song = Play.get_song!(id)
