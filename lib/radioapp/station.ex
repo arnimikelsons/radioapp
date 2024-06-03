@@ -777,7 +777,9 @@ defmodule Radioapp.Station do
   """
 
   def list_playout_segments(tenant) do
-    Repo.all(PlayoutSegment, prefix: Triplex.to_prefix(tenant))
+
+    from(p in PlayoutSegment, order_by: [desc: :inserted_at])
+    |> Repo.all(prefix: Triplex.to_prefix(tenant))
     |> Repo.preload([:category])
   end
 
@@ -836,6 +838,12 @@ defmodule Radioapp.Station do
     Repo.delete(playout_segment)
   end
 
+  def delete_all_playout_segments(tenant) do
+    prefix = Triplex.to_prefix(tenant)
+
+    Repo.delete_all(Radioapp.Station.PlayoutSegment, prefix: prefix)
+  end
+
     @doc """
   Returns an `%Ecto.Changeset{}` for tracking playout_segment changes.
 
@@ -848,6 +856,7 @@ defmodule Radioapp.Station do
   def change_playout_segment(%PlayoutSegment{} = playout_segment, attrs \\ %{}) do
     PlayoutSegment.changeset(playout_segment, attrs)
   end
+
 
   @doc """
   Returns the list of images.
