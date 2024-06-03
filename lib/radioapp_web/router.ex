@@ -235,21 +235,20 @@ defmodule RadioappWeb.Router do
 
   scope "/", RadioappWeb do
     pipe_through :browser
-
     get "/",TimeslotController, :index_by_day
-
     get "/schedule/:id",TimeslotController, :index_by_day
-
     get "/programs", ProgramController, :index
     get "/programs/:id", ProgramController, :show
-
     get "/programs/:program_id/images/:id", ImageController, :show
-
     get "/archives", PageController, :archives
     get "/podcasts", PageController, :podcasts
-
-
-
  end
+
+ scope "/danger", RadioappWeb do
+  pipe_through([:browser, :super_admin])
+  put("/deleteallplayout_segments", DangerController, :deleteallplayout_segments)
+  get("/deleteplayout_segments", DangerController, :deleteplayout_segments)
+
+end
 
 end
