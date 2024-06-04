@@ -69,7 +69,7 @@ defmodule RadioappWeb.CoreComponents do
               phx-mounted={@show && show_modal(@id)}
               phx-window-keydown={hide_modal(@on_cancel, @id)}
               phx-key="escape"
-              class="hidden relative rounded-2xl bg-white p-14 shadow-lg shadow-zinc-700/10 ring-1 ring-zinc-700/10 transition"
+              class="modal-focus-wrap hidden relative rounded-2xl bg-white p-14 shadow-lg shadow-zinc-700/10 ring-1 ring-zinc-700/10 transition"
             >
               <div class="absolute top-6 right-5">
                 <button
@@ -459,7 +459,7 @@ defmodule RadioappWeb.CoreComponents do
           <tr
             :for={row <- @rows}
             id={"#{@id}-#{Phoenix.Param.to_param(row)}"}
-            class="relative group"
+            class={["relative group", @row_click && "hover:bg-slate-200"]}
           >
             <td
               :for={{col, i} <- Enum.with_index(@col)}
@@ -471,7 +471,7 @@ defmodule RadioappWeb.CoreComponents do
                 <span class="absolute h-full w-4 top-0 -right-4 group-hover:bg-zinc-50 sm:rounded-r-xl" />
               </div>-->
               <div class="block py-4 pr-6">
-                <span class={["relative", i == 0 && "font-semibold text-zinc-900"]}>
+                <span class={["relative", i == 0 && "text-zinc-900"]}>
                   <%= render_slot(col, row) %>
                 </span>
               </div>
@@ -480,7 +480,7 @@ defmodule RadioappWeb.CoreComponents do
               <div class="relative whitespace-nowrap py-4 text-right text-sm font-medium">
                 <span
                   :for={action <- @action}
-                  class="relative ml-4 font-semibold leading-6 text-zinc-900 hover:text-zinc-700"
+                  class="relative ml-4 font-semibold leading-6 text-zinc-900 hover:text-zinc-700 px-4"
                 >
                   <%= render_slot(action, row) %>
                 </span>

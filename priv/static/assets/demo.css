@@ -46,6 +46,11 @@ a:focus {
   color: #EA0000;
 }
 
+/*** Button styles ***/
+button {
+  border-radius: 7px;
+}
+
 .bg-schedule {
   background-color: #fbf5ea;
   padding: 10px;
@@ -82,6 +87,11 @@ a:focus {
 .format-table tr.group {
   border-top: 1px #55151e solid !important;
   border-bottom: 1px #55151e solid !important;
+  border-right: 1px #55151e solid !important;
+}
+
+.even\:bg-slate-100:nth-child(2n) {
+  border-right: 2px #55151e solid !important;
 }
 
 .format-table {
@@ -96,7 +106,7 @@ a:focus {
   font-weight: 700;
   color: #55151e;
   padding-bottom: 10px;
-
+  white-space: nowrap;
 }
 
 .submenu .navbar-nav {
@@ -119,6 +129,12 @@ a:focus {
   margin-bottom: 30px;
   margin-left: 20px;
   margin-right: 20px;
+}
+
+/*** Modal styles ***/
+.modal-focus-wrap {
+  width: 60%;
+  margin: 0 auto;
 }
 
 @media (min-width: 768px) {

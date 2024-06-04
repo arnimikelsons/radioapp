@@ -26,7 +26,7 @@
     <div class="w-1/2 md:w-5/12 p-2 overflow-wrap">Description</div>
   </div>
   <div class="timeslot-cover">
-    <div :for={timeslot <- @timeslots_by_day} id="timeslots" class="flex flex-wrap schedule-border text-sm">
+    <div :for={timeslot <- @timeslots_by_day} id="timeslots" class="flex flex-wrap schedule-border text-sm even:bg-slate-100">
       <div class="w-1/2 md:w-1/12 p-2"><%= timeslot.starttimereadable %></div>
       <div class="w-1/2 md:w-1/6 p-2"><.link navigate={~p"/programs/#{timeslot.program}"}><%= timeslot.program.name %></.link></div>
       <div class="w-1/2 md:w-1/6 p-2"><%= timeslot.program.genre %></div>

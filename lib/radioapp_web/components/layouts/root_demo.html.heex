@@ -230,18 +230,18 @@
                   </div>
                 </div>
               </div>
-            <% else %>
-              Radio Player not defined
+            <%!-- <% else %>
+              Radio Player not defined --%>
             <% end %>
 
           <!-- Desktop Menu -->
             <div class="invisible md:visible carousel-indicators flex submenu">
               <ul class="nav navbar-nav justify-center position-relative flex flex-row flex-wrap">
-                <li class="my-2 mx-5"><a class="text-base" href="/"><i class="fa-solid fa-calendar-week fa-xl"></i>&nbsp;Schedule</a></li>
-                <li class="my-2 mx-5"><a class="text-base" href="/programs"><i class="fa-solid fa-microphone fa-xl"></i>&nbsp;Programs</a></li>
-                <li class="my-2 mx-5"><a class="text-base" href="/archives"><i class="fa-solid fa-file-zipper fa-xl"></i>&nbsp;Archives</a></li>
+                <li class="my-4 mx-7 lg:mx-12"><a class="text-base" href="/"><i class="fa-solid fa-calendar-week fa-xl"></i>&nbsp;Schedule</a></li>
+                <li class="my-4 mx-7 lg:mx-12"><a class="text-base" href="/programs"><i class="fa-solid fa-microphone fa-xl"></i>&nbsp;Programs</a></li>
+                <li class="my-4 mx-7 lg:mx-12"><a class="text-base" href="/archives"><i class="fa-solid fa-file-zipper fa-xl"></i>&nbsp;Archives</a></li>
                 <%= if @current_user do%>
-                  <li class=" my-2 mx-5">   
+                  <li class=" my-4 mx-7 lg:mx-12">   
                     <a class="text-base" href="/admin"><i class="fa-solid fa-gear fa-xl"></i>&nbsp;Admin</a>
                   </li>
                 <% end %>
