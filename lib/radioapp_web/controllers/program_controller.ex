@@ -50,6 +50,13 @@ defmodule RadioappWeb.ProgramController do
         |> Image.changeset(%{})
     end
     user = conn.assigns.current_user
+    dbg(user)
+
+    cols = case program.images do
+      nil -> if user do "md:w-1/2" else "" end
+      _ -> "md:w-1/2"
+    end
+    
     user_role = if user != nil do
       
       case Map.get(user.roles, tenant) do
@@ -58,7 +65,7 @@ defmodule RadioappWeb.ProgramController do
       end
     end
 
-    render(conn, :show, timeslots: timeslots, program: program, image: image, user_role: user_role)
+    render(conn, :show, timeslots: timeslots, program: program, image: image, user_role: user_role, cols: cols)
   end
 
   def edit(conn, %{"id" => id}) do
