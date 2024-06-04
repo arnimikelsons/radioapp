@@ -10,8 +10,7 @@
 
     
     <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
-<%= # Put customized fonts and stylesheets %>
-    <link phx-track-static rel="stylesheet" href={~p"/assets/demo.css"} />
+
     <link as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'" rel="stylesheet">
 
 
@@ -33,7 +32,7 @@
       gtag('config', 'G-7TQSCEZS08');
     </script>
   </head>
-  <body class="bg-white antialiased"
+  <body class="bg-white antialiased demo-tenant"
     x-data="{ openMenu : false }" x-bind:class="openMenu ? 'overflow-hidden' : 'overflow-visible' "
   >
     <style>

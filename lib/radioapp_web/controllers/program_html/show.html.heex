@@ -32,7 +32,7 @@
               <%= #Link only when logged in %>
               <p><%= Timex.day_name(timeslot.day) %>, <%= timeslot.starttimereadable %> for <%= timeslot.runtime %> minutes.
               <%= if @current_user do%><%= if @user_role == "admin" or @user_role == "super_admin" do %>
-                <.link href={~p"/programs/#{@program}/timeslots/#{timeslot}/edit"}>Edit</.link>    
+                <br><.link href={~p"/programs/#{@program}/timeslots/#{timeslot}/edit"}>Edit</.link>    
                 <.link href={~p"/programs/#{@program}/timeslots/#{timeslot}"} method="delete" data-confirm="Are you sure?">
                   Delete
                 </.link>
@@ -40,7 +40,7 @@
             <% end %>
 
             <%= if @current_user do%><%= if @user_role == "admin" or @user_role == "super_admin" do %>
-              <.link class="m-2" href={~p"/programs/#{@program}/timeslots/new"}>New Time Slot</.link>
+              <.link class="m-2" href={~p"/programs/#{@program}/timeslots/new"}><.button>New Time Slot</.button></.link>
             <% end %><% end %>
           </div>
           <div class="w-1/2">
@@ -88,7 +88,7 @@
       <div class="image">
         <%= if @current_user do%>
           <%= if @program.images != nil do %>
-            <div  class="text-right">
+            <div  class="text-right mt-3">
             <.link href={~p"/programs/#{@program}/images/#{@program.images.id}"} method="delete" data-confirm="Are you sure?">
               <.button>Delete Image</.button>
             </.link></div>
