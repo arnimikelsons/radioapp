@@ -20,6 +20,7 @@
   <.input field={{f, :playout_type}} options={( [ "audio/mpeg", "audio/ogg", "audio/wav" ] )} type="select" label="Playout type" />
   <.input field={{f, :tos_url}} type="text" label="Tos url" />
   <.input field={{f, :website_url}} type="text" label="Website url" />
+  <.input field={{f, :csv_permission}} options={( [ "none", "admin", "user" ] )} type="select" label="Grant access to upload CSVs to logs" />
   <:actions>
     <.button>Save station defaults</.button>
   </:actions>

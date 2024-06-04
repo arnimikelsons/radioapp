@@ -1,0 +1,15 @@
+<.header>
+  Delete all Playout Segments
+</.header>
+<h2 class="red text-center">You are about to delete all Playout Segments. Are you sure?</h2>
+<div class="pt-5 text-center">
+  <.link
+    href={~p"/danger/deleteallplayout_segments"}
+    method="put"
+    data-confirm="Are you really sure?"
+    class="btn btn-danger btn-delete p-1"
+  >
+    <.button>DELETE ALL PLAYOUT SEGMENTS</.button>
+  </.link>
+  <p>Note: This action cannot be reversed.</p>
+</div>

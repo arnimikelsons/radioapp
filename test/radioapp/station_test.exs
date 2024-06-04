@@ -3,7 +3,7 @@ defmodule Radioapp.StationTest do
   alias Radioapp.Factory
 
   alias Radioapp.Station
-  alias Radioapp.Station.{Program, Timeslot, Log, Segment, Image}
+  alias Radioapp.Station.{Program, Timeslot, Log, Segment, Image, PlayoutSegment}
 
   @tenant "sample"
 
@@ -11,22 +11,22 @@ defmodule Radioapp.StationTest do
 
   describe "programs" do
     @valid_attrs %{
-      description: "some description", 
-      genre: "some genre", 
-      name: "some name", 
+      description: "some description",
+      genre: "some genre",
+      name: "some name",
       short_description: "some short description"
     }
-    
+
     @update_attrs %{
       description: "some updated description",
       genre: "some updated genre",
       name: "some updated name",
       short_description: "some updated short description"
     }
-    
+
     @invalid_attrs %{
-      description: nil, 
-      genre: nil, 
+      description: nil,
+      genre: nil,
       name: nil
     }
 
@@ -57,7 +57,7 @@ defmodule Radioapp.StationTest do
     # add test for get_program_now_start_time(weekday, time_now)
 
     test "create_program/1 with valid data creates a program" do
-      
+
       assert {:ok, %Program{} = program} = Station.create_program(@valid_attrs, @tenant)
       assert program.description == "some description"
       assert program.genre == "some genre"
@@ -100,17 +100,17 @@ defmodule Radioapp.StationTest do
   describe "timeslots" do
 
     @update_attrs %{
-      day: 43, 
-      endtime: ~T[15:01:01], 
-      runtime: 43, 
-      starttime: 
+      day: 43,
+      endtime: ~T[15:01:01],
+      runtime: 43,
+      starttime:
       ~T[15:01:01]
     }
 
     @invalid_attrs %{
-      day: nil, 
-      endtime: nil, 
-      runtime: nil, 
+      day: nil,
+      endtime: nil,
+      runtime: nil,
       starttime: nil
     }
 
@@ -334,7 +334,7 @@ defmodule Radioapp.StationTest do
       [log: log,
       category: category,
       start_time: ~T[02:13:25Z],
-      end_time: ~T[02:15:40Z]], 
+      end_time: ~T[02:15:40Z]],
       prefix: @prefix
     )
 
@@ -342,7 +342,7 @@ defmodule Radioapp.StationTest do
       [log: log,
       category: category,
       start_time: ~T[14:12:00Z],
-      end_time: ~T[15:15:00Z]], 
+      end_time: ~T[15:15:00Z]],
       prefix: @prefix
     )
 
@@ -352,7 +352,7 @@ defmodule Radioapp.StationTest do
       category: other_category,
       new_music: true,
       start_time: ~T[14:12:00Z],
-      end_time: ~T[15:15:00Z]], 
+      end_time: ~T[15:15:00Z]],
       prefix: @prefix
     )
 
@@ -508,6 +508,124 @@ defmodule Radioapp.StationTest do
     end
   end
 
+  describe "playout_segments" do
+
+    @valid_attrs %{
+      artist: "some artist",
+      can_con: true,
+      catalogue_number: "12345",
+      category_id: 1,
+      start_time: ~T[02:11:00Z],
+      end_time: ~T[02:13:00Z],
+      hit: true,
+      instrumental: false,
+      new_music: true,
+      socan_type: "some socan type",
+      song_title: "some song title",
+      indigenous_artist: true,
+      emerging_artist: false
+    }
+    @update_attrs %{
+      artist: "some updated artist",
+      can_con: false,
+      catalogue_number: "54321",
+      category_id: 2,
+      start_time: ~T[03:11:00Z],
+      end_time: ~T[03:13:00Z],
+      hit: false,
+      instrumental: true,
+      new_music: false,
+      socan_type: "some updated socan type",
+      song_title: "some updated song title",
+      indigenous_artist: false,
+      emerging_artist: true
+    }
+    @invalid_attrs %{
+      artist: nil,
+      can_con: false,
+      catalogue_number: nil,
+      start_time: nil,
+      end_time: nil,
+      hit: false,
+      instrumental: false,
+      new_music: false,
+      socan_type: nil,
+      song_title: nil,
+      indigenous_artist: false,
+      emerging_artist: false
+    }
+
+    test "list_playout_segments/0 returns all playout_segments" do
+      playout_segment = Factory.insert(:playout_segment, [], prefix: @prefix)
+      expected = [playout_segment.id]
+      assert expected == Enum.map(Station.list_playout_segments(@tenant), fn s -> s.id end)
+    end
+
+    test "get_playout_segment!/1 returns the segment with given id" do
+      playout_segment = Factory.insert(:playout_segment, [], prefix: @prefix)
+      get_playout_segment = Station.get_playout_segment!(playout_segment.id, @tenant)
+      assert get_playout_segment.id == playout_segment.id
+    end
+
+    test "create_playout_segment/1 with valid data creates a segment" do
+      _valid_category = Factory.insert(:category, [id: 1], prefix: @prefix)
+      assert {:ok, %PlayoutSegment{} = playout_segment} = Station.create_playout_segment(@valid_attrs, @tenant)
+      assert playout_segment.can_con == true
+      assert playout_segment.catalogue_number == "12345"
+      assert playout_segment.start_time == ~T[02:11:00Z]
+      assert playout_segment.end_time == ~T[02:13:00Z]
+      assert playout_segment.hit == true
+      assert playout_segment.instrumental == false
+      assert playout_segment.new_music == true
+      assert playout_segment.socan_type == "some socan type"
+      assert playout_segment.song_title == "some song title"
+      assert playout_segment.indigenous_artist == true
+      assert playout_segment.emerging_artist == false
+    end
+
+    test "create_playout_segment/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Station.create_playout_segment(@invalid_attrs, @tenant)
+    end
+
+    test "update_playout_segment/2 with valid data updates the segment" do
+      playout_segment = Factory.insert(:playout_segment, [], prefix: @prefix)
+      _update_category = Factory.insert(:category, [id: 2], prefix: @prefix)
+      assert {:ok, %PlayoutSegment{} = playout_segment} = Station.update_playout_segment(playout_segment, @update_attrs)
+      assert playout_segment.can_con == false
+      assert playout_segment.catalogue_number == "54321"
+      assert playout_segment.start_time == ~T[03:11:00Z]
+      assert playout_segment.end_time == ~T[03:13:00Z]
+      assert playout_segment.hit == false
+      assert playout_segment.instrumental == true
+      assert playout_segment.new_music == false
+      assert playout_segment.socan_type == "some updated socan type"
+      assert playout_segment.song_title == "some updated song title"
+      assert playout_segment.indigenous_artist == false
+      assert playout_segment.emerging_artist == true
+    end
+
+    test "update_playout_segment/2 with invalid data returns error changeset" do
+      playout_segment = Factory.insert(:playout_segment, [], prefix: @prefix)
+      assert {:error, %Ecto.Changeset{}} = Station.update_playout_segment(playout_segment, @invalid_attrs)
+      get_playout_segment = Station.get_playout_segment!(playout_segment.id, @tenant)
+      assert get_playout_segment.id == playout_segment.id
+    end
+
+    test "delete_playout_segment/1 deletes the playout_segment" do
+
+      playout_segment = Factory.insert(:playout_segment, [], prefix: @prefix)
+      assert {:ok, %PlayoutSegment{}} = Station.delete_playout_segment(playout_segment)
+      assert_raise Ecto.NoResultsError, fn -> Station.get_playout_segment!(playout_segment.id, @tenant) end
+
+    end
+
+    test "change_playout_segment/1 returns a playout_segment changeset" do
+      playout_segment = Factory.insert(:playout_segment, [], prefix: @prefix)
+      assert %Ecto.Changeset{} = Station.change_playout_segment(playout_segment)
+    end
+
+  end
+
   describe "image" do
 
     @valid_attrs %Plug.Upload{
@@ -532,7 +650,7 @@ defmodule Radioapp.StationTest do
       assert {:ok, %Image{} = image} =
                Station.create_image_from_plug_upload(
                  program,
-                 @valid_attrs, 
+                 @valid_attrs,
                  @tenant
                )
 
@@ -588,4 +706,6 @@ defmodule Radioapp.StationTest do
       assert content == expected_content
     end
   end
+
+
 end

@@ -149,7 +149,73 @@ defmodule RadioappWeb.SegmentLiveTest do
 
     end
 
-    test "Successfully upload a CSV file", %{conn: conn} do
+  end
+
+  describe "Delete for Admin" do
+    setup %{conn: conn} do
+      user = Factory.insert(:user, roles: %{@tenant => "admin"})
+      conn = log_in_user(conn, user)
+      %{conn: conn, user: user}
+    end
+
+    # delete not implemented
+    # test "deletes segment in listing", %{conn: conn} do
+    #   program = Factory.insert(:program, [], prefix: @prefix)
+    #   log = Factory.insert(:log, [program: program], prefix: @prefix)
+    #   category = Factory.insert(:category, [], prefix: @prefix)
+    #   segment = Factory.insert(:segment, [log: log, category: category], prefix: @prefix)
+
+    #   {:ok, index_live, _html} = live(conn, ~p"/programs/#{program}/logs/#{log}/segments")
+
+    #   assert index_live |> element("#segments-#{segment.id} a", "Delete") |> render_click()
+    #   refute has_element?(index_live, "#segment-#{segment.id}")
+    # end
+  end
+
+
+  describe "Segment" do
+    setup %{conn: conn} do
+      user = Factory.insert(:user, roles: %{@tenant => "user"})
+      conn = log_in_user(conn, user)
+      %{conn: conn, user: user}
+    end
+
+    test "updates segment within modal", %{conn: conn} do
+      program = Factory.insert(:program, [], prefix: @prefix)
+      log = Factory.insert(:log, [program: program], prefix: @prefix)
+      category = Factory.insert(:category, [], prefix: @prefix)
+      segment = Factory.insert(:segment, [log: log, category: category], prefix: @prefix)
+
+      {:ok, show_live, _html} = live(conn, ~p"/programs/#{program}/logs/#{log}/segments")
+
+      assert show_live |> element("a", "Edit") |> render_click() =~
+               "Edit Segment"
+
+      assert_patch(show_live, ~p"/programs/#{program}/logs/#{log}/segments/#{segment}/edit")
+
+      assert show_live
+        |> form("#segment-form", segment: @invalid_attrs)
+        |> render_change() =~ "can&#39;t be blank"
+
+      {:ok, _, html} =
+        show_live
+        |> form("#segment-form", segment: @update_attrs)
+        |> render_submit()
+        |> follow_redirect(conn, ~p"/programs/#{program}/logs/#{log}/segments")
+
+      assert html =~ "Segment updated successfully"
+      assert html =~ "some updated song title"
+    end
+  end
+
+  describe "CSV Upload" do
+    setup %{conn: conn} do
+      user = Factory.insert(:user, roles: %{@tenant => "user"})
+      conn = log_in_user(conn, user)
+      %{conn: conn, user: user}
+    end
+
+    test "Successfully upload a CSV file with category column", %{conn: conn} do
       program = Factory.insert(:program, [], prefix: @prefix)
       log = Factory.insert(:log, [program: program], prefix: @prefix)
       Factory.insert(:category,
@@ -207,7 +273,6 @@ defmodule RadioappWeb.SegmentLiveTest do
 
       assert get_flash(conn, :error) =~ "The CSV file contained error(s) in the column names."
       assert_redirected index_live, ~p"/programs/#{program}/logs/#{log}/segments"
-
     end
 
     test "missing required column header in CSV returns error", %{conn: conn} do
@@ -234,67 +299,40 @@ defmodule RadioappWeb.SegmentLiveTest do
         |> render_submit(%{csv: csv})
         |> follow_redirect(conn, ~p"/programs/#{program}/logs/#{log}/segments")
 
-      # assert index_live =~ "The CSV file contained error(s) in the column names."
       assert get_flash(conn, :error) =~ "The CSV file contained error(s) in the column names."
       assert_redirected index_live, ~p"/programs/#{program}/logs/#{log}/segments"
-
-    end
-  end
-
-  describe "Delete for Admin" do
-    setup %{conn: conn} do
-      user = Factory.insert(:user, roles: %{@tenant => "admin"})
-      conn = log_in_user(conn, user)
-      %{conn: conn, user: user}
     end
 
-    # delete not implemented
-    # test "deletes segment in listing", %{conn: conn} do
+    # test "Successfully upload a CSV file with no category", %{conn: conn} do
     #   program = Factory.insert(:program, [], prefix: @prefix)
     #   log = Factory.insert(:log, [program: program], prefix: @prefix)
-    #   category = Factory.insert(:category, [], prefix: @prefix)
-    #   segment = Factory.insert(:segment, [log: log, category: category], prefix: @prefix)
+    #   Factory.insert(:category,
+    #     [code: "21",
+    #     name: "Music",
+    #     segments: []],
+    #     prefix: @prefix)
 
-    #   {:ok, index_live, _html} = live(conn, ~p"/programs/#{program}/logs/#{log}/segments")
+    #   {:ok, index_live, _html}= live(conn, ~p"/programs/#{program}/logs/#{log}/segments")
 
-    #   assert index_live |> element("#segments-#{segment.id} a", "Delete") |> render_click()
-    #   refute has_element?(index_live, "#segment-#{segment.id}")
+    #   csv = file_input(index_live, "#upload-form", :csv, [%{
+    #     name: "no-category.csv",
+    #     content: File.read!("test/support/files/no-category.csv"),
+    #     type: "text/csv"
+    #   }])
+
+    #   assert render_upload(csv, "no-category.csv") =~ "no-category.csv"
+
+    #   {:ok, conn} = index_live
+    #     |> element("#upload-form")
+    #     |> render_submit(%{csv: csv})
+    #     |> follow_redirect(conn,  ~p"/programs/#{program}/logs/#{log}/segments")
+
+    #     assert get_flash(conn, :info) =~ "CSV Uploaded successfully"
+    #     assert_redirected index_live, ~p"/programs/#{program}/logs/#{log}/segments"
+
+    #     {:ok, _result_live, html}= live(conn, ~p"/programs/#{program}/logs/#{log}/segments")
+    #     assert html =~ "Basinski"
+
     # end
-  end
-
-
-  describe "Segment" do
-    setup %{conn: conn} do
-      user = Factory.insert(:user, roles: %{@tenant => "user"})
-      conn = log_in_user(conn, user)
-      %{conn: conn, user: user}
-    end
-
-    test "updates segment within modal", %{conn: conn} do
-      program = Factory.insert(:program, [], prefix: @prefix)
-      log = Factory.insert(:log, [program: program], prefix: @prefix)
-      category = Factory.insert(:category, [], prefix: @prefix)
-      segment = Factory.insert(:segment, [log: log, category: category], prefix: @prefix)
-
-      {:ok, show_live, _html} = live(conn, ~p"/programs/#{program}/logs/#{log}/segments")
-
-      assert show_live |> element("a", "Edit Segment") |> render_click() =~
-               "Edit Segment"
-
-      assert_patch(show_live, ~p"/programs/#{program}/logs/#{log}/segments/#{segment}/edit")
-
-      assert show_live
-        |> form("#segment-form", segment: @invalid_attrs)
-        |> render_change() =~ "can&#39;t be blank"
-
-      {:ok, _, html} =
-        show_live
-        |> form("#segment-form", segment: @update_attrs)
-        |> render_submit()
-        |> follow_redirect(conn, ~p"/programs/#{program}/logs/#{log}/segments")
-
-      assert html =~ "Segment updated successfully"
-      assert html =~ "some updated song title"
-    end
   end
 end

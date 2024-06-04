@@ -1,0 +1,50 @@
+<.header>
+Playout System
+</.header>
+
+<.table id="segments" rows={@playout_segments}> 
+  <:col :let={playout_segment} label="Start"><%= playout_segment.inserted_at %></:col>
+  <%!-- <:col :let={playout_segment} label="Start Time"><%= playout_segment.start_time %></:col>
+  <:col :let={playout_segment} label="End Time"><%= playout_segment.end_time %></:col> --%>
+  <:col :let={playout_segment} label="Artist"><%= playout_segment.artist %></:col>
+  <:col :let={playout_segment} label="Song Title"><%= playout_segment.song_title %></:col>
+  <:col :let={playout_segment} label="Category"><%= if playout_segment.category != nil do %><%= playout_segment.category.code %><% end %></:col>
+  <:col :let={playout_segment} label="SOCAN"><%= playout_segment.socan_type %></:col>
+  <:col :let={playout_segment} label="Catalogue #"><%= playout_segment.catalogue_number %></:col>
+  <:col :let={playout_segment} label="New"><%= if playout_segment.new_music do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+  <:col :let={playout_segment} label="Inst"><%= if playout_segment.instrumental do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+  <:col :let={playout_segment} label="Can"><%= if playout_segment.can_con do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+  <:col :let={playout_segment} label="Indg"><%= if playout_segment.indigenous_artist do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+  <:col :let={playout_segment} label="Emrg"><%= if playout_segment.emerging_artist do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+  <:action :let={playout_segment}>
+    <div class="sr-only">
+      <%!-- <.link navigate={~p"/playout_segments/#{playout_segment}"}>Show</.link> --%>
+    </div>
+    <.link patch={~p"/playout_segments/#{playout_segment}/edit"}><button>Edit</button></.link>
+  </:action>
+  <:action :let={playout_segment}>
+    <%= if @user_role == "admin" do %>
+      <.link id={"playout-segment-#{playout_segment.id}"} phx-click={JS.push("delete", value: %{id: playout_segment.id})} data-confirm="Are you sure?">
+        Delete
+      </.link>
+    <% end %>
+  </:action>
+</.table>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="segment-modal"
+  show
+  on_cancel={JS.navigate(~p"/playout_segments")}
+>
+  <.live_component
+    module={RadioappWeb.PlayoutSegmentLive.FormComponent}
+    id={@playout_segment.id || :new}
+    title={@page_title}
+    action={@live_action}
+    tenant={@tenant}
+    list_categories={@list_categories}
+    playout_segment={@playout_segment}
+    navigate_edit={~p"/playout_segments"}
+  />
+</.modal>
