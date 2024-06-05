@@ -2224,9 +2224,7 @@ input:checked+.slider:before {
   cursor: pointer;
 }
 
-.upload-btn {}
 
-.no-uploads.upload-btn {}
 
 /**** RESPONSIVE HOOKS ****/
 
