@@ -11,11 +11,7 @@
 
     <%= # Put customized fonts and stylesheets %>
     <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
-    <%= if assigns[:current_tenant] == "demo" do %>
-      <link phx-track-static rel="stylesheet" href={~p"/assets/demo.css"} />
-      <link as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'" rel="stylesheet">
-    <% end %>
-
+    <link phx-track-static rel="stylesheet" href={~p"/assets/demo_tenant.css"} />
 
     <link rel="icon" type="image/png" href={~p"/images/favicon.png"} />
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
