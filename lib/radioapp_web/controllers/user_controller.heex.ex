@@ -6,14 +6,7 @@ defmodule RadioappWeb.UserController do
   def index(conn, _params) do
     tenant = RadioappWeb.get_tenant(conn)
     users = Accounts.list_users(tenant)
-    current_user = conn.assigns.current_user
-    user_role = 
-      if Map.get(current_user.roles, tenant) == nil do
-        Map.get(current_user.roles, "admin")
-      else 
-        Map.get(current_user.roles, tenant)
-      end
-    render(conn, :index, users: users, tenant: tenant, user_role: user_role)
+    render(conn, :index, users: users, tenant: tenant)
   end
 
   def edit(conn, %{"id" => id}) do

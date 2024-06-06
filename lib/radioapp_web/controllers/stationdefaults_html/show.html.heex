@@ -1,35 +1,29 @@
-<div class="row">
-  <div class="md:w-3/4">
-    <.header>
-      Station defaults
-      <:subtitle>This is a station defaults record from your database.</:subtitle>
-      <:actions>
-        <.link href={~p"/stationdefaults/#{@stationdefaults}/edit"}>
-          <.button>Edit station defaults</.button>
-        </.link>
-      </:actions>
-    </.header>
+<.header>
+  Station defaults
+  <:subtitle>This is a station defaults record from your database.</:subtitle>
+  <:actions>
+    <.link href={~p"/stationdefaults/#{@stationdefaults}/edit"}>
+      <.button>Edit station defaults</.button>
+    </.link>
+  </:actions>
+</.header>
 
-    <.list>
-      <:item title="Callsign"><%= @stationdefaults.callsign %></:item>
-      <:item title="From email"><%= @stationdefaults.from_email %></:item>
-      <:item title="From email name"><%= @stationdefaults.from_email_name %></:item>
-      <:item title="Logo path"><%= @stationdefaults.logo_path %></:item>
-      <:item title="Org name"><%= @stationdefaults.org_name %></:item>
-      <:item title="Time Zone"><%= @stationdefaults.timezone %></:item>
-      <:item title="Privacy policy url"><%= @stationdefaults.privacy_policy_url %></:item>
-      <:item title="Support email"><%= @stationdefaults.support_email %></:item>
-      <:item title="Phone"><%= @stationdefaults.phone %></:item>
-      <:item title="Playout url"><%= @stationdefaults.playout_url %></:item>
-      <:item title="Playout type"><%= @stationdefaults.playout_type %></:item>
-      <:item title="Tos url"><%= @stationdefaults.tos_url %></:item>
-      <:item title="Website url"><%= @stationdefaults.website_url %></:item>
-      <:item title="CSV Upload Permission"><%= @stationdefaults.csv_permission %></:item>
-    </.list>
+<.list>
+  <:item title="Callsign"><%= @stationdefaults.callsign %></:item>
+  <:item title="From email"><%= @stationdefaults.from_email %></:item>
+  <:item title="From email name"><%= @stationdefaults.from_email_name %></:item>
+  <:item title="Logo path"><%= @stationdefaults.logo_path %></:item>
+  <:item title="Org name"><%= @stationdefaults.org_name %></:item>
+  <:item title="Time Zone"><%= @stationdefaults.timezone %></:item>
+  <:item title="Privacy policy url"><%= @stationdefaults.privacy_policy_url %></:item>
+  <:item title="Support email"><%= @stationdefaults.support_email %></:item>
+  <:item title="Phone"><%= @stationdefaults.phone %></:item>
+  <:item title="Playout url"><%= @stationdefaults.playout_url %></:item>
+  <:item title="Playout type"><%= @stationdefaults.playout_type %></:item>
+  <:item title="Tos url"><%= @stationdefaults.tos_url %></:item>
+  <:item title="Website url"><%= @stationdefaults.website_url %></:item>
+  <:item title="CSV Upload Permission"><%= @stationdefaults.csv_permission %></:item>
 
-    <.back navigate={~p"/stationdefaults"}>Back to station defaults</.back>
-  </div>
-  <div class="md:w-1/4">
-    <.admin_menu user_role={@user_role} />
-  </div>
-</div>
+</.list>
+
+<.back navigate={~p"/stationdefaults"}>Back to station defaults</.back>

@@ -41,15 +41,7 @@ defmodule RadioappWeb.LogController do
 
   def index(conn, _params) do
     search = SearchParams.new(%{})
-    tenant = RadioappWeb.get_tenant(conn)
-    current_user = conn.assigns.current_user
-    user_role = 
-      if Map.get(current_user.roles, tenant) == nil do
-        Map.get(current_user.roles, "admin")
-      else 
-        Map.get(current_user.roles, tenant)
-      end
-    render(conn, "index.html", search: search, logs: [], user_role: user_role)
+    render(conn, "index.html", search: search, logs: [])
   end
 
   def search(conn, %{"search_params" => params}) do

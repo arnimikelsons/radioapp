@@ -1,35 +1,28 @@
 <div class="max-w-2xl mx-auto">
-  <div class="row">
-    <div class="md:w-3/4">
-      <.header>
-        Listing Links
-        <:actions>
-          <.link patch={~p"/admin/links/new"}>
-            <.button>New Link</.button>
-          </.link>
-        </:actions>
-      </.header>
+  <.header>
+    Listing Links
+    <:actions>
+      <.link patch={~p"/admin/links/new"}>
+        <.button>New Link</.button>
+      </.link>
+    </:actions>
+  </.header>
 
-      <.table id="links" rows={@links}>
-        <:col :let={link} label="Link Type"><%= link.type %></:col>
-        <:col :let={link} label="Icon"><%= link.icon %></:col>
-        <:action :let={link}>
-          <div class="sr-only">
-            <.link navigate={~p"/admin/links/#{link}"}>Show</.link>
-          </div>
-          <.link patch={~p"/admin/links/#{link}/edit"}>Edit</.link>
-        </:action>
-        <:action :let={link}>
-          <.link phx-click={JS.push("delete", value: %{id: link.id})} data-confirm="Are you sure?">
-            Delete
-          </.link>
-        </:action>
-      </.table>
-    </div>
-    <div class="md:w-1/4">
-      <.admin_menu user_role={@user_role} />
-    </div>
-  </div>
+  <.table id="links" rows={@links}>
+    <:col :let={link} label="Link Type"><%= link.type %></:col>
+    <:col :let={link} label="Icon"><%= link.icon %></:col>
+    <:action :let={link}>
+      <div class="sr-only">
+        <.link navigate={~p"/admin/links/#{link}"}>Show</.link>
+      </div>
+      <.link patch={~p"/admin/links/#{link}/edit"}>Edit</.link>
+    </:action>
+    <:action :let={link}>
+      <.link phx-click={JS.push("delete", value: %{id: link.id})} data-confirm="Are you sure?">
+        Delete
+      </.link>
+    </:action>
+  </.table>
 </div>
 
 <.modal

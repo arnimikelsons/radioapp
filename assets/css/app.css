@@ -2995,14 +2995,6 @@ input:checked+.slider:before {
   margin-right: 20px;
 }
 
-.demo-tenant footer .footer-copyright.bg-dark {
-  background-color: #540f1a !important;
-}
-
-.demo-tenant footer a {
-  color: white;
-}
-
 /*** Modal styles ***/
 .demo-tenant .modal-focus-wrap {
   width: 60%;

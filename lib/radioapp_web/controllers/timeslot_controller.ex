@@ -9,8 +9,7 @@ defmodule RadioappWeb.TimeslotController do
     tenant = RadioappWeb.get_tenant(conn)
     timeslots = Station.list_timeslots(tenant)
     current_user = conn.assigns.current_user
-    user_role=Admin.get_user_role(current_user, tenant)
-    render(conn, :index, timeslots: timeslots, current_user: current_user, user_role: user_role)
+    render(conn, :index, timeslots: timeslots, current_user: current_user)
   end
 
   def index_by_day(conn, %{"id" => id}) do

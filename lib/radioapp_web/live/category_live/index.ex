@@ -12,13 +12,9 @@ defmodule RadioappWeb.CategoryLive.Index do
     socket =
       assign_stationdefaults(session, socket)
       |> assign(:tenant, tenant)
+    
 
-      current_user = socket.assigns.current_user
-      user_role=Admin.get_user_role(current_user, tenant)
-
-    {:ok, socket
-      |> assign(:categories, list_categories(tenant))
-      |> assign(:user_role, user_role)}
+    {:ok, assign(socket, :categories, list_categories(tenant))}
   end
 
   @impl true

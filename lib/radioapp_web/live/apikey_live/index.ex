@@ -14,10 +14,7 @@ defmodule RadioappWeb.ApikeyLive.Index do
       |> assign(:tenant, tenant)
       |> assign(:token, nil)
 
-    current_user = socket.assigns.current_user
-    user_role=Admin.get_user_role(current_user, tenant)
-
-    {:ok, assign(socket, :user_role, user_role )}
+    {:ok, socket}
   end
 
   @impl true

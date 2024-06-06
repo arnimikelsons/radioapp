@@ -2,34 +2,28 @@
   Edit Station Defaults
   <:subtitle>Use this form to manage stationdefaults records in your database.</:subtitle>
 </.header>
-<div class="row">
-  <div class="md:w-3/4">
-    <.simple_form :let={f} for={@changeset} action={~p"/stationdefaults/#{@stationdefaults}"}>
-      <.error :if={@changeset.action}>
-        Oops, something went wrong! Please check the errors below.
-      </.error>
-      <.input field={{f, :callsign}} type="text" label="Callsign" />
-      <.input field={{f, :from_email}} type="text" label="From email" />
-      <.input field={{f, :from_email_name}} type="text" label="From email name" />
-      <.input field={{f, :logo_path}} type="text" label="Logo path" />
-      <.input field={{f, :org_name}} type="text" label="Org name" />
-      <.input field={{f, :timezone}} options={( [ "Canada/Eastern" | @timezones ] )} type="select" label="Timezone * (required)" placeholder="Please Select" required />
-      <.input field={{f, :privacy_policy_url}} type="text" label="Privacy policy url" />
-      <.input field={{f, :support_email}} type="text" label="Support email" />
-      <.input field={{f, :phone}} type="text" label="Phone" />
-      <.input field={{f, :playout_url}} type="text" label="Playout url" />
-      <.input field={{f, :playout_type}} options={( [ "audio/mpeg", "audio/ogg", "audio/wav" ] )} type="select" label="Playout type" />
-      <.input field={{f, :tos_url}} type="text" label="Tos url" />
-      <.input field={{f, :website_url}} type="text" label="Website url" />
-      <.input field={{f, :csv_permission}} options={( [ "none", "admin", "user" ] )} type="select" label="Grant access to upload CSVs to logs" />
-      <:actions>
-        <.button>Save station defaults</.button>
-      </:actions>
-    </.simple_form>
 
-    <.back navigate={~p"/stationdefaults"}>Back to station defaults</.back>
-  </div>
-  <div class="md:w-1/4">
-    <.admin_menu user_role={@user_role} />
-  </div>
-</div>
+<.simple_form :let={f} for={@changeset} action={~p"/stationdefaults/#{@stationdefaults}"}>
+  <.error :if={@changeset.action}>
+    Oops, something went wrong! Please check the errors below.
+  </.error>
+  <.input field={{f, :callsign}} type="text" label="Callsign" />
+  <.input field={{f, :from_email}} type="text" label="From email" />
+  <.input field={{f, :from_email_name}} type="text" label="From email name" />
+  <.input field={{f, :logo_path}} type="text" label="Logo path" />
+  <.input field={{f, :org_name}} type="text" label="Org name" />
+  <.input field={{f, :timezone}} options={( [ "Canada/Eastern" | @timezones ] )} type="select" label="Timezone * (required)" placeholder="Please Select" required />
+  <.input field={{f, :privacy_policy_url}} type="text" label="Privacy policy url" />
+  <.input field={{f, :support_email}} type="text" label="Support email" />
+  <.input field={{f, :phone}} type="text" label="Phone" />
+  <.input field={{f, :playout_url}} type="text" label="Playout url" />
+  <.input field={{f, :playout_type}} options={( [ "audio/mpeg", "audio/ogg", "audio/wav" ] )} type="select" label="Playout type" />
+  <.input field={{f, :tos_url}} type="text" label="Tos url" />
+  <.input field={{f, :website_url}} type="text" label="Website url" />
+  <.input field={{f, :csv_permission}} options={( [ "none", "admin", "user" ] )} type="select" label="Grant access to upload CSVs to logs" />
+  <:actions>
+    <.button>Save station defaults</.button>
+  </:actions>
+</.simple_form>
+
+<.back navigate={~p"/stationdefaults"}>Back to station defaults</.back>

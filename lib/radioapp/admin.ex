@@ -326,11 +326,4 @@ defmodule Radioapp.Admin do
   def change_stationdefaults(%Stationdefaults{} = stationdefaults, attrs \\ %{}) do
     Stationdefaults.changeset(stationdefaults, attrs)
   end
-  def get_user_role(current_user, tenant) do
-    if Map.get(current_user.roles, tenant) == nil do
-      Map.get(current_user.roles, "admin")
-    else
-      Map.get(current_user.roles, tenant)
-    end
-  end
 end

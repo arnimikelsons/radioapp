@@ -1,6 +1,5 @@
 <div class="max-w-2xl mx-auto">
-  <div class="row">
-    <div class="md:w-3/4">
+  <div>
       <.header>
         <%= @page_title %>
         <:subtitle>Use this form to generate a new API Key.</:subtitle>
@@ -19,17 +18,15 @@
               <.button class="float-right" phx-disable-with="Generating...">Generate a New API Key</.button>
             </div>
           </:actions>
+        
       </.simple_form>
-      <%= if @token != nil do %>
-        <h2>Your API Token</h2>
-        <p><%= @token %></p>
-        <p>Write it down or copy it somewhere safe. You will not be able to access it again in the future. It will be valid for 365 days, unless you change your email address or delete your user account.</p>
-      <% end %>
     </div>
-    <div class="md:w-1/4">
-      <.admin_menu user_role={@user_role} />
-    </div>
-  </div>
+  
+  <%= if @token != nil do %>
+    <h2>Your API Token</h2>
+    <p><%= @token %></p>
+    <p>Write it down or copy it somewhere safe. You will not be able to access it again in the future. It will be valid for 365 days, unless you change your email address or delete your user account.</p>
+  <% end %>
 
 </div>
 

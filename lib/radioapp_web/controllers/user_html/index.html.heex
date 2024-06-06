@@ -1,36 +1,28 @@
 <div class="max-w-3xl mx-auto"> 
-  <div class="row">
-    <div class="md:w-3/4">
-      <.header>
-        Account Users
-        <:actions>
-          <.link href={~p"/users/invite"}>
-            <.button>New User</.button>
-          </.link>
-        </:actions>
-      </.header>
+  <.header>
+    Account Users
+    <:actions>
+      <.link href={~p"/users/invite"}>
+        <.button>New User</.button>
+      </.link>
+    </:actions>
+  </.header>
+  <.table id="users" rows={@users}> 
+    <:col :let={user} label="Full Name"><%= user.full_name %></:col>
+    <:col :let={user} label="Short Name"><%= user.short_name %></:col>
+    <:col :let={user} label="Email"><%= user.email %></:col>
+    <:col :let={user} label="Confirmed At"><%= user.confirmed_at %></:col>
+    <:col :let={user} label="Role"><%= user.role %></:col>
+    <:col :let={user} label="Roles"><%= user.roles[@tenant] %></:col>
 
-      <.table id="users" rows={@users}> 
-        <:col :let={user} label="Full Name"><%= user.full_name %></:col>
-        <:col :let={user} label="Short Name"><%= user.short_name %></:col>
-        <:col :let={user} label="Email"><%= user.email %></:col>
-        <:col :let={user} label="Confirmed At"><%= user.confirmed_at %></:col>
-        <:col :let={user} label="Role"><%= user.role %></:col>
-        <:col :let={user} label="Roles"><%= user.roles[@tenant] %></:col>
+    <:action :let={user}>
+      <%= if @current_user do %>
+        <.link navigate={~p"/users/#{user}/edit"}>Edit</.link>
+        <.link href={~p"/users/#{user}"} method="delete" data-confirm="Are you sure?">
+          Delete
+        </.link>
+      <% end %>
+    </:action>
 
-        <:action :let={user}>
-          <%= if @current_user do %>
-            <.link navigate={~p"/users/#{user}/edit"}>Edit</.link>
-            <.link href={~p"/users/#{user}"} method="delete" data-confirm="Are you sure?">
-              Delete
-            </.link>
-          <% end %>
-        </:action>
-
-      </.table>
-    </div>
-    <div class="md:w-1/4">
-      <.admin_menu user_role={@user_role} />
-    </div>
-  </div>
+  </.table>
 </div>
