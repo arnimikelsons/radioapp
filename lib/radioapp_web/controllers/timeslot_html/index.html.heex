@@ -11,17 +11,20 @@
   <:col :let={timeslot} label="Description"><%= timeslot.program.description %></:col>
   <:col :let={timeslot} label="Genre"><%= timeslot.program.genre %></:col>
   <:action :let={timeslot}>
-    <div class="sr-only">
-      <.link navigate={~p"/programs/#{timeslot.program}/timeslots/#{timeslot}"}>Show</.link>
+    <div class="text-center">
+      <div class="sr-only">
+        <.link navigate={~p"/programs/#{timeslot.program}/timeslots/#{timeslot}"}>Show</.link>
+      </div>
+      <.link navigate={~p"/programs/#{timeslot.program}/timeslots/#{timeslot}/edit"}>Edit</.link>
+      <br>
+      <.link navigate={~p"/programs/#{timeslot.program}"}>Program</.link>
+      <br>
+      <.link href={~p"/programs/#{timeslot.program}/timeslots/#{timeslot}"} method="delete" data-confirm="Are you sure?">
+        Delete
+      </.link>
     </div>
-    <.link navigate={~p"/programs/#{timeslot.program}/timeslots/#{timeslot}/edit"}>Edit</.link>
-  </:action>
-  <:action :let={timeslot}>
-    <.link navigate={~p"/programs/#{timeslot.program}"}>Program</.link>
-  </:action>
-  <:action :let={timeslot}>
-    <.link href={~p"/programs/#{timeslot.program}/timeslots/#{timeslot}"} method="delete" data-confirm="Are you sure?">
-      Delete
-    </.link>
   </:action>
 </.table>
+<div class="text-center">
+  <.admin_menu user_role={@user_role} />
+</div>

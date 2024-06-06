@@ -619,6 +619,33 @@ defmodule RadioappWeb.CoreComponents do
     end
   end
 
+  def admin_menu(assigns) do
+    dbg(@user_role)
+    ~H"""
+      <%= if @user_role == "admin"  or @user_role == "super_admin" do %>
+        <h3 class="text-center">Admin Functions</h3>
+        <div class="text-center">
+          <p><a href="/admin/logs">Logs by Date Range</a></p>
+          <p><a href="/admin/links">Manage Link Types</a></p>
+          <p><a href="/admin/categories">Manage Categories</a></p>
+          <p><a href="/users">Manage Users</a></p>
+          <p><a href="/timeslots">Show all Timeslots</a></p>
+          <p><a href="/stationdefaults/1/edit">Edit Station Defaults</a></p>
+        </div>
+    
+        <div class="text-center">
+          <p>-- API settings --</p>
+          <p><a href="/admin/apikey">API Keys</a></p>
+        </div>
+      <% end %>
+
+      <div class="text-center">
+        <p>-- Personal settings --</p>
+        <p><a href="/users/settings">Settings</a></p>
+      </div>
+    """
+  end
+
   @doc """
   Translates the errors for a field from a keyword list of errors.
   """
