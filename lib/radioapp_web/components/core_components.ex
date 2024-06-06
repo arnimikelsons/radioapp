@@ -620,7 +620,6 @@ defmodule RadioappWeb.CoreComponents do
   end
 
   def admin_menu(assigns) do
-    dbg(@user_role)
     ~H"""
       <%= if @user_role == "admin"  or @user_role == "super_admin" do %>
         <h3 class="text-center">Admin Functions</h3>
