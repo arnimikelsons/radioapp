@@ -8,12 +8,18 @@ defmodule RadioappWeb.LinkLive.Index do
   @impl true
   def mount(_params, session, socket) do
     tenant = Map.fetch!(session, "subdomain")
+    
 
     socket =
       assign_stationdefaults(session, socket)
       |> assign(:tenant, tenant)
       |> assign(:links, list_links(tenant))
-    {:ok, socket}
+
+    current_user = socket.assigns.current_user
+    user_role=Admin.get_user_role(current_user, tenant)
+
+    {:ok, assign(socket, :user_role, user_role )}
+
   end
 
   @impl true
@@ -53,4 +59,5 @@ defmodule RadioappWeb.LinkLive.Index do
   defp list_links(tenant) do
     Admin.list_links(tenant)
   end
+
 end
