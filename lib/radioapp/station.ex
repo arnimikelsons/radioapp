@@ -393,6 +393,47 @@ defmodule Radioapp.Station do
   """
 
   def create_log(%Program{} = program, attrs \\ %{}, tenant) do
+
+    %{timezone: station_timezone} = Admin.get_timezone!(tenant)
+    %{"date" => date, "start_time" => start_time, "end_time" => end_time }= attrs
+
+     # Fix start time error missing seconds value
+     start_time =
+      case String.length(start_time) do
+        5 ->
+          start_time <> ":00"
+        8 ->
+          start_time
+        _ ->
+          nil
+      end
+     # Convert start_datetime to UTC
+    {:ok, start_date_time} = NaiveDateTime.from_iso8601("#{date} #{start_time}")
+    timezone = Timex.Timezone.get(station_timezone, start_date_time)
+    start_date_time_tz = Timex.Timezone.convert(start_date_time, timezone)
+    {:ok, utc_start_date_time} = DateTime.shift_zone(start_date_time_tz, "Etc/UTC")
+
+    # Fix end time error missing seconds value
+    end_time =
+      case String.length(end_time) do
+        5 ->
+          end_time <> ":00"
+        8 ->
+          end_time
+        _ ->
+          nil
+      end
+    # Convert end_datetime to UTC
+    {:ok, end_date_time} = NaiveDateTime.from_iso8601("#{date} #{end_time}")
+    timezone = Timex.Timezone.get(station_timezone, end_date_time)
+    end_date_time_tz = Timex.Timezone.convert(end_date_time, timezone)
+    {:ok, utc_end_date_time} = DateTime.shift_zone(end_date_time_tz, "Etc/UTC")
+
+    attrs =
+      attrs
+      |> Map.put("start_datetime", utc_start_date_time)
+      |> Map.put("end_datetime", utc_end_date_time)
+
     program
     |> Ecto.build_assoc(:logs)
     |> Log.changeset(attrs)

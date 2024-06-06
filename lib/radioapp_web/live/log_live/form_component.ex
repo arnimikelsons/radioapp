@@ -24,6 +24,8 @@ defmodule RadioappWeb.LogLive.FormComponent do
         <.input field={{f, :date}} type="date" label="Show Date" />
         <.input field={{f, :start_time}} type="time" label="Start Time" />
         <.input field={{f, :end_time}} type="time" label="End Time" />
+        <.input field={{f, :start_datetime}} type="datetime-local" label="Start Date Time" />
+        <.input field={{f, :end_datetime}} type="datetime-local" label="End Date Time" />
         <.input field={{f, :category}} type="select" label="Category" options={(["Popular Music", "Spoken Word", "Specialty Music", "Multigenre Music"])} />
         <.input field={{f, :language}} type="text" label="Show Language" />
         <.input field={{f, :notes}} type="textarea" label="notes" />
@@ -76,6 +78,9 @@ defmodule RadioappWeb.LogLive.FormComponent do
   defp save_log(socket, :new, log_params) do
     tenant = socket.assigns.tenant
     program = socket.assigns.program
+
+
+
     case Station.create_log(program, log_params, tenant) do
       {:ok, _log} ->
         {:noreply,

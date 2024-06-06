@@ -61,6 +61,7 @@ defmodule RadioappWeb.LogLive.Index do
     tenant = socket.assigns.tenant
     program = Station.get_program!(program_id, tenant)
 
+    # DateTime.shift_zone(datetime, time_zone, time_zone_database \\ Calendar.get_time_zone_database())
     socket
     |> assign(:page_title, "Logs")
     |> assign(:program, program)

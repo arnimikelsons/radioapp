@@ -25,7 +25,7 @@ radioapp-*.tar
 # Ignore assets that are produced by build tools.
 /priv/static/assets/app.css
 /priv/static/assets/app.js
-/priv/static/assets/demo_tenant.css
+/priv/static/assets/demo.css
 
 .env
 
