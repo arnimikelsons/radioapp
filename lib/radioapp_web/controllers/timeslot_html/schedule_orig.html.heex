@@ -38,12 +38,12 @@
       <div class="w-1/2 md:w-1/6 p-2"><.link navigate={~p"/programs/#{timeslot.program}"}><%= timeslot.program.name %></.link></div>
       <div class="w-1/2 md:w-1/6 p-2"><%= timeslot.program.genre %></div>
       <%= if @current_user do%><%= if @current_role == "admin" or @current_role == "super_admin" do %>
-          a<div class="w-1/2 md:w-5/12 p-2 overflow-wrap"><%= timeslot.program.short_description %></div>
+          <div class="w-1/2 md:w-5/12 p-2 overflow-wrap"><%= timeslot.program.short_description %></div>
         <% else %>
-          b<div class="w-1/2 md:w-7/12 p-2 overflow-wrap"><%= timeslot.program.short_description %></div>
-          <% end %>
+          <div class="w-1/2 md:w-7/12 p-2 overflow-wrap"><%= timeslot.program.short_description %></div>
+        <% end %>
       <% else %>
-        c<div class="w-1/2 md:w-7/12 p-2 overflow-wrap"><%= timeslot.program.short_description %></div>
+        <div class="w-1/2 md:w-7/12 p-2 overflow-wrap"><%= timeslot.program.short_description %></div>
       <% end %>
       <div class="w-full md:w-1/6">
         <%= if @current_user do%><%= if @current_role == "admin" or @current_role == "super_admin" do %>

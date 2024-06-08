@@ -80,7 +80,7 @@ defmodule RadioappWeb.SegmentLiveTest do
 
       {:ok, _index_live, html} = live(conn, ~p"/programs/#{program}/logs/#{log}/segments")
 
-      assert html =~ "Listing Segments"
+      assert html =~ "Show Segments"
       assert html =~ segment.song_title
     end
 

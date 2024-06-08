@@ -3,7 +3,7 @@ defmodule RadioappWeb.TimeslotController do
 
   alias Radioapp.Station
   alias Radioapp.Station.{Timeslot}
-  alias Radioapp.{Admin, Accounts} 
+  alias Radioapp.Admin 
 
   def index(conn, _params) do
     tenant = RadioappWeb.get_tenant(conn)
@@ -42,7 +42,13 @@ defmodule RadioappWeb.TimeslotController do
 
     timeslots_by_day = Station.list_timeslots_by_day(day, tenant)
     current_user = conn.assigns.current_user
-    render(conn, :schedule_orig, timeslots_by_day: timeslots_by_day, day: day, current_user: current_user)
+    current_role = if current_user != nil do
+      case Map.get(current_user.roles, tenant) do
+        nil -> Map.get(current_user.roles, "admin")
+        _ -> Map.get(current_user.roles, tenant)
+      end
+    end
+    render(conn, :schedule_orig, timeslots_by_day: timeslots_by_day, day: day, current_user: current_user, current_role: current_role)
   end
 
 
