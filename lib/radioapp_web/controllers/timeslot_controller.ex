@@ -3,14 +3,20 @@ defmodule RadioappWeb.TimeslotController do
 
   alias Radioapp.Station
   alias Radioapp.Station.{Timeslot}
-  alias Radioapp.Admin
+  alias Radioapp.{Admin, Accounts} 
 
   def index(conn, _params) do
     tenant = RadioappWeb.get_tenant(conn)
     timeslots = Station.list_timeslots(tenant)
     current_user = conn.assigns.current_user
-    user_role=Admin.get_user_role(current_user, tenant)
-    render(conn, :index, timeslots: timeslots, current_user: current_user, user_role: user_role)
+    current_role = if current_user != nil do
+      case Map.get(current_user.roles, tenant) do
+        nil -> Map.get(current_user.roles, "admin")
+        _ -> Map.get(current_user.roles, tenant)
+      end
+    end
+    dbg(current_role)
+    render(conn, :index, timeslots: timeslots, current_user: current_user, current_role: current_role)
   end
 
   def index_by_day(conn, %{"id" => id}) do
@@ -18,7 +24,14 @@ defmodule RadioappWeb.TimeslotController do
     timeslots_by_day = Station.list_timeslots_by_day(id, tenant)
     day = String.to_integer(id)
     current_user = conn.assigns.current_user
-    render(conn, :schedule, timeslots_by_day: timeslots_by_day, day: day, current_user: current_user, tenant: tenant)
+    current_role = if current_user != nil do
+      case Map.get(current_user.roles, tenant) do
+        nil -> Map.get(current_user.roles, "admin")
+        _ -> Map.get(current_user.roles, tenant)
+      end
+    end
+    dbg(current_role)
+    render(conn, :schedule, timeslots_by_day: timeslots_by_day, day: day, current_user: current_user, current_role: current_role, tenant: tenant)
   end
 
   def index_by_day(conn, _params) do

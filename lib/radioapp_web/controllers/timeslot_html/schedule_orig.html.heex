@@ -33,22 +33,24 @@
     <div class="w-1/2 md:w-5/12 p-2 overflow-wrap">Description</div>
   </div>
   <div class="timeslot-cover">
-    <div :for={timeslot <- @timeslots_by_day} id="timeslots" class="flex flex-wrap schedule-border text-sm even:bg-slate-100">
+    <div :for={timeslot <- @timeslots_by_day} id="timeslots" class="flex flex-wrap schedule-border text-sm even:">
       <div class="w-1/2 md:w-1/12 p-2"><%= timeslot.starttimereadable %></div>
       <div class="w-1/2 md:w-1/6 p-2"><.link navigate={~p"/programs/#{timeslot.program}"}><%= timeslot.program.name %></.link></div>
       <div class="w-1/2 md:w-1/6 p-2"><%= timeslot.program.genre %></div>
-      <%= if @current_user do%><%= if @current_user.role == :admin do %>
-        <div class="w-1/2 md:w-5/12 p-2 overflow-wrap"><%= timeslot.program.short_description %></div>
-        <% end %>
+      <%= if @current_user do%><%= if @current_role == "admin" or @current_role == "super_admin" do %>
+          a<div class="w-1/2 md:w-5/12 p-2 overflow-wrap"><%= timeslot.program.short_description %></div>
+        <% else %>
+          b<div class="w-1/2 md:w-7/12 p-2 overflow-wrap"><%= timeslot.program.short_description %></div>
+          <% end %>
       <% else %>
-        <div class="w-1/2 md:w-7/12 p-2 overflow-wrap"><%= timeslot.program.short_description %></div>
+        c<div class="w-1/2 md:w-7/12 p-2 overflow-wrap"><%= timeslot.program.short_description %></div>
       <% end %>
       <div class="w-full md:w-1/6">
-        <%= if @current_user do%><%= if @current_user.role == :admin do %>
+        <%= if @current_user do%><%= if @current_role == "admin" or @current_role == "super_admin" do %>
           <div class="w-1/6 md:w-auto p-2 inline-block"><.link navigate={~p"/programs/#{timeslot.program}/timeslots/#{timeslot}/edit"}>Edit&nbsp;</.link></div>
         <% end %><% end %>
 
-        <%= if @current_user do%><%= if @current_user.role == :admin do %>
+        <%= if @current_user do%><%= if @current_role == "admin" or @current_role == "super_admin" do %>
           <div class="w-1/6 md:w-auto p-2 inline-block"><.link href={~p"/programs/#{timeslot.program}/timeslots/#{timeslot}"} method="delete" data-confirm="Are you sure?">
             Delete
           </.link></div>
