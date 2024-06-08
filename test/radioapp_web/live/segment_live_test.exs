@@ -239,7 +239,8 @@ defmodule RadioappWeb.SegmentLiveTest do
         |> render_submit(%{csv: csv})
         |> follow_redirect(conn,  ~p"/programs/#{program}/logs/#{log}/segments")
 
-        assert get_flash(conn, :info) =~ "CSV Uploaded successfully"
+        assert Phoenix.Flash.get(conn.assigns.flash, :info) =~
+        "CSV Uploaded successfully"
         assert_redirected index_live, ~p"/programs/#{program}/logs/#{log}/segments"
 
         {:ok, _result_live, html}= live(conn, ~p"/programs/#{program}/logs/#{log}/segments")
@@ -270,8 +271,8 @@ defmodule RadioappWeb.SegmentLiveTest do
         |> element("#upload-form")
         |> render_submit(%{csv: csv})
         |> follow_redirect(conn, ~p"/programs/#{program}/logs/#{log}/segments")
-
-      assert get_flash(conn, :error) =~ "The CSV file contained error(s) in the column names."
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) =~
+        "The CSV file contained error(s) in the column names."
       assert_redirected index_live, ~p"/programs/#{program}/logs/#{log}/segments"
     end
 
@@ -299,7 +300,7 @@ defmodule RadioappWeb.SegmentLiveTest do
         |> render_submit(%{csv: csv})
         |> follow_redirect(conn, ~p"/programs/#{program}/logs/#{log}/segments")
 
-      assert get_flash(conn, :error) =~ "The CSV file contained error(s) in the column names."
+      assert Phoenix.Flash.get(conn.assigns.flash, :error) =~ "The CSV file contained error(s) in the column names."
       assert_redirected index_live, ~p"/programs/#{program}/logs/#{log}/segments"
     end
 

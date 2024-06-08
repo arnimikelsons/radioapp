@@ -34,7 +34,9 @@ defmodule RadioappWeb.StationdefaultsController do
   def show(conn, %{}) do
     tenant = RadioappWeb.get_tenant(conn)
     stationdefaults = Admin.get_stationdefaults!(tenant)
-    render(conn, :show, stationdefaults: stationdefaults)
+    current_user = conn.assigns.current_user
+    user_role=Admin.get_user_role(current_user, tenant)
+    render(conn, :show, stationdefaults: stationdefaults, user_role: user_role)
   end
 
   def edit(conn, %{}) do
@@ -67,6 +69,8 @@ defmodule RadioappWeb.StationdefaultsController do
   def update(conn, %{"stationdefaults" => stationdefaults_params}) do
     tenant = RadioappWeb.get_tenant(conn)
     stationdefaults = Admin.get_stationdefaults!(tenant)
+    current_user = conn.assigns.current_user
+    user_role=Admin.get_user_role(current_user, tenant)
 
     case Admin.update_stationdefaults(stationdefaults, stationdefaults_params) do
       {:ok, stationdefaults} ->
@@ -75,7 +79,7 @@ defmodule RadioappWeb.StationdefaultsController do
         |> redirect(to: ~p"/stationdefaults/#{stationdefaults}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, :edit, stationdefaults: stationdefaults, changeset: changeset, timezones: Tzdata.zone_list())
+        render(conn, :edit, stationdefaults: stationdefaults, changeset: changeset, timezones: Tzdata.zone_list(), user_role: user_role)
     end
   end
 

@@ -1,4 +1,4 @@
-defmodule RadioappWeb.ProgramControllerTest do
+defmodule RadioappWeb.DangerControllerTest do
   use RadioappWeb.ConnCase
 
   alias Radioapp.Factory
@@ -14,11 +14,11 @@ defmodule RadioappWeb.ProgramControllerTest do
     end
 
     test "Page will not display for a regular user", %{conn: conn} do
-      playout_segment = Factory.insert(:playout_segment, [song_title: "My Song"], prefix: @prefix)
+      _playout_segment = Factory.insert(:playout_segment, [song_title: "My Song"], prefix: @prefix)
 
       conn = get(conn, ~p"/danger/deleteplayout_segments")
       assert redirected_to(conn) == ~p"/"
-      refute html_response(conn, 200) =~ "My Song"
+      refute html_response(conn, 302) =~ "My Song"
     end
   end
 
@@ -30,18 +30,18 @@ defmodule RadioappWeb.ProgramControllerTest do
     end
 
     test "page will not display for an admin", %{conn: conn} do
-      playout_segment = Factory.insert(:playout_segment, [song_title: "Some Song Title"], prefix: @prefix)
+      _playout_segment = Factory.insert(:playout_segment, [song_title: "Some Song Title"], prefix: @prefix)
 
       conn = get(conn, ~p"/danger/deleteplayout_segments")
       assert redirected_to(conn) == ~p"/"
-      refute html_response(conn, 200) =~ "Some Song Title"
+      refute html_response(conn, 302) =~ "Some Song Title"
 
     end
   end
 
   describe "Super admin" do
     setup %{conn: conn} do
-      user = Factory.insert(:user, role: "super_admin")
+      user = Factory.insert(:user, roles: %{"admin" => "super_admin"})
       conn = log_in_user(conn, user)
       %{conn: conn, user: user}
     end
@@ -59,8 +59,8 @@ defmodule RadioappWeb.ProgramControllerTest do
 
       assert redirected_to(conn) == ~p"/playout_segments"
 
-      refute html_response(conn, 200) =~ "First Song"
-      refute html_response(conn, 200) =~ "Second Song"
+      refute html_response(conn, 302) =~ "First Song"
+      refute html_response(conn, 302) =~ "Second Song"
 
     end
   end

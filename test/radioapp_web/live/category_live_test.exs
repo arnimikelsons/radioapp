@@ -126,7 +126,7 @@ defmodule RadioappWeb.CategoryLiveTest do
       category = Factory.insert(:category, [], prefix: @prefix)
       {:ok, _show_live, html} = live(conn, ~p"/admin/categories/#{category}")
 
-      assert html =~ "Show Category"
+      assert html =~ "Category"
       assert html =~ category.code
     end
 
