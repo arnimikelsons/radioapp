@@ -40,7 +40,6 @@ defmodule RadioappWeb.Api.SongController do
   # POST requests received from ACR Cloud
   def create(conn, song_params) do
 
-    dbg(song_params)
     # This code works with one artist and one music entry
     # %{ "data" => %{"metadata" => %{"music" => [%{"title" => title, "artists" => [%{"name" => artist}]}]}}} = song_params
 

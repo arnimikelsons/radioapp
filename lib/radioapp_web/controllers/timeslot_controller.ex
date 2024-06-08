@@ -15,7 +15,6 @@ defmodule RadioappWeb.TimeslotController do
         _ -> Map.get(current_user.roles, tenant)
       end
     end
-    dbg(current_role)
     render(conn, :index, timeslots: timeslots, current_user: current_user, current_role: current_role)
   end
 
@@ -30,7 +29,6 @@ defmodule RadioappWeb.TimeslotController do
         _ -> Map.get(current_user.roles, tenant)
       end
     end
-    dbg(current_role)
     render(conn, :schedule, timeslots_by_day: timeslots_by_day, day: day, current_user: current_user, current_role: current_role, tenant: tenant)
   end
 

@@ -50,7 +50,6 @@ defmodule RadioappWeb.ProgramController do
         |> Image.changeset(%{})
     end
     user = conn.assigns.current_user
-    dbg(user)
 
     cols = case program.images do
       nil -> if user do "md:w-1/2" else "" end

@@ -6,7 +6,6 @@ defmodule Radioapp.CSV.Builder do
   end
 
   def to_csv2(headers, records) do
-    IO.inspect(records, label: "RECORDS")
     rows =
       Enum.reduce(records, [], fn record, acc ->
         row =
