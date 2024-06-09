@@ -52,7 +52,7 @@ defmodule RadioappWeb.ProgramController do
     user = conn.assigns.current_user
 
     cols = case program.images do
-      nil -> if user do "md:w-1/2" else "" end
+      nil -> if user do "md:w-1/2" else "w-full" end
       _ -> "md:w-1/2"
     end
     

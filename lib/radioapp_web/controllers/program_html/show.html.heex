@@ -17,7 +17,6 @@
     <div class={"#{@cols}"}>
       <div class="show-content">
         <div class="show-description p-2 px-4">
-        
           <h3 class="pt-3"><strong>Show Description</strong></h3>
           <%= raw(Earmark.as_html!(@program.description)) %>
         </div>
@@ -80,30 +79,30 @@
         </div>
       </div>
     </div>
-  
-    <div class={"w-full #{@cols} p-2"}>
-      <%= if @program.images != nil do %>
+    <%= if @program.images != nil  and @current_user do %>
+      <div class={"w-full #{@cols} p-2"}>
         <img id="program-image" src={~p"/programs/#{@program}/images/#{@program.images.id}"} />
-      <% end %>
-      <div class="image">
-        <%= if @current_user do%>
-          <%= if @program.images != nil do %>
-            <div  class="text-right mt-3">
-            <.link href={~p"/programs/#{@program}/images/#{@program.images.id}"} method="delete" data-confirm="Are you sure?">
-              <.button>Delete Image</.button>
-            </.link></div>
-          <% else %>
-            <.simple_form :let={f} for={@conn} action={~p"/programs/#{@program}/images"} multipart>
-              <.input field={{f, :image}} type="file" label="Image" required />
+        <div class="image">
+          <%= if @current_user do%>
+            <%= if @program.images != nil do %>
+              <div  class="text-right mt-3">
+                <.link href={~p"/programs/#{@program}/images/#{@program.images.id}"} method="delete" data-confirm="Are you sure?">
+                  <.button>Delete Image</.button>
+                </.link>
+              </div>
+            <% else %>
+              <.simple_form :let={f} for={@conn} action={~p"/programs/#{@program}/images"} multipart>
+                <.input field={{f, :image}} type="file" label="Image" required />
 
-              <:actions>
-                <.button>Upload Image</.button>
-              </:actions>
-            </.simple_form>
+                <:actions>
+                  <.button>Upload Image</.button>
+                </:actions>
+              </.simple_form>
+            <% end %>
           <% end %>
-        <% end %>
+        </div>  
       </div>
-    </div>
+    <% end %>
   </div>
 </div>
 
