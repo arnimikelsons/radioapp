@@ -26,7 +26,8 @@ config :radioapp, RadioappWeb.Endpoint,
   secret_key_base: "KkzZNgJmCLQeJ0sJPhTOrFGqF8b0Xd8PJqD2XaFsvCGZJs7tySLnnQSroN5bEUJP",
   watchers: [
     esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]},
-    tailwind: {Tailwind, :install_and_run, [:default, ~w(--watch)]}
+    tailwind: {Tailwind, :install_and_run, [:default, ~w(--watch)]},
+    demo: {Tailwind, :install_and_run, [:demo, ~w(--watch)]}
   ]
 
 # ## SSL Support

@@ -23,7 +23,7 @@ defmodule Radioapp.Station.PlayoutSegment do
 
     belongs_to :category, Category
 
-    timestamps()
+    timestamps([type: :utc_datetime])
   end
 
   @doc false
