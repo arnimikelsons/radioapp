@@ -4,6 +4,7 @@ defmodule RadioappWeb.LogLive.Index do
   alias Radioapp.Station
   alias Radioapp.Station.Log
   import RadioappWeb.LiveHelpers
+  alias Radioapp.Admin
 
   @impl true
   def mount(%{
@@ -14,6 +15,8 @@ defmodule RadioappWeb.LogLive.Index do
     socket =
       assign_stationdefaults(session, socket)
       |> assign(:tenant, tenant)
+      |> assign(:timezone, Admin.get_timezone!(tenant))
+
     program = Station.get_program!(program_id, tenant)
     {:ok,
       socket

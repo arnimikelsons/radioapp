@@ -21,6 +21,7 @@ defmodule RadioappWeb.PlayoutSegmentLive.Index do
     playout_segments = Station.list_playout_segments(tenant)
     current_user = socket.assigns.current_user
 
+    dbg(playout_segments)
 
     user_role =
       if Map.get(current_user.roles, tenant) == nil do

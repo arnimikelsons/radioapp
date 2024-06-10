@@ -21,8 +21,8 @@
     <:col :let={log} label="End Time"><%= log.end_time %></:col>
     <:col :let={log} label="Category"><%= log.category %></:col>
     <:col :let={log} label="Notes"><%= log.notes %></:col>
-    <:col :let={log} label="Start Date Time"><%= log.start_datetime %></:col>
-    <:col :let={log} label="End Date Time"><%= log.end_datetime %></:col>
+    <%!-- <:col :let={log} label="Start Date Time"><%= log.start_datetime %></:col>
+    <:col :let={log} label="End Date Time"><%= log.end_datetime %></:col> --%>
     
     <:action :let={log}>
       <.link navigate={~p"/programs/#{@program}/logs/#{log}/segments"}>View Log</.link>

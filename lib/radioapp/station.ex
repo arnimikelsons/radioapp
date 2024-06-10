@@ -408,10 +408,8 @@ defmodule Radioapp.Station do
           nil
       end
      # Convert start_datetime to UTC
-    {:ok, start_date_time} = NaiveDateTime.from_iso8601("#{date} #{start_time}")
-    timezone = Timex.Timezone.get(station_timezone, start_date_time)
-    start_date_time_tz = Timex.Timezone.convert(start_date_time, timezone)
-    {:ok, utc_start_date_time} = DateTime.shift_zone(start_date_time_tz, "Etc/UTC")
+    {:ok, start_date_time_naive} = NaiveDateTime.from_iso8601("#{date} #{start_time}")
+    {:ok, start_datetime} = DateTime.from_naive(start_date_time_naive, station_timezone)
 
     # Fix end time error missing seconds value
     end_time =
@@ -424,15 +422,13 @@ defmodule Radioapp.Station do
           nil
       end
     # Convert end_datetime to UTC
-    {:ok, end_date_time} = NaiveDateTime.from_iso8601("#{date} #{end_time}")
-    timezone = Timex.Timezone.get(station_timezone, end_date_time)
-    end_date_time_tz = Timex.Timezone.convert(end_date_time, timezone)
-    {:ok, utc_end_date_time} = DateTime.shift_zone(end_date_time_tz, "Etc/UTC")
+    {:ok, end_date_time_naive} = NaiveDateTime.from_iso8601("#{date} #{end_time}")
+    {:ok, end_datetime} = DateTime.from_naive(end_date_time_naive, station_timezone)
 
     attrs =
       attrs
-      |> Map.put("start_datetime", utc_start_date_time)
-      |> Map.put("end_datetime", utc_end_date_time)
+      |> Map.put("start_datetime", start_datetime)
+      |> Map.put("end_datetime", end_datetime)
 
     program
     |> Ecto.build_assoc(:logs)

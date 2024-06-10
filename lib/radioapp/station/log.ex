@@ -12,8 +12,8 @@ defmodule Radioapp.Station.Log do
     field :end_time, :time
     field :language, :string, default: "English"
     field :start_time, :time
-    field :start_datetime, :naive_datetime
-    field :end_datetime, :naive_datetime
+    field :start_datetime, :utc_datetime
+    field :end_datetime, :utc_datetime
 
     belongs_to :program, Program
     has_many :segments, Segment

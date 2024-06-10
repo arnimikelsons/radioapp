@@ -1,4 +1,4 @@
-defmodule RadioappWeb.ProgramControllerTest do
+defmodule RadioappWeb.DangerControllerTest do
   use RadioappWeb.ConnCase
 
   alias Radioapp.Factory
