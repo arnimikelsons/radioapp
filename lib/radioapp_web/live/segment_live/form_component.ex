@@ -86,7 +86,7 @@ defmodule RadioappWeb.SegmentLive.FormComponent do
       |> Station.change_segment(segment_params)
       |> Map.put(:action, :validate)
 
-    dbg(params)
+    # dbg(params)
     changeset =
       case Map.get(params, "_target") do
         ["segment", "duration"] ->

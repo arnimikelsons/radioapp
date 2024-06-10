@@ -395,45 +395,58 @@ defmodule Radioapp.Station do
   def create_log(%Program{} = program, attrs \\ %{}, tenant) do
 
     %{timezone: station_timezone} = Admin.get_timezone!(tenant)
-    %{"date" => date, "start_time" => start_time, "end_time" => end_time }= attrs
+    %{"date" => date, "start_time" => start_time, "end_time" => end_time } = attrs
 
-     # Fix start time error missing seconds value
-     start_time =
-      case String.length(start_time) do
-        5 ->
-          start_time <> ":00"
-        8 ->
-          start_time
-        _ ->
-          nil
-      end
-     # Convert start_datetime to UTC
-    {:ok, start_date_time_naive} = NaiveDateTime.from_iso8601("#{date} #{start_time}")
-    {:ok, start_datetime} = DateTime.from_naive(start_date_time_naive, station_timezone)
+    case not is_nil(date) and not is_nil(start_time) and not is_nil(end_time) do
 
-    # Fix end time error missing seconds value
-    end_time =
-      case String.length(end_time) do
-        5 ->
-          end_time <> ":00"
-        8 ->
-          end_time
-        _ ->
-          nil
-      end
-    # Convert end_datetime to UTC
-    {:ok, end_date_time_naive} = NaiveDateTime.from_iso8601("#{date} #{end_time}")
-    {:ok, end_datetime} = DateTime.from_naive(end_date_time_naive, station_timezone)
+      true ->
+        # Fix start time error missing seconds value
+        start_time =
+          case String.length(start_time) do
+            5 ->
+              start_time <> ":00"
+            8 ->
+              start_time
+            _ ->
+              nil
+          end
+        # Convert start_datetime to UTC
+        {:ok, start_date_time_naive} = NaiveDateTime.from_iso8601("#{date} #{start_time}")
+        {:ok, start_datetime} = DateTime.from_naive(start_date_time_naive, station_timezone)
 
-    attrs =
-      attrs
-      |> Map.put("start_datetime", start_datetime)
-      |> Map.put("end_datetime", end_datetime)
+        # Fix end time error missing seconds value
+        end_time =
+          case String.length(end_time) do
+            5 ->
+              end_time <> ":00"
+            8 ->
+              end_time
+            _ ->
+              nil
+          end
+        # Convert end_datetime to UTC
+        {:ok, end_date_time_naive} = NaiveDateTime.from_iso8601("#{date} #{end_time}")
+        {:ok, end_datetime} = DateTime.from_naive(end_date_time_naive, station_timezone)
 
-    program
-    |> Ecto.build_assoc(:logs)
-    |> Log.changeset(attrs)
-    |> Repo.insert(prefix: Triplex.to_prefix(tenant))
+        attrs =
+          attrs
+          |> Map.put("start_datetime", start_datetime)
+          |> Map.put("end_datetime", end_datetime)
+
+        program
+        |> Ecto.build_assoc(:logs)
+        |> Log.changeset(attrs)
+        |> Repo.insert(prefix: Triplex.to_prefix(tenant))
+
+      false ->
+        changeset =
+          program
+          |> Ecto.build_assoc(:logs)
+          |> Log.changeset(attrs)
+
+        {:error, changeset}
+
+    end
   end
 
   @doc """
