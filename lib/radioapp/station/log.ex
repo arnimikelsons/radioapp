@@ -39,7 +39,6 @@ defmodule Radioapp.Station.Log do
   #       {:ok, end_datetime} = NaiveDateTime.new(date, end_time)
 
   #       # 2. Convert that value to utc datetime value using the stationdefaults timezone
-  #       dbg(start_datetime)
   #       # 3. insert into field with no associated timezone
 
   #       # 4. update changeset with two new values
@@ -62,7 +61,6 @@ defmodule Radioapp.Station.Log do
   #       {:ok, end_datetime} = NaiveDateTime.new(date, end_time)
 
   #       # 2. Convert that value to utc datetime value using the stationdefaults timezone
-  #       dbg(start_datetime)
   #       # 3. insert into field with no associated timezone
 
   #       # 4. update changeset with two new values

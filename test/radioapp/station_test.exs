@@ -224,9 +224,9 @@ defmodule Radioapp.StationTest do
       host_name: "some host name",
       notes: "some notes",
       category: "Popular Music",
-      date: ~D[2023-02-18],
-      start_time: ~T[01:11:00Z],
-      end_time: ~T[01:13:00Z],
+      date: "2023-02-18",
+      start_time: "01:11:00",
+      end_time: "01:13:00",
       language: "English"
       }
       @update_attrs %{  host_name: "some updated host name",
@@ -277,7 +277,10 @@ defmodule Radioapp.StationTest do
     test "create_log/1 with valid data creates a log" do
       program = Factory.insert(:program, [], prefix: @prefix)
 
-      assert {:ok, %Log{} = log} = Station.create_log(program, @valid_attrs, @tenant)
+      valid_attrs = for {k, v} <- @valid_attrs,
+               do: {to_string(k), v}, into: %{}
+
+      assert {:ok, %Log{} = log} = Station.create_log(program, valid_attrs, @tenant)
       assert log.notes == "some notes"
       assert log.category == "Popular Music"
       assert log.date == ~D[2023-02-18]
@@ -288,7 +291,11 @@ defmodule Radioapp.StationTest do
 
     test "create_log/1 with invalid data returns error changeset" do
       program = Factory.insert(:program, [], prefix: @prefix)
-      assert {:error, %Ecto.Changeset{}} = Station.create_log(program, @invalid_attrs, @tenant)
+
+      invalid_attrs = for {k, v} <- @invalid_attrs,
+               do: {to_string(k), v}, into: %{}
+
+      assert {:error, %Ecto.Changeset{}} = Station.create_log(program, invalid_attrs, @tenant)
     end
 
     test "update_log/2 with valid data updates the log" do
