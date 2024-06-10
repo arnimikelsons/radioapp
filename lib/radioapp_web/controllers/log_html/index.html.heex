@@ -21,33 +21,36 @@
         <.button formaction={~p"/admin/logs/export"}>Download CSV</.button>
       </:actions>
     </.simple_form>
-
-    <.table id="logs" rows={@logs}>
-      <:col :let={segment} label="Program Name"><%= segment.log.program.name %></:col>
-      <:col :let={segment} label="Show Date"><%= segment.log.date %></:col>
-      <:col :let={segment} label="Host"><%= segment.log.host_name %></:col>
-      <:col :let={segment} label="Start Time"><%= segment.log.start_time %></:col>
-      <:col :let={segment} label="End Time"><%= segment.log.end_time %></:col>
-      <:col :let={segment} label="Category"><%= segment.log.category %></:col>
-      <:col :let={segment} label="Notes"><%= segment.log.notes %></:col>
-      
-      <:col :let={segment} label="Start Time"><%= segment.start_time %></:col>
-      <:col :let={segment} label="End Time"><%= segment.end_time %></:col>
-      <:col :let={segment} label="Artist"><%= segment.artist %></:col>
-      <:col :let={segment} label="Song Title"><%= segment.song_title %></:col>
-      <:col :let={segment} label="Category"><%= if segment.category != nil do %><%= segment.category.code %><% end %></:col>
-      <:col :let={segment} label="SOCAN"><%= segment.socan_type %></:col> 
-      <:col :let={segment} label="Catalogue #"><%= segment.catalogue_number %></:col>
-      <:col :let={segment} label="New Music"><%= if segment.new_music do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
-      <:col :let={segment} label="Instrumental"><%= if segment.instrumental do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
-      <:col :let={segment} label="Can Con"><%= if segment.can_con do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
-      <:col :let={segment} label="Hit"><%= if segment.hit do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
-      <:col :let={segment} label="Indg"><%= if segment.indigenous_artist do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
-      <:col :let={segment} label="Emrg"><%= if segment.emerging_artist do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
-    </.table>
   </div>
   <div class="md:w-1/4">
     <.admin_menu user_role={@user_role} />
 
   </div>
+</div>
+<div class="row">
+
+  <.table id="logs" rows={@logs}>
+    <:col :let={segment} label="Program Name"><%= segment.log.program.name %></:col>
+    <:col :let={segment} label="Show Date"><%= segment.log.date %></:col>
+    <:col :let={segment} label="Host"><%= segment.log.host_name %></:col>
+    <:col :let={segment} label="Start Time"><%= segment.log.start_time %></:col>
+    <:col :let={segment} label="End Time"><%= segment.log.end_time %></:col>
+    <:col :let={segment} label="Category"><%= segment.log.category %></:col>
+    <:col :let={segment} label="Notes"><%= segment.log.notes %></:col>
+    
+    <:col :let={segment} label="Start Time"><%= segment.start_time %></:col>
+    <:col :let={segment} label="End Time"><%= segment.end_time %></:col>
+    <:col :let={segment} label="Artist"><%= segment.artist %></:col>
+    <:col :let={segment} label="Song Title"><%= segment.song_title %></:col>
+    <:col :let={segment} label="Category"><%= if segment.category != nil do %><%= segment.category.code %><% end %></:col>
+    <:col :let={segment} label="SOCAN"><%= segment.socan_type %></:col> 
+    <:col :let={segment} label="Catalogue #"><%= segment.catalogue_number %></:col>
+    <:col :let={segment} label="New Music"><%= if segment.new_music do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+    <:col :let={segment} label="Instrumental"><%= if segment.instrumental do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+    <:col :let={segment} label="Can Con"><%= if segment.can_con do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+    <:col :let={segment} label="Hit"><%= if segment.hit do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+    <:col :let={segment} label="Indg"><%= if segment.indigenous_artist do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+    <:col :let={segment} label="Emrg"><%= if segment.emerging_artist do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+  </.table>
+
 </div>
