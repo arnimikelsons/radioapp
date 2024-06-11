@@ -76,7 +76,7 @@ defmodule RadioappWeb.StationdefaultsController do
       {:ok, stationdefaults} ->
         conn
         |> put_flash(:info, "Station defaults updated successfully.")
-        |> redirect(to: ~p"/stationdefaults/#{stationdefaults}")
+        |> redirect(to: ~p"/stationdefaults/#{stationdefaults}/edit")
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, :edit, stationdefaults: stationdefaults, changeset: changeset, timezones: Tzdata.zone_list(), user_role: user_role)
