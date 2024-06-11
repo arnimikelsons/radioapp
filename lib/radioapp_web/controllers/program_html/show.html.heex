@@ -79,9 +79,11 @@
         </div>
       </div>
     </div>
-    <%= if @program.images != nil  and @current_user do %>
+    <%= if @program.images != nil or @current_user do %>
       <div class={"w-full #{@cols} p-2"}>
-        <img id="program-image" src={~p"/programs/#{@program}/images/#{@program.images.id}"} />
+        <%= if @program.images != nil do %>
+          <img id="program-image" src={~p"/programs/#{@program}/images/#{@program.images.id}"} />
+        <% end %>
         <div class="image">
           <%= if @current_user do%>
             <%= if @program.images != nil do %>
