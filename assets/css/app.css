@@ -980,6 +980,11 @@ input[type=range].win10-thumb::-ms-thumb {
 
 /*** END STYLES FOR PUTTING RANGE SLIDER IN YELLOW HEADER */
 
+/*** Pop Up Player ***/
+.background-player {
+  background-color: #f9f2df;
+}
+
 /* Audio Player in YikeSite CSS styles */
 .audio-container {
   max-width: 80%;

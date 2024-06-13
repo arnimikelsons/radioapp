@@ -16,6 +16,18 @@ defmodule RadioappWeb.Router do
     plug RadioappWeb.AllowIFramePlug
   end
 
+  pipeline :popupplayer do
+    plug :accepts, ["html"]
+    plug :fetch_session
+    plug :fetch_live_flash
+    plug :put_root_layout, {RadioappWeb.Layouts, :pop}
+    plug :protect_from_forgery
+    plug :put_secure_browser_headers
+    plug :fetch_current_user
+
+    plug RadioappWeb.AllowIFramePlug
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
   end
@@ -227,10 +239,12 @@ defmodule RadioappWeb.Router do
   scope "/", RadioappWeb do
     pipe_through [:browser, :tenant_in_session]
     get "/feed", FeedController, :index
+  end
 
+  scope "/", RadioappWeb do
+    pipe_through [:popupplayer, :tenant_in_session]
     # Route for pop-out player
     live "/player", PlayerLive, :pop, container: {:main, class: "px-20 sm:px-6 lg:px-8 popup-container"}
-
   end
 
   scope "/", RadioappWeb do

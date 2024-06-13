@@ -1,6 +1,7 @@
 defmodule RadioappWeb.PlayerLive do
   use RadioappWeb, :live_player_view
   alias Radioapp.Station
+  alias Radioapp.Admin
 
   def mount(_params, session, socket) do
     tenant = Map.fetch!(session, "subdomain")
@@ -18,10 +19,13 @@ defmodule RadioappWeb.PlayerLive do
         playing: false
       )
 
+    stationdefaults = Admin.get_stationdefaults!(tenant)
+    socket = assign(socket, stationdefaults: stationdefaults)
+
     socket = assign_show(socket)
     if socket.assigns.live_action == :pop do
       socket = assign(socket, page_title: "Pop-Up Player")
-      socket = assign(socket, layout: {RadioappWeb.Layouts, "live_player"})
+      # socket = assign(socket, layout: {RadioappWeb.Layouts, "pop"})
       {:ok, socket}
     else
       {:ok, socket}
@@ -60,7 +64,7 @@ defmodule RadioappWeb.PlayerLive do
 
   def render(assigns) do
     ~H"""
-      <div class="third-row row TESTING">
+      <div class="third-row row">
         <div>
           <h3>Now Playing</h3>
           <h2 class="text-xl font-medium text-black pop-up-title"><%= @show_name %></h2>

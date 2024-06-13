@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="csrf-token" content={get_csrf_token()} />
+    <.live_title suffix=" · Radioapp">
+      <%= assigns[:page_title] || " " %>
+    </.live_title>
+    <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
+    <link phx-track-static rel="stylesheet" href={~p"/assets/demo.css"} />
+    <link as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'" rel="stylesheet">
+    <link rel="icon" type="image/png" href={~p"/images/favicon.png"} />
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+    <script
+			  src="https://code.jquery.com/jquery-3.6.4.min.js"
+			  integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8="
+			  crossorigin="anonymous"></script>
+    <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-7TQSCEZS08"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-7TQSCEZS08');
+    </script>
+  </head>
+  <body class="bg-white antialiased demo-tenant"
+    x-data="{ openMenu : false }" x-bind:class="openMenu ? 'overflow-hidden' : 'overflow-visible' "
+  >
+    <style>
+    [x-cloak] {
+        display: none !important;
+      }
+    </style>
+
+    <header class="header-containerx">
+      <div class="sm:px-3 pb-3 navbar-dark">
+        <div class="container mx-auto">
+          <div class="flex flex-wrap justify-between background-player">
+            <div class="brand-container flex">
+              <a class="navbar-brand logo-img d-block" href="/">
+                  <%= if @stationdefaults != nil and @stationdefaults.logo_path != nil do %>
+                    <img src={@stationdefaults.logo_path} alt={"#{@stationdefaults.org_name} logo"} />
+                  <% else  %>
+                    <img src="/images/radioapp_logo.png" alt="RadioApp Logo" />
+                  <% end %>
+              </a>
+              <div class="flex flex-col justify-center title-text ml-6">
+
+              </div>
+            </div>
+
+            <%= if @stationdefaults != nil and @stationdefaults.playout_url != nil and @stationdefaults.playout_type != nil do %>
+
+              <div class="audio-container-popup mt-0 md:mt-4 mx-auto mb-[30px] m-w-[80%]">
+                <div id="audio-player" class="audio-player" role="region" aria-label="Player">
+                  <div id="audio-ignore">
+                    <audio id="music" crossorigin="anonymous" preload="auto">
+                      <source src={@stationdefaults.playout_url} type={@stationdefaults.playout_type} />
+                    </audio>
+                  </div>
+                  <div class="first-row row">
+                  
+                    <!-- Show Name and info -->
+                    <p class="text-xl font-medium text-black pop-up-title" id="show-name">
+                    
+                      <%= if assigns[:current_tenant] do %>
+                      <RadioappWeb.PlayingNow.playing_now 
+                        tenant={@current_tenant} 
+                      />
+                      <% else %>
+                        <%= if assigns[:tenant] do %>
+                          <.live_component module={RadioappWeb.PlayingNowComponent} id="playingnow" content={"Hello World!"} tenant={@tenant} />
+                        <% end %>
+                      <% end %>
+                    </p>
+                    <!-- play/pause -->
+                    <button
+                      type="button"
+                      id="pButton"
+                      class="play-button"
+                      aria-label="Play">
+                        <svg
+                          id="player-play"
+                          width="70"
+                          height="70"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            stroke="currentColor"
+                            fill="currentColor"
+                            transform="rotate(90 12.8947 12.3097)"
+                            id="svg_6"
+                            d="m9.40275,15.10014l3.49194,-5.58088l3.49197,5.58088l-6.98391,0z"
+                            stroke-width="1.5"
+                            fill="none"
+                          />
+                        </svg>
+                        <div class="pause-container" id="player-pause">
+                          <svg 
+                            class="player-pause"
+                            xmlns="http://www.w3.org/2000/svg" 
+                        
+                            fill="currentColor" 
+                            class="bi bi-pause-fill" 
+                            viewBox="1 1 14 14">
+                            <path 
+                              stroke-width="1.5"
+                              d="M5.5 3.5A1.5 1.5 0 0 1 7 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5zm5 0A1.5 1.5 0 0 1 12 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5z"/>
+                          </svg> 
+                        </div>
+                    </button>
+                    <!-- /play/pause -->
+                  </div>
+                  <div class="second-row row">
+                    <button id="muteControl" aria-label="mute" class="volumeControl volumeLabel player-button" for="volume">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-volume-up-fill" viewBox="0 0 16 16">
+                          <path d="M11.536 14.01A8.473 8.473 0 0 0 14.026 8a8.473 8.473 0 0 0-2.49-6.01l-.708.707A7.476 7.476 0 0 1 13.025 8c0 2.071-.84 3.946-2.197 5.303l.708.707z"/>
+                          <path d="M10.121 12.596A6.48 6.48 0 0 0 12.025 8a6.48 6.48 0 0 0-1.904-4.596l-.707.707A5.483 5.483 0 0 1 11.025 8a5.483 5.483 0 0 1-1.61 3.89l.706.706z"/>
+                          <path d="M8.707 11.182A4.486 4.486 0 0 0 10.025 8a4.486 4.486 0 0 0-1.318-3.182L8 5.525A3.489 3.489 0 0 1 9.025 8 3.49 3.49 0 0 1 8 10.475l.707.707zM6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06z"/>
+                        </svg>
+                    </button>
+                    <input
+                      aria-label="volume"
+                      class="win10-thumb"
+                      type="range"
+                      name="volume"
+                      id="volume"
+                      min="0.0"
+                      max="1.0"
+                      step="0.1"
+                      value="1.0"
+                    /> 
+                  </div>
+                </div>
+              </div>
+            <% end %>
+           
+          </div>
+        <div class="mx-8 mt-3">
+           <h1>Now Playing</h1>
+            <h2 class="block"><%= @show_name %></h2>
+            <h3><%= @show_start %></h3>
+        </div> 
+        </div> 
+      </div>
+      
+    </header>
+  </body>
+</html>
