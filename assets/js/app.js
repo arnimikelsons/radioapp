@@ -36,6 +36,7 @@ import topbar from "../vendor/topbar"
 
   // Play and Pause
   function play() {
+    console.log("play button clicked");
     // start music
     if (music.paused) {
       music.play();

@@ -43,7 +43,7 @@ defmodule RadioappWeb.StationdefaultsControllerTest do
     test "redirects when data is valid", %{conn: conn} do
       stationdefaults = Factory.insert(:stationdefaults, [], prefix: @prefix)
       conn = put(conn, ~p"/stationdefaults/#{stationdefaults}", stationdefaults: @update_attrs)
-      assert redirected_to(conn) == ~p"/stationdefaults/#{stationdefaults}"
+      assert redirected_to(conn) == ~p"/stationdefaults/#{stationdefaults}/edit"
 
       conn = get(conn, ~p"/stationdefaults/#{stationdefaults}")
       assert html_response(conn, 200) =~ "some updated callsign"

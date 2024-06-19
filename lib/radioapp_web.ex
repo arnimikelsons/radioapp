@@ -64,7 +64,7 @@ defmodule RadioappWeb do
   def live_player_view do
     quote do
       use Phoenix.LiveView,
-        layout: {RadioappWeb.Layouts, :live_player}
+        layout: {RadioappWeb.Layouts, :pop}
 
       unquote(html_helpers())
     end
