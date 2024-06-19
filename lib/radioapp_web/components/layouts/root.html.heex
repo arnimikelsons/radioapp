@@ -5,6 +5,12 @@
               inner_content={@inner_content} 
               conn={@conn}
               />
+    <% "cfrc" -> %> <.root_cfrc 
+              current_user={@current_user} 
+              current_tenant={@current_tenant} 
+              inner_content={@inner_content} 
+              conn={@conn}
+              />          
   <% _ -> %> <.root_default 
               current_user={@current_user} 
               current_tenant={@current_tenant} 
