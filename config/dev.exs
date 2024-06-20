@@ -27,7 +27,8 @@ config :radioapp, RadioappWeb.Endpoint,
   watchers: [
     esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]},
     tailwind: {Tailwind, :install_and_run, [:default, ~w(--watch)]},
-    demo: {Tailwind, :install_and_run, [:demo, ~w(--watch)]}
+    demo: {Tailwind, :install_and_run, [:demo, ~w(--watch)]},
+    crfc: {Tailwind, :install_and_run, [:cfrc, ~w(--watch)]}
   ]
 
 # ## SSL Support

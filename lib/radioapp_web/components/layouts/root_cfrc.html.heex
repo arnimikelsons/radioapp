@@ -11,8 +11,8 @@
 
     <%= # Put customized fonts and stylesheets %>
     <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
-    <%= if assigns[:current_tenant] == "demo" do %>
-      <link phx-track-static rel="stylesheet" href={~p"/assets/demo.css"} />
+    <%= if assigns[:current_tenant] == "cfrc" do %>
+      <link phx-track-static rel="stylesheet" href={~p"/assets/cfrc.css"} />
       <link as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'" rel="stylesheet">
     <% end %>
 
@@ -67,17 +67,16 @@
           <div class="flex flex-wrap justify-between">
             <div class="brand-container flex">
               <a class="navbar-brand logo-img d-block" href="/">
-
-
                   <%= if @conn.private.stationdefaults != nil and @conn.private.stationdefaults.logo_path != nil do %>
                     <img src={@conn.private.stationdefaults.logo_path} alt={"#{@conn.private.stationdefaults.org_name} logo"} />
                   <% else  %>
                     <img src="/images/radioapp_logo.png" alt="RadioApp Logo" />
                   <% end %>
-
               </a>
               <div class="flex flex-col justify-center title-text ml-6">
-
+                <a class="navbar-brand p-0 block" href="https://cfrc.editmy.website" aria-label="CFRC">CAMPUS COMMUNITY RADIO</a>
+                <span class="p-0 block" >BROADCASTING FROM QUEEN'S</span> 
+                <span class="p-0 block">UNIVERSITY IN KINGSTON SINCE 1922.</span>
               </div>
             </div>
 
@@ -96,18 +95,169 @@
             </button>
 
             <!-- Mobile Menu -->
-            <nav id="mobile-navigation" class="w-full md:hidden carousel-indicators flex submenu" 
-            x-bind:class="openMenu ? 'visible' : 'invisible h-0' " x-cloak>
+            <nav id="mobile-navigation" class="w-full md:hidden carousel-indicators flex submenu" x-bind:class="openMenu ? 'visible' : 'invisible h-0' " x-cloak>
               <!-- Vertical UL Links -->
-            <ul class="nav navbar-nav justify-center position-relative flex flex-col w-full p-[10px]">
-                <li class="m-2"><a class="text-black text-base" href="/">Schedule</a></li>
-                <li class="m-2"><a class="text-black text-base" href="/programs">Programs</a></li>
-                <%= #<li class="m-2"><a class="text-black text-base" href="/archives">Archives</a></li> %>
-                <%= if @current_user do%>
-                  <li class=" m-2">   
-                    <a class="text-black text-base" href="/admin/logs">Admin</a>
-                  </li>
-                <% end %>
+              <ul class="nav navbar-nav justify-center position-relative flex flex-col w-full p-[10px]">
+                <li class="li-backdrop relative nav-item dropdown my-1"
+                  x-data="{ 
+                    open: false,
+                    toggle() {
+                      if (this.open) {
+                        return this.close()
+                      }
+                      this.$refs.button.focus()
+                      this.open = true
+                    },
+                    close(focusAfter) {
+                      if (! this.open) return
+                      this.open = false
+                      focusAfter && focusAfter.focus()
+                    }
+                  }" 
+                  x-on:keydown.escape.prevent.stop="close($refs.button)"
+                  x-on:focusin.window="! $refs.panel.contains($event.target) && close()"
+                  x-id="dropdown-button-5"
+                  @click.away="close()"
+                >
+                  <a href="#" class="btn dropdown-toggle nav-link text-[18px]"  
+                      role="button" 
+                      aria-expanded="false"
+                      x-ref="button"
+                      x-on:click="toggle()"
+                      type="button" 
+                      aria-controls="dropdown-button-5"  
+                      aria-label="About Menu"
+                  >
+                    About
+                  </a>
+                  <ul  
+                      x-ref="panel"
+                      x-show="open"
+                      x-transition.origin.top.right
+                      x-on:click.outside="close($refs.button)"
+                      class="z-50 top-0 left-36 absolute bg-white rounded p-2 w-52 border-[1px] border-slate-400" 
+                      id="dropdown-button-5" 
+                      style="display: none;"
+                  >  
+                      <li class="m-2"><a class="text-black text-base" href="https://cfrc.ca/about/about-cfrc">About CFRC</a></li>
+                      <li class="m-2"><a class="text-black text-base" href="https://cfrc.ca/about/our-strategic-plan">Our Strategic Plan</a></li>
+                      <li class="m-2"><a class="text-black text-base"href="https://cfrc.ca/about/accessibility">Accessibility</a></li>
+                      <li class="m-2"><a class="text-black text-base"href="https://cfrc.ca/about/site-map">Site Map</a></li>
+                      <li class="m-2"><a class="text-black text-base"href="https://cfrc.ca/about/centennial-photo-gallery">Centennial Photo Gallery</a></li>
+                  </ul>
+                </li>  
+                <li class="li-backdrop nav-item dropdown relative my-1"
+                    x-data="{ 
+                      open: false,
+                      toggle() {
+                        if (this.open) {
+                          return this.close()
+                        }
+                        this.$refs.button.focus()
+                        this.open = true
+                      },
+                      close(focusAfter) {
+                        if (! this.open) return
+                        this.open = false
+                        focusAfter && focusAfter.focus()
+                      }
+                    }" 
+                    x-on:keydown.escape.prevent.stop="close($refs.button)"
+                    x-on:focusin.window="! $refs.panel.contains($event.target) && close()"
+                    x-id="dropdown-button-6"
+                    @click.away="close()"
+                  >
+                  <a href="#" class="btn dropdown-toggle nav-link text-[18px]"   
+                    role="button" 
+                    aria-expanded="false"
+                    x-ref="button"
+                    x-on:click="toggle()"
+                    type="button" 
+                    aria-controls="dropdown-button-6" 
+                    aria-expanded="false" 
+                    aria-label="News and Events Menu"
+                  >
+                  News &amp; Events
+                  </a>
+                  <ul 
+                    x-ref="panel"
+                    x-show="open"
+                    x-transition.origin.top.right
+                    x-on:click.outside="close($refs.button)"
+                    class="z-50 top-0 left-36 absolute bg-white rounded p-2 w-52 border-[1px] border-slate-400" 
+                    id="dropdown-button-6" 
+                    style="display: none;"
+                  >  
+                    <li class="m-2"><a class="text-black text-base" href="https://cfrc.ca/news-events/news">News</a></li>   
+                    <li class="m-2"><a class="text-black text-base" href="https://cfrc.ca/news-events/events-calendar">Events Calendar</a></li>
+                  </ul>
+                </li>
+                <li class="li-backdrop nav-item my-1 text-[18px]">
+                  <a class="nav-link" href="https://cfrc.ca/services">Services</a>
+                </li>
+                <li class="li-backdrop nav-item dropdown active relative bg-black my-1"
+                  x-data="{ 
+                        open: false,
+                        toggle() {
+                          if (this.open) {
+                            return this.close()
+                          }
+                          this.$refs.button.focus()
+                          this.open = true
+                        },
+                        close(focusAfter) {
+                          if (! this.open) return
+                          this.open = false
+                          focusAfter && focusAfter.focus()
+                        }
+                      }" 
+                  x-on:keydown.escape.prevent.stop="close($refs.button)"
+                  x-on:focusin.window="! $refs.panel.contains($event.target) && close()"
+                  x-id="dropdown-button-7"
+                  @click.away="close()"
+                >
+                  <a href="#" class="text-white btn dropdown-toggle nav-link text-[18px]"  
+                    role="button" 
+                    x-ref="button"
+                    x-on:click="toggle()"
+                    type="button" 
+                    aria-controls="dropdown-button-7" 
+                    aria-label="Listen Menu"
+                  >
+                  Listen
+                  </a>
+                  <ul 
+                    x-ref="panel"
+                    x-show="open"
+                    x-transition.origin.top.right
+                    x-on:click.outside="close($refs.button)"
+                    class="absolute top-0 bg-white rounded p-2 w-52 border-[1px] border-slate-400 left-36" 
+                    id="dropdown-button-7" 
+                    style="display: none;"
+                  >
+                    <li class="m-2"><a class="text-black text-base" href="/">Schedule</a></li>
+                    <li class="m-2"><a class="text-black text-base" href="/programs">Programs</a></li>
+                    <li class="m-2"><a class="text-black text-base" href="/archives">Archives</a></li>
+                    <li class="m-2"><a class="text-black text-base" href="https://podcast.cfrc.ca">Podcasts</a></li>
+                    <%= if @current_user do%>
+                      <li class=" m-2">   
+                        <a class="text-black text-base" href="/admin">Admin</a>
+                      </li>
+                    <% end %>
+                  </ul>
+                </li>
+                <li class="li-backdrop nav-item my-1">
+                  <a class="nav-link text-[18px]" href="https://cfrc.ca/merchandise">Merchandise</a>
+                </li>
+                <li class="li-backdrop nav-item my-1">
+                  <a class="nav-link text-[18px]" href="https://cfrc.ca/volunteer">Volunteer</a>
+                </li>
+                <li class="li-backdrop nav-item my-1">
+                  <a class="nav-link text-[18px]" href="https://cfrc.ca/donate">Donate</a>
+                </li>
+                <li class="li-backdrop nav-item my-1"> 
+                  <a class="nav-link text-[18px]" href="https://cfrc.ca/contact">Contact</a> 
+                </li> 
               </ul>
             </nav>
             <%= if @conn.private.stationdefaults != nil and @conn.private.stationdefaults.playout_url != nil and @conn.private.stationdefaults.playout_type != nil do %>
@@ -242,18 +392,170 @@
 
           <!-- Desktop Menu -->
             <div class="invisible md:visible carousel-indicators flex submenu">
-              <ul class="nav navbar-nav justify-center position-relative flex flex-row flex-wrap">
+          <ul class="nav navbar-nav justify-center position-relative flex flex-row flex-wrap">
+            <li class="li-backdrop relative nav-item dropdown"
+              x-data="{ 
+                open: false,
+                toggle() {
+                  if (this.open) {
+                    return this.close()
+                  }
+                  this.$refs.button.focus()
+                  this.open = true
+                },
+                close(focusAfter) {
+                  if (! this.open) return
+                  this.open = false
+                  focusAfter && focusAfter.focus()
+                }
+              }" 
+              x-on:keydown.escape.prevent.stop="close($refs.button)"
+              x-on:focusin.window="! $refs.panel.contains($event.target) && close()"
+              x-id="dropdown-button-2"
+              @click.away="close()"
+            >
+              <a href="#" class="btn dropdown-toggle nav-link uppercase hover:text-red-400"  
+                  role="button" 
+                  aria-expanded="false"
+                  x-ref="button"
+                  x-on:click="toggle()"
+                  type="button" 
+                  aria-controls="dropdown-button-2"  
+                  aria-label="About Menu"
+              >
+                About &#9660;
+              </a>
+              <ul  
+                  x-ref="panel"
+                  x-show="open"
+                  x-transition.origin.top.right
+                  x-on:click.outside="close($refs.button)"
+                  class="absolute bg-white rounded p-2 w-52 mt-2 border-[1px] border-slate-400" 
+                  id="dropdown-button-2" 
+                  style="display: none;"
+              >  
+                  <li class="m-2"><a class="text-black text-base" href="https://cfrc.ca/about/about-cfrc">About CFRC</a></li>
+                  <li class="m-2"><a class="text-black text-base" href="https://cfrc.ca/about/our-strategic-plan">Our Strategic Plan</a></li>
+                  <li class="m-2"><a class="text-black text-base"href="https://cfrc.ca/about/accessibility">Accessibility</a></li>
+                  <li class="m-2"><a class="text-black text-base"href="https://cfrc.ca/about/site-map">Site Map</a></li>
+                  <li class="m-2"><a class="text-black text-base"href="https://cfrc.ca/about/centennial-photo-gallery">Centennial Photo Gallery</a></li>
+              </ul>
+            </li>  
+            <li class="li-backdrop nav-item dropdown relative"
+                x-data="{ 
+                  open: false,
+                  toggle() {
+                    if (this.open) {
+                      return this.close()
+                    }
+                    this.$refs.button.focus()
+                    this.open = true
+                  },
+                  close(focusAfter) {
+                    if (! this.open) return
+                    this.open = false
+                    focusAfter && focusAfter.focus()
+                  }
+                }" 
+                x-on:keydown.escape.prevent.stop="close($refs.button)"
+                x-on:focusin.window="! $refs.panel.contains($event.target) && close()"
+                x-id="dropdown-button-3"
+                @click.away="close()"
+              >
+              <a href="#" class="btn dropdown-toggle nav-link uppercase hover:text-red-400"   
+                role="button" 
+                aria-expanded="false"
+                x-ref="button"
+                x-on:click="toggle()"
+                type="button" 
+                aria-controls="dropdown-button-3" 
+                aria-expanded="false" 
+                aria-label="News and Events Menu"
+              >
+              News &amp; Events &#9660;
+              </a>
+              <ul 
+                x-ref="panel"
+                x-show="open"
+                x-transition.origin.top.right
+                x-on:click.outside="close($refs.button)"
+                class="absolute bg-white rounded p-2 w-52 mt-2 border-[1px] border-slate-400" 
+                id="dropdown-button-3" 
+                style="display: none;"
+              >  
+                <li class="m-2"><a class="text-black text-base" href="https://cfrc.ca/news-events/news">News</a></li>   
+                <li class="m-2"><a class="text-black text-base" href="https://cfrc.ca/news-events/events-calendar">Events Calendar</a></li>
+              </ul>
+            </li>
+            <li class="li-backdrop nav-item">
+              <a class="nav-link uppercase hover:text-red-400" href="https://cfrc.ca/services">Services</a>
+            </li>
+            <li class="li-backdrop nav-item dropdown active relative bg-black"
+              x-data="{ 
+                    open: false,
+                    toggle() {
+                      if (this.open) {
+                        return this.close()
+                      }
+                      this.$refs.button.focus()
+                      this.open = true
+                    },
+                    close(focusAfter) {
+                      if (! this.open) return
+                      this.open = false
+                      focusAfter && focusAfter.focus()
+                    }
+                  }" 
+              x-on:keydown.escape.prevent.stop="close($refs.button)"
+              x-on:focusin.window="! $refs.panel.contains($event.target) && close()"
+              x-id="dropdown-button-4"
+              @click.away="close()"
+            >
+              <a href="#" class="text-white btn dropdown-toggle nav-link uppercase"  
+                role="button" 
+                x-ref="button"
+                x-on:click="toggle()"
+                type="button" 
+                aria-controls="dropdown-button-4" 
+                aria-label="Listen Menu"
+              >
+              Listen &#9660;
+              </a>
+              <ul 
+                x-ref="panel"
+                x-show="open"
+                x-transition.origin.top.right
+                x-on:click.outside="close($refs.button)"
+                class="absolute bg-white rounded p-2 w-52 mt-2 border-[1px] border-slate-400" 
+                id="dropdown-button-4" 
+                style="display: none;"
+              >
                 <li class="m-2"><a class="text-black text-base" href="/">Schedule</a></li>
                 <li class="m-2"><a class="text-black text-base" href="/programs">Programs</a></li>
-                <!--<li class="m-2"><a class="text-black text-base" href="/archives">Archives</a></li>-->
+                <li class="m-2"><a class="text-black text-base" href="/archives">Archives</a></li>
+                <li class="m-2"><a class="text-black text-base" href="https://podcast.cfrc.ca">Podcasts</a></li>
+                <li class="m-2"><a class="text-black text-base" href="https://cfrc.ca/services">Book a Studio</a></li>
                 <%= if @current_user do%>
                   <li class=" m-2">   
-                    <a class="text-black text-base" href="/admin/logs">Admin</a>
+                    <a class="text-black text-base" href="/admin">Admin</a>
                   </li>
                 <% end %>
-                
               </ul>
-            </div>
+            </li>
+            <li class="li-backdrop nav-item">
+              <a class="nav-link active uppercase" href="https://cfrc.ca/merchandise">Merchandise</a>
+            </li>
+            <li class="li-backdrop nav-item">
+              <a class="nav-link uppercase" href="https://cfrc.ca/volunteer">Volunteer</a>
+            </li>
+            <li class="li-backdrop nav-item">
+              <a class="nav-link uppercase" href="https://cfrc.ca/donate">Donate</a>
+            </li>
+            <li class="li-backdrop nav-item"> 
+              <a class="nav-link uppercase" href="https://cfrc.ca/contact">Contact</a> 
+            </li>    
+          </ul>
+        </div>
           
           </div>
         </div> 
