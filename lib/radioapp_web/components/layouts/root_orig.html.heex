@@ -25,15 +25,6 @@
     <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-7TQSCEZS08"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-7TQSCEZS08');
-    </script>
-  
   
   </head>
   <body class="bg-white antialiased"
@@ -99,7 +90,7 @@
             <nav id="mobile-navigation" class="w-full md:hidden carousel-indicators flex submenu" 
             x-bind:class="openMenu ? 'visible' : 'invisible h-0' " x-cloak>
               <!-- Vertical UL Links -->
-            <ul class="nav navbar-nav justify-center position-relative flex flex-col w-full p-[10px]">
+              <ul class="nav navbar-nav justify-center position-relative flex flex-col w-full p-[10px]">
                 <li class="m-2"><a class="text-black text-base" href="/">Schedule</a></li>
                 <li class="m-2"><a class="text-black text-base" href="/programs">Programs</a></li>
                 <%= #<li class="m-2"><a class="text-black text-base" href="/archives">Archives</a></li> %>

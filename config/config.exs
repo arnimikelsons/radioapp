@@ -68,7 +68,15 @@ config :tailwind,
         --output=../priv/static/assets/demo.css
       ),
       cd: Path.expand("../assets", __DIR__)
-  ]
+    ],
+    cfrc: [
+      args: ~w(
+        --config=tailwind.config.js
+        --input=css/cfrc.css
+        --output=../priv/static/assets/cfrc.css
+      ),
+      cd: Path.expand("../assets", __DIR__)
+    ]
 
 # Configures Elixir's Logger
 config :logger, :console,
