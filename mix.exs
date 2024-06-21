@@ -80,7 +80,7 @@ defmodule Radioapp.MixProject do
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
-      "assets.deploy": ["tailwind default --minify", "tailwind demo --minify", "esbuild default --minify", "phx.digest"]
+      "assets.deploy": ["tailwind default --minify", "tailwind demo --minify", "tailwind cfrc --minify", "esbuild default --minify", "phx.digest"]
     ]
   end
 
