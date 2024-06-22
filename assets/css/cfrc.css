@@ -21,6 +21,23 @@
   background-color: #E6C229;
 }
 
+.audio-container {
+  margin: 40px 0 0 40px;
+  padding: 20px;
+  border: solid black 2px;
+  border-radius: 8px;
+  box-shadow: 2px 3px;
+  background-color: #ccac24;
+}
+
+.audio-container-popup {
+  padding: 15px;
+  border: 2px solid black;
+  border-radius: 8px;
+  box-shadow: 3px 3px;
+  background-color: #ccac24;
+}
+
 footer.page-footer {
   background-color: #E6C229;
 }
