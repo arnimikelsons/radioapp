@@ -2756,7 +2756,7 @@ input:checked+.slider:before {
   }
 
   .audio-container {
-    margin: 40px 0 0 40px;
+    margin: 20px 0 0 40px;
   }
 
   .carousel-indicators {
