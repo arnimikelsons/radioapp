@@ -4,6 +4,7 @@ defmodule Radioapp.StationTest do
 
   alias Radioapp.Station
   alias Radioapp.Station.{Program, Timeslot, Log, Segment, Image, PlayoutSegment}
+  alias Radioapp.Admin
 
   @tenant "sample"
 
@@ -377,8 +378,42 @@ defmodule Radioapp.StationTest do
   end
 
   test "tracking minutes of segments" do
+  end
 
+  test "log contains the start_datetime utc and end_datetime utc fields with correct values" do
+    # create a new log
+    program = Factory.insert(:program, [], prefix: @prefix)
 
+    valid_attrs = for {k, v} <- @valid_attrs,
+              do: {to_string(k), v}, into: %{}
+
+    assert {:ok, %Log{} = log} = Station.create_log(program, valid_attrs, @tenant)
+
+    assert log.date == ~D[2023-02-18]
+    assert log.start_time == ~T[01:11:00Z]
+    assert log.end_time == ~T[01:13:00Z]
+    # ensure that the value in the utc field corresponds to the values in start time, end time and date
+    # timezone in stationdefaults should be Eastern
+    assert Admin.get_timezone!(@tenant) == %{timezone: "Canada/Eastern"}
+    assert log.start_datetime == ~U[2023-02-18 06:11:00Z]
+
+  end
+
+  test "update log with new date and start time modifies the utc fields start_datetime and end_datetime" do
+    #Insert a stationdefaults with Atlantic timezone
+    stationdefaults = Factory.insert(:stationdefaults, [timezone: "Canada/Atlantic"], prefix: @prefix)
+    # create a new log
+    log = Factory.insert(:log, [], prefix: @prefix)
+    # modify the log using update_log with new date and start time
+    assert {:ok, %Log{} = log} = Station.update_log(log, @update_attrs)
+    # check the values in the utc fields match the update_attrs naive date and start time
+    assert log.date == ~D[2023-03-18]
+    assert log.start_time == ~T[02:11:00Z]
+    assert log.end_time == ~T[02:13:00Z]
+    # assert that stationdefaults is in Eastern time zone
+    assert Admin.get_timezone!(@tenant) == %{timezone: "Canada/Atlantic"}
+    # read the returned log and ensure utc fields have corresponding new values
+    assert log.start_datetime == ~U[2023-03-18 08:11:00Z]
   end
 
   describe "segments" do

@@ -396,9 +396,7 @@ defmodule Radioapp.Station do
 
     %{timezone: station_timezone} = Admin.get_timezone!(tenant)
     %{"date" => date, "start_time" => start_time, "end_time" => end_time } = attrs
-
     case not is_nil(date) and not is_nil(start_time) and not is_nil(end_time) do
-
       true ->
         # Fix start time error missing seconds value
         start_time =
