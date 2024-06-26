@@ -50,6 +50,7 @@ defmodule RadioappWeb.LogLive.FormComponent do
 
   @impl true
   def handle_event("validate", %{"log" => log_params}, socket) do
+    # dbg(socket.assigns)
     changeset =
       socket.assigns.log
       |> Station.change_log(log_params)
@@ -59,11 +60,14 @@ defmodule RadioappWeb.LogLive.FormComponent do
   end
 
   def handle_event("save", %{"log" => log_params}, socket) do
+    # dbg(socket.assigns)
     save_log(socket, socket.assigns.action, log_params)
   end
 
   defp save_log(socket, :edit, log_params) do
-    case Station.update_log(socket.assigns.log, log_params) do
+
+    tenant = socket.assigns.tenant
+    case Station.update_log(socket.assigns.log, log_params, tenant) do
       {:ok, _log} ->
         {:noreply,
          socket
@@ -76,10 +80,9 @@ defmodule RadioappWeb.LogLive.FormComponent do
   end
 
   defp save_log(socket, :new, log_params) do
+
     tenant = socket.assigns.tenant
     program = socket.assigns.program
-
-
 
     case Station.create_log(program, log_params, tenant) do
       {:ok, _log} ->

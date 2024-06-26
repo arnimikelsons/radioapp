@@ -86,7 +86,6 @@ defmodule RadioappWeb.SegmentLive.FormComponent do
       |> Station.change_segment(segment_params)
       |> Map.put(:action, :validate)
 
-    # dbg(params)
     changeset =
       case Map.get(params, "_target") do
         ["segment", "duration"] ->
@@ -107,7 +106,8 @@ defmodule RadioappWeb.SegmentLive.FormComponent do
   end
 
   defp save_segment(socket, :edit, segment_params) do
-    case Station.update_segment(socket.assigns.segment, segment_params) do
+    tenant = socket.assigns.tenant
+    case Station.update_segment(socket.assigns.segment, segment_params, tenant) do
       {:ok, _segment} ->
         {:noreply,
          socket

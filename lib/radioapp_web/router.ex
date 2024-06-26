@@ -167,8 +167,8 @@ defmodule RadioappWeb.Router do
     live "/programs/:program_id/logs/new", LogLive.Index, :new
     live "/programs/:program_id/logs/:id/edit", LogLive.Index, :edit
 
-    live "/programs/:program_id/logs/:id", LogLive.Show, :show
-    live "/programs/:program_id/logs/:id/show/edit", LogLive.Show, :edit
+    # live "/programs/:program_id/logs/:id", LogLive.Show, :show
+    # live "/programs/:program_id/logs/:id/show/edit", LogLive.Show, :edit
 
     live "/programs/:program_id/logs/:log_id/segments", SegmentLive.Index, :index
     live "/programs/:program_id/logs/:log_id/segments/new", SegmentLive.Index, :new

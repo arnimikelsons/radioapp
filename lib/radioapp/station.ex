@@ -384,18 +384,113 @@ defmodule Radioapp.Station do
 
   ## Examples
 
-      iex> create_log(%{field: value})
+      iex> create_log(%Program{} = program, %{field: value}, tenant)
       {:ok, %Log{}}
 
-      iex> create_log(%{field: bad_value})
+      iex> create_log((%Program{} = program, %{field: bad_value}, tenant)
       {:error, %Ecto.Changeset{}}
 
   """
 
   def create_log(%Program{} = program, attrs \\ %{}, tenant) do
 
+    case add_utc_to_attrs(attrs, tenant) do
+
+      {:ok, attrs} ->
+          program
+          |> Ecto.build_assoc(:logs)
+          |> Log.changeset(attrs)
+          |> Repo.insert(prefix: Triplex.to_prefix(tenant))
+
+      {:error, _message} ->
+          changeset =
+            program
+            |> Ecto.build_assoc(:logs)
+            |> Log.changeset(attrs)
+
+          {:error, changeset}
+
+    end
+  end
+
+  @doc """
+  Updates a log.
+
+  ## Examples
+
+      iex> update_log(log, %{field: new_value}, tenant)
+      {:ok, %Log{}}
+
+      iex> update_log(log, %{field: bad_value}, tenant)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_log(%Log{} = log, attrs, tenant) do
+
+    case add_utc_to_attrs(attrs, tenant) do
+
+      {:ok, attrs} ->
+        log
+        |> Log.changeset(attrs)
+        |> Repo.update()
+
+      {:error, _message} ->
+          changeset =
+            log
+            |> Log.changeset(attrs)
+
+          {:error, changeset}
+
+    end
+
+  end
+
+  @doc """
+  Deletes a log.
+
+  ## Examples
+
+      iex> delete_log(log)
+      {:ok, %Log{}}
+
+      iex> delete_log(log)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_log(%Log{} = log) do
+    Repo.delete(log)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking log changes.
+
+  ## Examples
+
+      iex> change_log(log)
+      %Ecto.Changeset{data: %Log{}}
+
+  """
+  def change_log(%Log{} = log, attrs \\ %{}) do
+    Log.changeset(log, attrs)
+  end
+
+
+  @doc """
+  Adds UTC values to a log attrs.
+
+  ## Examples
+
+      iex> add_utc_to_attrs(%{"date" => value, "start_time" => value, "end_time" = value} = attrs)
+      {:ok, attrs}
+
+      iex> add_utc_to_attrs(%{field: bad_value})
+      {:error, "Missing \#{value}"}
+
+  """
+
+  def add_utc_to_attrs(%{"date" => date, "start_time" => start_time, "end_time" => end_time } = attrs, tenant) do
+
     %{timezone: station_timezone} = Admin.get_timezone!(tenant)
-    %{"date" => date, "start_time" => start_time, "end_time" => end_time } = attrs
     case not is_nil(date) and not is_nil(start_time) and not is_nil(end_time) do
       true ->
         # Fix start time error missing seconds value
@@ -431,67 +526,58 @@ defmodule Radioapp.Station do
           |> Map.put("start_datetime", start_datetime)
           |> Map.put("end_datetime", end_datetime)
 
-        program
-        |> Ecto.build_assoc(:logs)
-        |> Log.changeset(attrs)
-        |> Repo.insert(prefix: Triplex.to_prefix(tenant))
-
+        {:ok, attrs}
       false ->
-        changeset =
-          program
-          |> Ecto.build_assoc(:logs)
-          |> Log.changeset(attrs)
 
-        {:error, changeset}
+        {:error, "Missing date and/or time"}
 
     end
   end
 
-  @doc """
-  Updates a log.
+  def add_utc_to_attrs(%{date: date, start_time: start_time, end_time: end_time } = attrs, tenant) do
 
-  ## Examples
+    %{timezone: station_timezone} = Admin.get_timezone!(tenant)
+    case not is_nil(date) and not is_nil(start_time) and not is_nil(end_time) do
+      true ->
+        # Fix start time error missing seconds value
+        start_time =
+          case String.length(start_time) do
+            5 ->
+              start_time <> ":00"
+            8 ->
+              start_time
+            _ ->
+              nil
+          end
+        # Convert start_datetime to UTC
+        {:ok, start_date_time_naive} = NaiveDateTime.from_iso8601("#{date} #{start_time}")
+        {:ok, start_datetime} = DateTime.from_naive(start_date_time_naive, station_timezone)
 
-      iex> update_log(log, %{field: new_value})
-      {:ok, %Log{}}
+        # Fix end time error missing seconds value
+        end_time =
+          case String.length(end_time) do
+            5 ->
+              end_time <> ":00"
+            8 ->
+              end_time
+            _ ->
+              nil
+          end
+        # Convert end_datetime to UTC
+        {:ok, end_date_time_naive} = NaiveDateTime.from_iso8601("#{date} #{end_time}")
+        {:ok, end_datetime} = DateTime.from_naive(end_date_time_naive, station_timezone)
 
-      iex> update_log(log, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
+        attrs =
+          attrs
+          |> Map.put("start_datetime", start_datetime)
+          |> Map.put("end_datetime", end_datetime)
 
-  """
-  def update_log(%Log{} = log, attrs) do
-    log
-    |> Log.changeset(attrs)
-    |> Repo.update()
-  end
+        {:ok, attrs}
+      false ->
 
-  @doc """
-  Deletes a log.
+        {:error, "Missing date and/or time"}
 
-  ## Examples
-
-      iex> delete_log(log)
-      {:ok, %Log{}}
-
-      iex> delete_log(log)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_log(%Log{} = log) do
-    Repo.delete(log)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking log changes.
-
-  ## Examples
-
-      iex> change_log(log)
-      %Ecto.Changeset{data: %Log{}}
-
-  """
-  def change_log(%Log{} = log, attrs \\ %{}) do
-    Log.changeset(log, attrs)
+    end
   end
 
   @doc """
@@ -503,6 +589,8 @@ defmodule Radioapp.Station do
       [%Segment{}, ...]
 
   """
+
+
   def list_segments(tenant) do
     Repo.all(Segment, prefix: Triplex.to_prefix(tenant))
     |> Repo.preload([:category, log: [:program]])
@@ -736,37 +824,57 @@ defmodule Radioapp.Station do
 
   """
   def create_segment(%Log{} = log, attrs \\ %{}, tenant) do
-
-    log
-    |> Ecto.build_assoc(:segments)
-    |> Segment.changeset(attrs)
-    |> Repo.insert(prefix: Triplex.to_prefix(tenant))
+    case add_utc_to_attrs(attrs, tenant) do
+      {:ok, attrs} ->
+        log
+        |> Ecto.build_assoc(:segments)
+        |> Segment.changeset(attrs)
+        |> Repo.insert(prefix: Triplex.to_prefix(tenant))
+      {:error, _message} ->
+        changeset =
+          log
+          |> Ecto.build_assoc(:segments)
+          |> Segment.changeset(attrs)
+        {:error, changeset}
+    end
   end
 
   def create_segment_relaxed(%Log{} = log, attrs \\ %{}, tenant) do
-
-    log
-    |> Ecto.build_assoc(:segments)
-    |> Segment.changeset_relaxed(attrs)
-    |> Repo.insert(prefix: Triplex.to_prefix(tenant))
+    case add_utc_to_attrs(attrs, tenant) do
+      {:ok, attrs} ->
+        log
+        |> Ecto.build_assoc(:segments)
+        |> Segment.changeset_relaxed(attrs)
+        |> Repo.insert(prefix: Triplex.to_prefix(tenant))
+      {:error, _message} ->
+        changeset =
+          log
+          |> Ecto.build_assoc(:segments)
+          |> Segment.changeset(attrs)
+        {:error, changeset}
+    end
   end
 
   @doc """
   Updates a segment.
-
   ## Examples
-
-      iex> update_segment(segment, %{field: new_value})
+      iex> update_segment(segment, %{field: new_value}, tenant)
       {:ok, %Segment{}}
-
-      iex> update_segment(segment, %{field: bad_value})
+      iex> update_segment(segment, %{field: bad_value}, tenant)
       {:error, %Ecto.Changeset{}}
-
   """
-  def update_segment(%Segment{} = segment, attrs) do
-    segment
-    |> Segment.changeset(attrs)
-    |> Repo.update()
+  def update_segment(%Segment{} = segment, attrs, tenant) do
+    case add_utc_to_attrs(attrs, tenant) do
+      {:ok, attrs} ->
+        segment
+        |> Segment.changeset(attrs)
+        |> Repo.update()
+      {:error, _message} ->
+        changeset =
+          segment
+          |> Segment.changeset(attrs)
+        {:error, changeset}
+    end
   end
 
   @doc """

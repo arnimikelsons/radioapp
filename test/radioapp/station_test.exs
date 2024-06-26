@@ -233,9 +233,9 @@ defmodule Radioapp.StationTest do
       @update_attrs %{  host_name: "some updated host name",
       notes: "some updated notes",
       category: "Spoken Word",
-      date: ~D[2023-03-18],
-      start_time: ~T[02:11:00Z],
-      end_time: ~T[02:13:00Z],
+      date: "2023-03-18",
+      start_time: "02:11:00",
+      end_time: "02:13:00",
       language: "French"
       }
     @invalid_attrs %{
@@ -299,10 +299,13 @@ defmodule Radioapp.StationTest do
       assert {:error, %Ecto.Changeset{}} = Station.create_log(program, invalid_attrs, @tenant)
     end
 
-    test "update_log/2 with valid data updates the log" do
+    test "update_log/3 with valid data updates the log" do
       log = Factory.insert(:log, [], prefix: @prefix)
 
-      assert {:ok, %Log{} = log} = Station.update_log(log, @update_attrs)
+      update_attrs = for {k, v} <- @update_attrs,
+              do: {to_string(k), v}, into: %{}
+
+      assert {:ok, %Log{} = log} = Station.update_log(log, update_attrs, @tenant)
 
       assert log.notes == "some updated notes"
       assert log.category == "Spoken Word"
@@ -312,9 +315,9 @@ defmodule Radioapp.StationTest do
       assert log.language == "French"
     end
 
-    test "update_log/2 with invalid data returns error changeset" do
+    test "update_log/3 with invalid data returns error changeset" do
       log = Factory.insert(:log, [], prefix: @prefix)
-      assert {:error, %Ecto.Changeset{}} = Station.update_log(log, @invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Station.update_log(log, @invalid_attrs, @tenant)
       get_log = Station.get_log!(log.id, @tenant)
 
       assert get_log.id == log.id
@@ -388,32 +391,30 @@ defmodule Radioapp.StationTest do
               do: {to_string(k), v}, into: %{}
 
     assert {:ok, %Log{} = log} = Station.create_log(program, valid_attrs, @tenant)
-
     assert log.date == ~D[2023-02-18]
     assert log.start_time == ~T[01:11:00Z]
-    assert log.end_time == ~T[01:13:00Z]
-    # ensure that the value in the utc field corresponds to the values in start time, end time and date
-    # timezone in stationdefaults should be Eastern
+
+    # Value in the utc field corresponds to the input values
     assert Admin.get_timezone!(@tenant) == %{timezone: "Canada/Eastern"}
     assert log.start_datetime == ~U[2023-02-18 06:11:00Z]
-
   end
 
-  test "update log with new date and start time modifies the utc fields start_datetime and end_datetime" do
-    #Insert a stationdefaults with Atlantic timezone
-    stationdefaults = Factory.insert(:stationdefaults, [timezone: "Canada/Atlantic"], prefix: @prefix)
-    # create a new log
+  test "update log with new date and start time modifies the utc field" do
+    Factory.insert(:stationdefaults, [timezone: "Canada/Atlantic"], prefix: @prefix)
+
     log = Factory.insert(:log, [], prefix: @prefix)
-    # modify the log using update_log with new date and start time
-    assert {:ok, %Log{} = log} = Station.update_log(log, @update_attrs)
-    # check the values in the utc fields match the update_attrs naive date and start time
+
+    update_attrs = for {k, v} <- @update_attrs,
+              do: {to_string(k), v}, into: %{}
+
+    assert {:ok, %Log{} = log} = Station.update_log(log, update_attrs, @tenant)
+
     assert log.date == ~D[2023-03-18]
     assert log.start_time == ~T[02:11:00Z]
-    assert log.end_time == ~T[02:13:00Z]
-    # assert that stationdefaults is in Eastern time zone
-    assert Admin.get_timezone!(@tenant) == %{timezone: "Canada/Atlantic"}
+
     # read the returned log and ensure utc fields have corresponding new values
-    assert log.start_datetime == ~U[2023-03-18 08:11:00Z]
+    assert Admin.get_timezone!(@tenant) == %{timezone: "Canada/Atlantic"}
+    assert log.start_datetime == ~U[2023-03-18 05:11:00Z]
   end
 
   describe "segments" do
@@ -513,10 +514,10 @@ defmodule Radioapp.StationTest do
       assert {:error, %Ecto.Changeset{}} = Station.create_segment(log, @invalid_attrs, @tenant)
     end
 
-    test "update_segment/2 with valid data updates the segment" do
+    test "update_segment/3 with valid data updates the segment" do
       segment = Factory.insert(:segment, [], prefix: @prefix)
       _update_category = Factory.insert(:category, [id: 2], prefix: @prefix)
-      assert {:ok, %Segment{} = segment} = Station.update_segment(segment, @update_attrs)
+      assert {:ok, %Segment{} = segment} = Station.update_segment(segment, @update_attrs, @tenant)
       assert segment.can_con == false
       assert segment.catalogue_number == "54321"
       assert segment.start_time == ~T[03:11:00Z]
@@ -530,9 +531,9 @@ defmodule Radioapp.StationTest do
       assert segment.emerging_artist == true
     end
 
-    test "update_segment/2 with invalid data returns error changeset" do
+    test "update_segment/3 with invalid data returns error changeset" do
       segment = Factory.insert(:segment, [], prefix: @prefix)
-      assert {:error, %Ecto.Changeset{}} = Station.update_segment(segment, @invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Station.update_segment(segment, @invalid_attrs, @tenant)
 
       get_segment = Station.get_segment!(segment.id, @tenant)
       assert get_segment.id == segment.id
@@ -547,6 +548,44 @@ defmodule Radioapp.StationTest do
     test "change_segment/1 returns a segment changeset" do
       segment = Factory.insert(:segment, [], prefix: @prefix)
       assert %Ecto.Changeset{} = Station.change_segment(segment)
+    end
+
+    test "create segment populates start_datetime end_datetime UTC fields" do
+      # create a new program, log, and segment
+      Factory.insert(:program, [], prefix: @prefix)
+      log = Factory.insert(:log, [date: ~D[2023-03-18]], prefix: @prefix)
+      Factory.insert(:category, [id: 1], prefix: @prefix)
+
+      assert {:ok, %Segment{} = segment} = Station.create_segment(log, @valid_attrs, @tenant)
+
+      assert segment.start_time == ~T[02:11:00Z]
+      assert segment.end_time == ~T[02:13:00Z]
+
+      # Value in the utc field corresponds to the input values
+      assert Admin.get_timezone!(@tenant) == %{timezone: "Canada/Pacific"}
+      assert segment.start_datetime != nil
+      assert segment.start_datetime != ~U[2023-02-18 02:11:00Z]
+      assert segment.start_datetime == ~U[2023-02-18 09:11:00Z]
+    end
+
+    test "update segment with new time or date modifies UTC fields" do
+      # create a new program, log, and segment
+      Factory.insert(:program, [], prefix: @prefix)
+      log = Factory.insert(:log, [date: ~D[2023-03-18]], prefix: @prefix)
+      Factory.insert(:category, [id: 2], prefix: @prefix)
+
+      segment = Factory.insert(:segment, [log: log, start_time: ~T[13:50:00Z], end_time: ~T[13:55:00Z]], prefix: @prefix)
+
+      assert segment.start_time == ~T[13:50:00Z]
+      assert segment.end_time == ~T[13:55:00Z]
+
+      assert {:ok, %Segment{} = segment} = Station.update_segment(segment, @update_attrs, @tenant)
+
+      # Value in the utc field corresponds to the input values
+      assert Admin.get_timezone!(@tenant) == %{timezone: "Canada/Pacific"}
+      assert segment.start_datetime != nil
+      assert segment.start_datetime != ~U[2023-02-18 10:11:00Z]
+      assert segment.start_datetime == ~U[2023-02-18 10:13:00Z]
     end
   end
 

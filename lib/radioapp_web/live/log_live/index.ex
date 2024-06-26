@@ -54,6 +54,7 @@ defmodule RadioappWeb.LogLive.Index do
     |> assign(:page_title, "Edit Log")
     |> assign(:program, program)
     |> assign(:log, Station.get_log!(id, tenant))
+    |> assign(:tenant, tenant)
   end
 
 
