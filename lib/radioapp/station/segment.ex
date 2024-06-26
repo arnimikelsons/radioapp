@@ -21,6 +21,7 @@ defmodule Radioapp.Station.Segment do
     field :duration, :string, virtual: true
     field :start_datetime, :utc_datetime
     field :end_datetime, :utc_datetime
+    field :date, :date, virtual: true
 
     belongs_to :log, Log
     belongs_to :category, Category
@@ -47,7 +48,8 @@ defmodule Radioapp.Station.Segment do
       :category_id,
       :duration,
       :start_datetime,
-      :end_datetime
+      :end_datetime,
+      :date
     ])
     |> normalize_duration()
     |> validate_required([:artist, :end_time, :start_time, :song_title, :category_id])
@@ -71,7 +73,8 @@ defmodule Radioapp.Station.Segment do
       :category_id,
       :duration,
       :start_datetime,
-      :end_datetime
+      :end_datetime,
+      :date
     ])
     |> normalize_duration()
     |> validate_required([:artist, :song_title])

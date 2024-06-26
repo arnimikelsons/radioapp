@@ -420,48 +420,48 @@ defmodule Radioapp.StationTest do
   describe "segments" do
 
     @valid_attrs %{
-      artist: "some artist",
-      can_con: true,
-      catalogue_number: "12345",
-      category_id: 1,
-      start_time: ~T[02:11:00Z],
-      end_time: ~T[02:13:00Z],
-      hit: true,
-      instrumental: false,
-      new_music: true,
-      socan_type: "some socan type",
-      song_title: "some song title",
-      indigenous_artist: true,
-      emerging_artist: false
+      "artist" => "some artist",
+      "can_con" => true,
+      "catalogue_number" => "12345",
+      "category_id" => 1,
+      "start_time" => "02:11:00",
+      "end_time" => "02:13:00",
+      "hit" => true,
+      "instrumental" => false,
+      "new_music" => true,
+      "socan_type" => "some socan type",
+      "song_title" => "some song title",
+      "indigenous_artist" => true,
+      "emerging_artist" => false
     }
     @update_attrs %{
-      artist: "some updateed artist",
-      can_con: false,
-      catalogue_number: "54321",
-      category_id: 2,
-      start_time: ~T[03:11:00Z],
-      end_time: ~T[03:13:00Z],
-      hit: false,
-      instrumental: true,
-      new_music: false,
-      socan_type: "some updated socan type",
-      song_title: "some updated song title",
-      indigenous_artist: false,
-      emerging_artist: true
+      "artist" => "some updateed artist",
+      "can_con" => false,
+      "catalogue_number" => "54321",
+      "category_id" => 2,
+      "start_time" => "03:11:00",
+      "end_time" => "03:13:00",
+      "hit" => false,
+      "instrumental" => true,
+      "new_music" => false,
+      "socan_type" => "some updated socan type",
+      "song_title" => "some updated song title",
+      "indigenous_artist" => false,
+      "emerging_artist" => true
     }
     @invalid_attrs %{
-      artist: nil,
-      can_con: false,
-      catalogue_number: nil,
-      start_time: nil,
-      end_time: nil,
-      hit: false,
-      instrumental: false,
-      new_music: false,
-      socan_type: nil,
-      song_title: nil,
-      indigenous_artist: false,
-      emerging_artist: false
+      "artist" => nil,
+      "can_con" => false,
+      "catalogue_number" => nil,
+      "start_time" => nil,
+      "end_time" => nil,
+      "hit" => false,
+      "instrumental" => false,
+      "new_music" => false,
+      "socan_type" => nil,
+      "song_title" => nil,
+      "indigenous_artist" => false,
+      "emerging_artist" => false
     }
 
     test "list_segments/0 returns all segments" do
@@ -515,7 +515,8 @@ defmodule Radioapp.StationTest do
     end
 
     test "update_segment/3 with valid data updates the segment" do
-      segment = Factory.insert(:segment, [], prefix: @prefix)
+      log = Factory.insert(:log, [], prefix: @prefix)
+      segment = Factory.insert(:segment, [log: log], prefix: @prefix)
       _update_category = Factory.insert(:category, [id: 2], prefix: @prefix)
       assert {:ok, %Segment{} = segment} = Station.update_segment(segment, @update_attrs, @tenant)
       assert segment.can_con == false
@@ -532,7 +533,8 @@ defmodule Radioapp.StationTest do
     end
 
     test "update_segment/3 with invalid data returns error changeset" do
-      segment = Factory.insert(:segment, [], prefix: @prefix)
+      log = Factory.insert(:log, [], prefix: @prefix)
+      segment = Factory.insert(:segment, [log: log], prefix: @prefix)
       assert {:error, %Ecto.Changeset{}} = Station.update_segment(segment, @invalid_attrs, @tenant)
 
       get_segment = Station.get_segment!(segment.id, @tenant)
@@ -564,8 +566,8 @@ defmodule Radioapp.StationTest do
       # Value in the utc field corresponds to the input values
       assert Admin.get_timezone!(@tenant) == %{timezone: "Canada/Pacific"}
       assert segment.start_datetime != nil
-      assert segment.start_datetime != ~U[2023-02-18 02:11:00Z]
-      assert segment.start_datetime == ~U[2023-02-18 09:11:00Z]
+      assert segment.start_datetime != ~U[2023-03-18 02:11:00Z]
+      assert segment.start_datetime == ~U[2023-03-18 09:11:00Z]
     end
 
     test "update segment with new time or date modifies UTC fields" do
@@ -584,8 +586,7 @@ defmodule Radioapp.StationTest do
       # Value in the utc field corresponds to the input values
       assert Admin.get_timezone!(@tenant) == %{timezone: "Canada/Pacific"}
       assert segment.start_datetime != nil
-      assert segment.start_datetime != ~U[2023-02-18 10:11:00Z]
-      assert segment.start_datetime == ~U[2023-02-18 10:13:00Z]
+      assert segment.start_datetime == ~U[2023-03-18 10:11:00Z]
     end
   end
 

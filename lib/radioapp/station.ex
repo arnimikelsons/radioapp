@@ -824,6 +824,11 @@ defmodule Radioapp.Station do
 
   """
   def create_segment(%Log{} = log, attrs \\ %{}, tenant) do
+
+    attrs =
+      attrs
+      |> Map.put("date", log.date)
+
     case add_utc_to_attrs(attrs, tenant) do
       {:ok, attrs} ->
         log
@@ -837,9 +842,15 @@ defmodule Radioapp.Station do
           |> Segment.changeset(attrs)
         {:error, changeset}
     end
+
   end
 
   def create_segment_relaxed(%Log{} = log, attrs \\ %{}, tenant) do
+
+    attrs =
+      attrs
+      |> Map.put("date", log.date)
+
     case add_utc_to_attrs(attrs, tenant) do
       {:ok, attrs} ->
         log
@@ -853,6 +864,7 @@ defmodule Radioapp.Station do
           |> Segment.changeset(attrs)
         {:error, changeset}
     end
+
   end
 
   @doc """
@@ -864,6 +876,11 @@ defmodule Radioapp.Station do
       {:error, %Ecto.Changeset{}}
   """
   def update_segment(%Segment{} = segment, attrs, tenant) do
+
+    attrs =
+      attrs
+      |> Map.put("date", segment.log.date)
+
     case add_utc_to_attrs(attrs, tenant) do
       {:ok, attrs} ->
         segment
@@ -875,6 +892,7 @@ defmodule Radioapp.Station do
           |> Segment.changeset(attrs)
         {:error, changeset}
     end
+
   end
 
   @doc """
