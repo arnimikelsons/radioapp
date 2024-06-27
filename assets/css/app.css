@@ -989,6 +989,11 @@ input[type=range].win10-thumb::-ms-thumb {
 .audio-container {
   max-width: 80%;
   margin: 80px auto 0 auto;
+  padding: 20px;
+  border: solid black 2px;
+  border-radius: 8px;
+  box-shadow: 2px 3px;
+  background-color: #f1e5c3;
 }
 
 main.popup-container .audio-container {
