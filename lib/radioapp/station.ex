@@ -357,18 +357,33 @@ defmodule Radioapp.Station do
         where: l.date >= ^params.start_date,
         where: l.date <= ^params.end_date,
         order_by: [asc: s.song_title], 
-        select: s.song_title
+        distinct: s.song_title
       )
-      |> distinct(true)
-      |> Repo.all(prefix: Triplex.to_prefix(tenant))
       
 
-    #charts = from s in Segment, as: :segments, inner_lateral_join: c in subquery(charts_query)
+    charts_list = 
+      from c in subquery(charts_query), as: :charts, 
+        join: s in Segment,
+        on: c.song_title == s.song_title, 
+        select: c
+        # ,
+        # group_by: c.song_title,
+        # select: {c, count(c.song_title)}
 
+    # [new_music_tracks] =
+    #   from(s in Segment,
+    #     left_join: c in assoc(s, :category),
+    #     where: [log_id: ^log.id],
+    #     where: s.new_music == true,
+    #     where: c.code >= "20",
+    #     where: c.code <= "39",
+    #     select: count(s.id)
+    #   )
 
-    # charts_list = 
+    charts = charts_list |> Repo.all(prefix: Triplex.to_prefix(tenant))
+    # charts =
     #   Segments
-    #   |> where([s], s.song_title in ^charts)
+    #   |> where([s], s.song_title in ^charts_query.song_title)
     #   |> group_by([s], s.song_title)
     #   |> select([s], {s.song_title, count("*")})
     #   |> Repo.all()
@@ -391,8 +406,8 @@ defmodule Radioapp.Station do
 # |> select([c], {c.post_id, count("*")})
 # |> Repo.all()
 
+dbg(charts)
 
-    dbg(charts_query)
   end
 
   def previous_month(%Date{day: day} = date) do
