@@ -352,62 +352,21 @@ defmodule Radioapp.Station do
   def list_charts(params, tenant) do
     charts_query =
       from(s in Segment,
-        join: l in assoc(s, :log),
-        join: p in assoc(l, :program),
+        inner_join: l in assoc(s, :log),
+        inner_join: c in assoc(s, :category),
         where: l.date >= ^params.start_date,
         where: l.date <= ^params.end_date,
-        order_by: [asc: s.song_title], 
-        distinct: s.song_title
+        where: fragment("CAST(?.code as integer) between 20 and 39", c),
+        group_by: [s.artist, s.song_title],
+        order_by: [desc: count(s.song_title), asc: s.artist, asc: s.song_title],
+        select: %{
+          artist: s.artist,
+          song_title: s.song_title,
+          count: count(s.song_title)
+        }
       )
-      
 
-    charts_list = 
-      from c in subquery(charts_query), as: :charts, 
-        join: s in Segment,
-        on: c.song_title == s.song_title, 
-        select: c
-        # ,
-        # group_by: c.song_title,
-        # select: {c, count(c.song_title)}
-
-    # [new_music_tracks] =
-    #   from(s in Segment,
-    #     left_join: c in assoc(s, :category),
-    #     where: [log_id: ^log.id],
-    #     where: s.new_music == true,
-    #     where: c.code >= "20",
-    #     where: c.code <= "39",
-    #     select: count(s.id)
-    #   )
-
-    charts = charts_list |> Repo.all(prefix: Triplex.to_prefix(tenant))
-    # charts =
-    #   Segments
-    #   |> where([s], s.song_title in ^charts_query.song_title)
-    #   |> group_by([s], s.song_title)
-    #   |> select([s], {s.song_title, count("*")})
-    #   |> Repo.all()
-
-#   def list_links_count do
-
-#     query = 
-#       from l in Link,
-#         join: c in Click, as: :click,
-#         where: c.link_id == l.id,
-#         group_by: l.id,
-#         select: {l, count(l.id)}
-
-#     query |> Repo.all
-
-# post_ids = [1, 2, 3]
-# Comment
-# |> where([c], c.post_id in ^post_ids)
-# |> group_by([c], c.post_id)
-# |> select([c], {c.post_id, count("*")})
-# |> Repo.all()
-
-dbg(charts)
-
+    Repo.all(charts_query, prefix: Triplex.to_prefix(tenant))
   end
 
   def previous_month(%Date{day: day} = date) do
