@@ -1,0 +1,39 @@
+<div class="row">
+  <div class="md:w-3/4">
+    <.header>
+      Charts
+    </.header>
+
+    <.simple_form :let={f} for={@search} action={~p"/admin/logs/search_charts"}>
+      <.error :if={ !@search.valid? }>
+        Oops, something went wrong! Please check the errors below.
+      </.error>
+      <div class="row">
+        <div class="grid md:grid-cols-4 date-field">
+          <.input field={{f, :start_date}} type="date" label="Start Date" />
+        </div>
+        <div class="grid md:grid-cols-4 date-field">
+          <.input field={{f, :end_date}} type="date" label="End Date" />
+        </div>
+      </div>
+      <:actions>
+        <.button>Get logs</.button>
+        <.button formaction={~p"/admin/logs/export"}>Download CSV</.button>
+      </:actions>
+    </.simple_form>
+  </div>
+  <div class="md:w-1/4">
+    <.admin_menu user_role={@user_role} />
+
+  </div>
+</div>
+<div class="row">
+
+
+  <%!-- <.table id="segments" rows={@segments}>
+    
+    <:col :let={segment} label="Song Title"><%= segment.song_title %></:col>
+    
+  </.table> --%>
+
+</div>

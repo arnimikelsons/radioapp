@@ -206,6 +206,9 @@ defmodule RadioappWeb.Router do
       get "/admin/logs", LogController, :index
       post "/admin/logs/search", LogController, :search
       post "/admin/logs/export", LogController, :export
+      
+      get "/admin/logs/charts", LogController, :charts
+      post "/admin/logs/search_charts", LogController, :search_charts
 
   end
 
