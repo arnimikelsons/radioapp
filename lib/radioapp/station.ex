@@ -349,6 +349,52 @@ defmodule Radioapp.Station do
     |> Repo.preload(log: [:program], category: [])
   end
 
+  def list_charts(params, tenant) do
+    charts_query =
+      from(s in Segment,
+        join: l in assoc(s, :log),
+        join: p in assoc(l, :program),
+        where: l.date >= ^params.start_date,
+        where: l.date <= ^params.end_date,
+        order_by: [asc: s.song_title], 
+        select: s.song_title
+      )
+      |> distinct(true)
+      |> Repo.all(prefix: Triplex.to_prefix(tenant))
+      
+
+    #charts = from s in Segment, as: :segments, inner_lateral_join: c in subquery(charts_query)
+
+
+    # charts_list = 
+    #   Segments
+    #   |> where([s], s.song_title in ^charts)
+    #   |> group_by([s], s.song_title)
+    #   |> select([s], {s.song_title, count("*")})
+    #   |> Repo.all()
+
+#   def list_links_count do
+
+#     query = 
+#       from l in Link,
+#         join: c in Click, as: :click,
+#         where: c.link_id == l.id,
+#         group_by: l.id,
+#         select: {l, count(l.id)}
+
+#     query |> Repo.all
+
+# post_ids = [1, 2, 3]
+# Comment
+# |> where([c], c.post_id in ^post_ids)
+# |> group_by([c], c.post_id)
+# |> select([c], {c.post_id, count("*")})
+# |> Repo.all()
+
+
+    dbg(charts_query)
+  end
+
   def previous_month(%Date{day: day} = date) do
     days = max(day, Date.add(date, -day).day)
     Date.add(date, -days)

@@ -43,14 +43,7 @@ defmodule RadioappWeb.LogController do
     search = SearchParams.new(%{})
     tenant = RadioappWeb.get_tenant(conn)
     current_user = conn.assigns.current_user
-    # user_role = 
-    #   if Map.get(current_user.roles, tenant) == nil do
-    #     Map.get(current_user.roles, "admin")
-    #   else 
-    #     Map.get(current_user.roles, tenant)
-    #   end
     user_role=Admin.get_user_role(current_user, tenant)
-    dbg(user_role)
     render(conn, "index.html", search: search, logs: [], user_role: user_role)
   end
 
@@ -68,6 +61,30 @@ defmodule RadioappWeb.LogController do
 
     render(conn, "index.html", search: search, logs: logs, user_role: user_role)
   end
+
+  def charts(conn, _params) do
+    search = SearchParams.new(%{})
+    tenant = RadioappWeb.get_tenant(conn)
+    current_user = conn.assigns.current_user
+    user_role=Admin.get_user_role(current_user, tenant)
+    render(conn, "charts.html", search: search, segments: [], user_role: user_role)
+  end
+
+  def search_charts(conn, %{"search_params" => params}) do
+    search = SearchParams.new(params)
+    tenant = RadioappWeb.get_tenant(conn)
+    current_user = conn.assigns.current_user
+    segments =
+      if search.valid? do
+        Station.list_charts(SearchParams.apply(search), tenant)
+      else
+        []
+      end
+    user_role=Admin.get_user_role(current_user, tenant)
+
+    render(conn, "charts.html", search: search, segments: segments, user_role: user_role)
+  end
+
 
   def export(conn, %{"search_params" => params}) do
     tenant = RadioappWeb.get_tenant(conn)
