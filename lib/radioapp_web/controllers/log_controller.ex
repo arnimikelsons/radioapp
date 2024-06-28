@@ -67,22 +67,26 @@ defmodule RadioappWeb.LogController do
     tenant = RadioappWeb.get_tenant(conn)
     current_user = conn.assigns.current_user
     user_role=Admin.get_user_role(current_user, tenant)
-    render(conn, "charts.html", search: search, segments: [], user_role: user_role)
+    render(conn, "charts.html", search: search, charts: [], user_role: user_role)
   end
 
   def search_charts(conn, %{"search_params" => params}) do
     search = SearchParams.new(params)
     tenant = RadioappWeb.get_tenant(conn)
     current_user = conn.assigns.current_user
-    segments =
+    charts_raw = 
       if search.valid? do
-        Station.list_charts(SearchParams.apply(search), tenant)
+        (Station.list_charts(SearchParams.apply(search), tenant))
       else
-        []
+        {}
       end
+      charts = for {key, val} <- charts_raw, into: %{} do
+        {String.to_existing_atom(key), val}
+      end
+      dbg(charts)
     user_role=Admin.get_user_role(current_user, tenant)
 
-    render(conn, "charts.html", search: search, segments: segments, user_role: user_role)
+    render(conn, "charts.html", search: search, charts: charts, user_role: user_role)
   end
 
 

@@ -30,10 +30,10 @@
 <div class="row">
 
 
-  <%!-- <.table id="segments" rows={@segments}>
-    
-    <:col :let={segment} label="Song Title"><%= segment.song_title %></:col>
-    
-  </.table> --%>
+  <.table id="charts" rows={@charts}>
+    <:col :let={chart} label="Artist Name"><%= chart.artist_name %></:col>
+    <:col :let={chart} label="Song Title"><%= chart.song_title %></:col>
+    <:col :let={chart} label="Song Title"><%= chart.count %></:col>
+  </.table> 
 
 </div>
