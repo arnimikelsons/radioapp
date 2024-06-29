@@ -35,3 +35,7 @@ radioapp-*.tar
 npm-debug.log
 /assets/node_modules/
 
+# Ignore SQL dump files
+*.sql 
+*.dump
+

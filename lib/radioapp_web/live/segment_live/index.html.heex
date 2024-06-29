@@ -139,6 +139,38 @@
     </div>
   </.modal>
 
+  <.modal
+    :if={@live_action in [:playout_segment_import]}
+    id="segment-modal"
+    show
+    on_cancel={JS.navigate(~p"/programs/#{@program}/logs/#{@log}/segments")}
+  >
+    <div>
+      <.header>
+        Import Automated Segments
+      </.header>
+      <.table id="segments" rows={@playout_segments}> 
+        <:col :let={playout_segment} label="Start"><%= playout_segment.inserted_at %></:col>
+        <:col :let={playout_segment} label="Artist"><%= playout_segment.artist %></:col>
+        <:col :let={playout_segment} label="Song Title"><%= playout_segment.song_title %></:col>
+        <:action :let={playout_segment}>
+          <div class="sr-only">
+            <%!-- <.link navigate={~p"/playout_segments/#{playout_segment}"}>Show</.link> --%>
+          </div>
+          <.link patch={~p"/playout_segments/#{playout_segment}/edit"}><button>Edit</button></.link>
+        </:action>
+        <%!-- <:action :let={playout_segment}>
+          <%= if @user_role == "admin" do %>
+            <.link id={"playout-segment-#{playout_segment.id}"} phx-click={JS.push("delete", value: %{id: playout_segment.id})} data-confirm="Are you sure?">
+              Delete
+            </.link>
+          <% end %>
+        </:action> --%>
+      </.table>
+
+    </div>
+  </.modal>
+
 <% end %>
 
 
