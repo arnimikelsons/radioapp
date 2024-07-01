@@ -331,6 +331,28 @@ defmodule Radioapp.Station do
     |> Repo.preload(:program)
   end
 
+  def list_logs_date_conversion(tenant) do
+    _logs = from(s in Log, 
+      where: is_nil(s.start_datetime),
+      or_where: is_nil(s.end_datetime)
+    )
+    |> Repo.all(prefix: Triplex.to_prefix(tenant))
+    
+  end
+
+  def update_logs_date_conversion(tenant) do
+    logs = from(s in Log, 
+      where: is_nil(s.start_datetime),
+      or_where: is_nil(s.end_datetime)
+    )
+    |> Repo.all(prefix: Triplex.to_prefix(tenant))
+    |> Repo.preload(:log)
+
+    _updated_logs = Enum.each(logs, fn(x) ->
+      update_log_utc(x, tenant)
+    end)
+  end
+
   def list_logs_for_program(program, tenant) do
     from(l in Log, where: [program_id: ^program.id], order_by: [asc: :date])
     |> Repo.all(prefix: Triplex.to_prefix(tenant))
@@ -444,6 +466,18 @@ defmodule Radioapp.Station do
     end
 
   end
+  def update_log_utc(%Log{} = log, tenant) do
+    date = Date.to_string(log.log.date)
+    start_time = Time.to_string(log.start_time)
+    end_time = Time.to_string(log.end_time)
+    
+    {:ok, start_datetime, end_datetime} = add_utc(date, start_time, end_time, tenant)
+    attrs = %{start_datetime: start_datetime, end_datetime: end_datetime }
+
+    _updated = log
+    |> Segment.changeset(attrs)
+    |> Repo.update()
+  end
 
   @doc """
   Deletes a log.
@@ -487,55 +521,38 @@ defmodule Radioapp.Station do
       {:error, "Missing \#{value}"}
 
   """
-
   def add_utc_to_attrs(%{"date" => date, "start_time" => start_time, "end_time" => end_time } = attrs, tenant) do
-
-    %{timezone: station_timezone} = Admin.get_timezone!(tenant)
-    case not is_nil(date) and not is_nil(start_time) and not is_nil(end_time) do
-      true ->
-        # Fix start time error missing seconds value
-        start_time =
-          case String.length(start_time) do
-            5 ->
-              start_time <> ":00"
-            8 ->
-              start_time
-            _ ->
-              nil
-          end
-        # Convert start_datetime to UTC
-        {:ok, start_date_time_naive} = NaiveDateTime.from_iso8601("#{date} #{start_time}")
-        {:ok, start_datetime} = DateTime.from_naive(start_date_time_naive, station_timezone)
-
-        # Fix end time error missing seconds value
-        end_time =
-          case String.length(end_time) do
-            5 ->
-              end_time <> ":00"
-            8 ->
-              end_time
-            _ ->
-              nil
-          end
-        # Convert end_datetime to UTC
-        {:ok, end_date_time_naive} = NaiveDateTime.from_iso8601("#{date} #{end_time}")
-        {:ok, end_datetime} = DateTime.from_naive(end_date_time_naive, station_timezone)
-
+    case add_utc(date, start_time, end_time, tenant) do
+      {:ok, start_datetime, end_datetime} ->
         attrs =
           attrs
           |> Map.put("start_datetime", start_datetime)
           |> Map.put("end_datetime", end_datetime)
 
         {:ok, attrs}
-      false ->
 
-        {:error, "Missing date and/or time"}
-
+      {:error, message} ->
+        {:error, message}
     end
   end
 
   def add_utc_to_attrs(%{date: date, start_time: start_time, end_time: end_time } = attrs, tenant) do
 
+    case add_utc(date, start_time, end_time, tenant) do
+      {:ok, start_datetime, end_datetime} ->
+        attrs =
+          attrs
+          |> Map.put("start_datetime", start_datetime)
+          |> Map.put("end_datetime", end_datetime)
+
+        {:ok, attrs}
+
+      {:error, message} ->
+        {:error, message}
+      end
+  end
+
+  defp add_utc(date, start_time, end_time, tenant) do
     %{timezone: station_timezone} = Admin.get_timezone!(tenant)
     case not is_nil(date) and not is_nil(start_time) and not is_nil(end_time) do
       true ->
@@ -567,16 +584,9 @@ defmodule Radioapp.Station do
         {:ok, end_date_time_naive} = NaiveDateTime.from_iso8601("#{date} #{end_time}")
         {:ok, end_datetime} = DateTime.from_naive(end_date_time_naive, station_timezone)
 
-        attrs =
-          attrs
-          |> Map.put("start_datetime", start_datetime)
-          |> Map.put("end_datetime", end_datetime)
-
-        {:ok, attrs}
+        {:ok, start_datetime, end_datetime}
       false ->
-
         {:error, "Missing date and/or time"}
-
     end
   end
 
@@ -594,6 +604,28 @@ defmodule Radioapp.Station do
   def list_segments(tenant) do
     Repo.all(Segment, prefix: Triplex.to_prefix(tenant))
     |> Repo.preload([:category, log: [:program]])
+  end
+
+  def list_segments_date_conversion(tenant) do
+    _segments = from(s in Segment, 
+      where: is_nil(s.start_datetime),
+      or_where: is_nil(s.end_datetime)
+    )
+    |> Repo.all(prefix: Triplex.to_prefix(tenant))
+    
+  end
+
+  def update_segments_date_conversion(tenant) do
+    segments = from(s in Segment, 
+      where: is_nil(s.start_datetime),
+      or_where: is_nil(s.end_datetime)
+    )
+    |> Repo.all(prefix: Triplex.to_prefix(tenant))
+    |> Repo.preload(:log)
+
+    _updated_segments = Enum.each(segments, fn(x) ->
+      update_segment_utc(x, tenant)
+    end)
   end
 
   def list_segments_for_date(%{"start_date" => start_date, "end_date" => end_date}, tenant) do
@@ -895,6 +927,19 @@ defmodule Radioapp.Station do
 
   end
 
+  def update_segment_utc(%Segment{} = segment, tenant) do
+    date = Date.to_string(segment.log.date)
+    start_time = Time.to_string(segment.start_time)
+    end_time = Time.to_string(segment.end_time)
+    
+    {:ok, start_datetime, end_datetime} = add_utc(date, start_time, end_time, tenant)
+    attrs = %{start_datetime: start_datetime, end_datetime: end_datetime }
+
+    _updated = segment
+    |> Segment.changeset(attrs)
+    |> Repo.update()
+
+  end
   @doc """
   Deletes a segment.
 

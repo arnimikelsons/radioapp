@@ -80,6 +80,13 @@ defmodule Radioapp.Station.Segment do
     |> validate_required([:artist, :song_title])
   end
 
+  def changeset_utc(segment, attrs) do
+    segment
+    |> cast(attrs, [
+      :start_datetime,
+      :end_datetime,
+    ])
+  end
 
 
   def change_end_time(changeset) do

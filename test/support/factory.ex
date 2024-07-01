@@ -64,6 +64,7 @@ end
 
     date_now = DateTime.to_date(Timex.now(timezone))
     time_now = DateTime.to_time(Timex.now(timezone))
+    some_datetime = DateTime.utc_now(Calendar.ISO)
 
     %Radioapp.Station.Log{
       host_name: Faker.Superhero.name(),
@@ -72,11 +73,14 @@ end
       end_time: Time.add(time_now, 30, :minute),
       category: Faker.Airports.En.name(),
       language: sequence(:language, ["English", "French", "Swahili"]),
-      notes: Faker.Lorem.Shakespeare.hamlet() |> String.replace("'", "")
+      notes: Faker.Lorem.Shakespeare.hamlet() |> String.replace("'", ""),
+      end_datetime: some_datetime,
+      start_datetime: DateTime.add(some_datetime, -3, :minute)
     }
   end
   def segment_factory do
     some_time = DateTime.to_time(Timex.now("Canada/Pacific"))
+    some_datetime = DateTime.utc_now(Calendar.ISO)
 
     %Radioapp.Station.Segment{
       artist: Faker.Person.En.name(),
@@ -90,7 +94,9 @@ end
       emerging_artist: sequence(:emerging_artist, [true, false]),
       start_time: some_time,
       socan_type: sequence(:socan_type, [" ", "Background", "Feature", "Theme"]),
-      song_title: Faker.Pizza.style()
+      song_title: Faker.Pizza.style(), 
+      end_datetime: some_datetime,
+      start_datetime: DateTime.add(some_datetime, -3, :minute)
     }
   end
 

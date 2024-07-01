@@ -52,7 +52,6 @@ defmodule Radioapp.StationTest do
       assert Station.get_program!(program.id, @tenant) == program
     end
 
-
     # add test for get_program_from_time(weekday, time_now)
 
     # add test for get_program_now_start_time(weekday, time_now)
@@ -268,6 +267,35 @@ defmodule Radioapp.StationTest do
       refute expected == Enum.map(Station.list_logs_for_program(program2, @tenant), fn s -> s.id end)
     end
 
+    test "list_logs/0 returns all logs with nil" do
+      log = Factory.insert(:log, [host_name: "With Time"], prefix: @prefix)
+      log2 = Factory.insert(:log, [host_name: "Without Time", start_datetime: nil, end_datetime: nil], prefix: @prefix)
+
+      expected = [log.id]
+      refute expected == Enum.map(Station.list_logs_date_conversion(@tenant), fn s -> s.id end)
+      expected2 = [log2.id]
+      assert expected2 == Enum.map(Station.list_logs_date_conversion(@tenant), fn s -> s.id end)
+    end
+
+    test "update_logs/0  with nil datetime" do
+
+      program = Factory.insert(:program, [], prefix: @prefix)
+      log = Factory.insert(:log, [host_name: "With Time", program: program], prefix: @prefix)
+      log2 = Factory.insert(:log, [host_name: "Without Time", program: program, start_datetime: nil, end_datetime: nil], prefix: @prefix)
+
+      expected = [log.id]
+      refute expected == Enum.map(Station.list_logs_date_conversion(@tenant), fn s -> s.id end)
+      expected2 = [log2.id]
+      assert expected2 == Enum.map(Station.list_logs_date_conversion(@tenant), fn s -> s.id end)
+
+      _updates = Station.update_logs_date_conversion(@tenant)
+
+      #logs = Station.list_logs(@tenant)
+
+      assert Station.list_logs_date_conversion(@tenant) == []
+
+    end
+
     test "get_log!/1 returns the log with given id" do
       log = Factory.insert(:log, [], prefix: @prefix)
       get_log = Station.get_log!(log.id, @tenant)
@@ -469,7 +497,40 @@ defmodule Radioapp.StationTest do
 
       expected = [segment.id]
       assert expected == Enum.map(Station.list_segments(@tenant), fn s -> s.id end)
+      
     end
+
+    test "list_segments/0 returns all segments with nil" do
+      segment = Factory.insert(:segment, [artist: "With Time"], prefix: @prefix)
+      segment2 = Factory.insert(:segment, [artist: "Without Time", start_datetime: nil, end_datetime: nil], prefix: @prefix)
+
+      expected = [segment.id]
+      refute expected == Enum.map(Station.list_segments_date_conversion(@tenant), fn s -> s.id end)
+      expected2 = [segment2.id]
+      assert expected2 == Enum.map(Station.list_segments_date_conversion(@tenant), fn s -> s.id end)
+    end
+
+    test "update_segments/0  with nil datetime" do
+
+      log = Factory.insert(:log, [date: ~D[2023-03-18]], prefix: @prefix)
+      category = Factory.insert(:category, [id: 1], prefix: @prefix)
+      segment = Factory.insert(:segment, [artist: "With Time", log: log, category: category], prefix: @prefix)
+      segment2 = Factory.insert(:segment, [artist: "Without Time", log: log, start_datetime: nil, end_datetime: nil, category: category], prefix: @prefix)
+
+      expected = [segment.id]
+      refute expected == Enum.map(Station.list_segments_date_conversion(@tenant), fn s -> s.id end)
+      expected2 = [segment2.id]
+      assert expected2 == Enum.map(Station.list_segments_date_conversion(@tenant), fn s -> s.id end)
+
+      _updates = Station.update_segments_date_conversion(@tenant)
+
+      #segments = Station.list_segments(@tenant)
+
+      assert Station.list_segments_date_conversion(@tenant) == []
+
+    end
+
+
 
     test "list_segments_for_log/0 returns all segments for a given log" do
       log1 = Factory.insert(:log, [], prefix: @prefix)
