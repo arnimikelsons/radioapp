@@ -174,6 +174,8 @@ defmodule RadioappWeb.Router do
     live "/programs/:program_id/logs/:log_id/segments/new", SegmentLive.Index, :new
     live "/programs/:program_id/logs/:log_id/segments/:id/edit", SegmentLive.Index, :edit
     live "/programs/:program_id/logs/:log_id/segments/upload_instructions", SegmentLive.Index, :upload_instructions
+    live "/programs/:program_id/logs/:log_id/segments/api_import", SegmentLive.Index, :playout_segment_import
+
 
     live "/programs/:program_id/logs/:log_id/segments/:id", SegmentLive.Show, :show
     live "/programs/:program_id/logs/:log_id/segments/:id/show/edit", SegmentLive.Show, :edit
@@ -183,6 +185,7 @@ defmodule RadioappWeb.Router do
     # Add PlayoutSegment resources
     live "/playout_segments", PlayoutSegmentLive.Index, :index
     live "/playout_segments/:id/edit", PlayoutSegmentLive.Index, :edit
+    live "/playout_segments/import", PlayoutSegmentLive.Index, :import
 
   end
 

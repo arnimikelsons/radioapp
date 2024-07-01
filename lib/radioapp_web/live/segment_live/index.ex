@@ -125,6 +125,14 @@ defmodule RadioappWeb.SegmentLive.Index do
     |> assign(:page_title, "Upload Instructions")
   end
 
+  defp apply_action(socket, :playout_segment_import, _params) do
+
+    playout_segments = Station.list_playout_segments_by_log(socket.assigns.log, socket.assigns.tenant)
+
+    socket
+    |> assign(:page_title, "Import Automated Segments")
+    |> assign(:playout_segments, playout_segments)
+  end
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
     tenant = socket.assigns.tenant

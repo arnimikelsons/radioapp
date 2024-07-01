@@ -371,6 +371,16 @@ defmodule Radioapp.Station do
     |> Repo.preload(log: [:program], category: [])
   end
 
+  def list_playout_segments_by_log(log, tenant) do
+
+    from(p in PlayoutSegment,
+      where: p.inserted_at >= ^log.start_datetime,
+      where: p.inserted_at <= ^log.end_datetime,
+      order_by: [asc: p.inserted_at]
+    )
+    |> Repo.all(prefix: Triplex.to_prefix(tenant))
+  end
+
   def previous_month(%Date{day: day} = date) do
     days = max(day, Date.add(date, -day).day)
     Date.add(date, -days)
