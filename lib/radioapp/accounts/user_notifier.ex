@@ -82,15 +82,15 @@ defmodule Radioapp.Accounts.UserNotifier do
   def deliver_invitation_instructions(user, tenant, url) do
     station_defaults = Admin.get_stationdefaults!(tenant)
     url = String.replace(url, "://", "://#{tenant}.")
-    deliver(user.email, "Invitation to Radio App", """
+    deliver(user.email, station_defaults.intro_email_subject, """
 
     ==============================
 
-    Hi #{user.email},
+    Hi #{user.short_name},
 
-    You are invited to join the #{station_defaults.callsign} online App to manage your radio program. Click on the following link to join:
+    #{station_defaults.intro_email_body}
 
-    #{url}
+    <a href="#{url}">Click here to join</a>
     
     Please contact #{station_defaults.support_email} if you have any questions.
 
@@ -101,18 +101,17 @@ defmodule Radioapp.Accounts.UserNotifier do
   def deliver_invited_to_tenant_email(user, tenant, url) do
     station_defaults = Admin.get_stationdefaults!(tenant)
     
-    deliver(user.email, "Invitation to Radio App", """
+    deliver(user.email, station_defaults.intro_email_subject, """
 
     ==============================
 
-    Hi #{user.email},
+    Hi #{user.short_name},
 
-   
-    You are invited to join the #{station_defaults.callsign}. Logs by Date Range</.link></p> online App to manage your radio program. Click on the following link to join:
+    #{station_defaults.intro_email_body}
 
-    #{url}
+    Access the website here: <a href="#{url}">#{url}</a>.
 
-    Please contact #{station_defaults.support_email} if you have any questions.
+    Use your previous RadioApp email to log in. Please contact #{station_defaults.support_email} if you have any questions.
 
     ==============================
     """)

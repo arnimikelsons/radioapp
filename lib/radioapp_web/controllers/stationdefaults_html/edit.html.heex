@@ -9,18 +9,25 @@
         Oops, something went wrong! Please check the errors below.
       </.error>
       <.input field={{f, :callsign}} type="text" label="Callsign" />
+      <.input field={{f, :org_name}} type="text" label="Org name" />
+      <.input field={{f, :support_email}} type="text" label="Support email" />
+      <.input field={{f, :intro_email_subject}} type="text" label="Subject for intro email" />
+      <.input field={{f, :intro_email_body}} type="textarea" label="Body for intro email" />
+      <span><small>Body starts with "Dear [short_name]" and ends with confirm link, and link to support email. Add in between text.</small></span>
+
+
+      <.input field={{f, :phone}} type="text" label="Phone" />
+      <.input field={{f, :website_url}} type="text" label="Website url" />
+      <.input field={{f, :privacy_policy_url}} type="text" label="Privacy policy url" />
+      <.input field={{f, :tos_url}} type="text" label="Tos url" />  
+
+      <h3>System Settings. Change with Care</h3>
       <.input field={{f, :from_email}} type="text" label="From email" />
       <.input field={{f, :from_email_name}} type="text" label="From email name" />
-      <.input field={{f, :logo_path}} type="text" label="Logo path" />
-      <.input field={{f, :org_name}} type="text" label="Org name" />
-      <.input field={{f, :timezone}} options={( [ "Canada/Eastern" | @timezones ] )} type="select" label="Timezone * (required)" placeholder="Please Select" required />
-      <.input field={{f, :privacy_policy_url}} type="text" label="Privacy policy url" />
-      <.input field={{f, :support_email}} type="text" label="Support email" />
-      <.input field={{f, :phone}} type="text" label="Phone" />
       <.input field={{f, :playout_url}} type="text" label="Playout url" />
+      <.input field={{f, :logo_path}} type="text" label="Logo path" />
       <.input field={{f, :playout_type}} options={( [ "audio/mpeg", "audio/ogg", "audio/wav" ] )} type="select" label="Playout type" />
-      <.input field={{f, :tos_url}} type="text" label="Tos url" />
-      <.input field={{f, :website_url}} type="text" label="Website url" />
+      <.input field={{f, :timezone}} options={( [ "Canada/Eastern" | @timezones ] )} type="select" label="Timezone * (required)" placeholder="Please Select" required />
       <.input field={{f, :csv_permission}} options={( [ "none", "admin", "user" ] )} type="select" label="Grant access to upload CSVs to logs" />
       <:actions>
         <.button>Save station defaults</.button>
