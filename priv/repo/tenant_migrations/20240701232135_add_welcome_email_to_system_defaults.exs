@@ -4,7 +4,7 @@ defmodule Radioapp.Repo.Migrations.AddWelcomeEmailToSystemDefaults do
   def change do
     alter table(:stationdefaults) do
       add :intro_email_subject, :string
-      add :intro_email_body, :string
+      add :intro_email_body, :text
       add :api_permission, :string, default: "none"
     end
 
