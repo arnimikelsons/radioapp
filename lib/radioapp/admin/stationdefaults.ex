@@ -17,6 +17,9 @@ defmodule Radioapp.Admin.Stationdefaults do
     field :tos_url, :string
     field :website_url, :string
     field :csv_permission, :string, default: "none"
+    field :intro_email_subject, :string
+    field :intro_email_body, :string
+    field :api_permission, :string, default: "none"
 
     timestamps()
   end
@@ -24,8 +27,8 @@ defmodule Radioapp.Admin.Stationdefaults do
   @doc false
   def changeset(stationdefaults, attrs) do
     stationdefaults
-    |> cast(attrs, [:callsign, :from_email, :from_email_name, :logo_path, :org_name, :timezone, :privacy_policy_url, :support_email, :phone, :playout_url, :playout_type, :tos_url, :website_url, :csv_permission])
-    |> validate_required([:callsign, :timezone #, :from_email, :from_email_name, :logo_path, :org_name, :privacy_policy_url, :support_email, :phone, :playout_url, :playout_type, :tos_url, :website_url, :csv_permission
+    |> cast(attrs, [:callsign, :from_email, :from_email_name, :logo_path, :org_name, :timezone, :privacy_policy_url, :support_email, :phone, :playout_url, :playout_type, :tos_url, :website_url, :csv_permission, :intro_email_subject, :intro_email_body])
+    |> validate_required([:callsign, :timezone, :support_email #, :from_email, :from_email_name, :logo_path, :org_name, :privacy_policy_url, :phone, :playout_url, :playout_type, :tos_url, :website_url, :csv_permission, :intro_email_subject, :intro_email_body
     ])
   end
 end

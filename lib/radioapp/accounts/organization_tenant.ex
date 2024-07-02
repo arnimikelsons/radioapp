@@ -32,7 +32,7 @@ defmodule Radioapp.Accounts.OrganizationTenant do
 
     Repo.transaction(fn ->
       with {:ok, org} <- Accounts.create_org(attrs),
-          #{:ok, _} <- create_admin(tenant), 
+          #{:ok, _} <- create_admin(tenant),
           {:ok, _} <- create_category(tenant, %{code: "11", name: "News"}),
            {:ok, _} <- create_category(tenant, %{code: "12", name: "Spoken Word / PSAs"}),
            {:ok, _} <- create_category(tenant, %{code: "21", name: "Pop/Rock/RPM/Beatbox/Loud"}),
@@ -60,7 +60,7 @@ defmodule Radioapp.Accounts.OrganizationTenant do
            {:ok, _} <- create_link(tenant, %{icon: "fa-brands fa-spotify", type: "Spotify" }),
            {:ok, _} <- create_link(tenant, %{icon: "fa-brands fa-instagram", type: "Instagram" }),
            {:ok, _} <- create_link(tenant, %{icon: "fa-brands fa-tiktok", type: "TikTok" }),
-           
+
            {:ok, _} <- create_stationdefaults(tenant) do
 
 
@@ -161,7 +161,9 @@ defmodule Radioapp.Accounts.OrganizationTenant do
         org_name: "radioApp",
         support_email: "radioapp@northernvillage.net",
         playout_type: "audio/mpeg",
-        timezone: "Canada/Eastern"
+        timezone: "Canada/Eastern",
+        intro_email_subject: "Welcome to RadioApp: Website Management and Radio Logging Software",
+        intro_email_body: "You are invited to join the Radioapp online App to manage your radio program."
       },
       tenant
     )
