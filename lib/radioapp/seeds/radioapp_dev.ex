@@ -14,7 +14,7 @@ defmodule Radioapp.Seeds.RadioappDev do
       confirmed_at: DateTime.utc_now(),
       password: "super-secret",
       hashed_password: Bcrypt.hash_pwd_salt("super-secret"),
-    }) 
+    })
 
     {:ok, _alice_admin} = Accounts.seeds_user(%{
       full_name: "Alice McExampleson",
@@ -24,7 +24,7 @@ defmodule Radioapp.Seeds.RadioappDev do
       roles: %{tenant => "admin"},
       password: "super-duper-secret",
       hashed_password: Bcrypt.hash_pwd_salt("super-secret"),
-    }) 
+    })
     {:ok, _} = Admin.create_stationdefaults(
       %{
         callsign: "RadioApp",
@@ -34,14 +34,16 @@ defmodule Radioapp.Seeds.RadioappDev do
         org_name: "radioApp",
         support_email: "radioapp@northernvillage.net",
         playout_type: "audio/mpeg",
-        timezone: "Canada/Eastern"
+        timezone: "Canada/Eastern",
+        intro_email_subject: "Welcome to RadioApp: Website Management and Radio Logging Software",
+        intro_email_body: "You are invited to join the Radioapp online App to manage your radio program."
       },
       tenant
     )
 
 
 
-    
+
     # {:ok, _linda_admin} =
     #   Radioapp.Users.create_staff_user(
     #     %{
@@ -56,7 +58,7 @@ defmodule Radioapp.Seeds.RadioappDev do
     #     },
     #     tenant
     #   )
-     
+
     # Enum.map(1..20, fn _ ->
     #   first_name = Faker.Person.first_name()
     #   last_name = Faker.Person.last_name()
