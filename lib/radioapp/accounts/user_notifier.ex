@@ -90,7 +90,7 @@ defmodule Radioapp.Accounts.UserNotifier do
 
     #{station_defaults.intro_email_body}
 
-    <a href="#{url}">Click here to join</a>
+    #{url}
     
     Please contact #{station_defaults.support_email} if you have any questions.
 
@@ -109,7 +109,7 @@ defmodule Radioapp.Accounts.UserNotifier do
 
     #{station_defaults.intro_email_body}
 
-    Access the website here: <a href="#{url}">#{url}</a>.
+    #{url}
 
     Use your previous RadioApp email to log in. Please contact #{station_defaults.support_email} if you have any questions.
 
