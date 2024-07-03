@@ -23,7 +23,8 @@ config :radioapp, RadioappWeb.Endpoint,
   live_view: [signing_salt: "2jlv8atB"],
   check_origin: [
     "//*.radioapp.ca",
-    "//demo.northernvillage.com"
+    "//demo.northernvillage.com",
+    "//radio.cfrc.ca"
   ]
 
 # Configures the mailer
