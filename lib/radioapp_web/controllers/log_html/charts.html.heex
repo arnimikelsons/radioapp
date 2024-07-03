@@ -4,7 +4,7 @@
       Charts
     </.header>
 
-    <.simple_form :let={f} for={@search} action={~p"/admin/logs/search_charts"}>
+    <.simple_form :let={f} for={@search} action={~p"/admin/search_charts"}>
       <.error :if={ !@search.valid? }>
         Oops, something went wrong! Please check the errors below.
       </.error>
@@ -17,8 +17,8 @@
         </div>
       </div>
       <:actions>
-        <.button>Get logs</.button>
-        <.button formaction={~p"/admin/logs/export"}>Download CSV</.button>
+        <.button>Get charts</.button>
+        <%!-- <.button formaction={~p"/admin/logs/export"}>Download CSV</.button> --%>
       </:actions>
     </.simple_form>
     <div id="timeslot-header" class="flex flex-wrap schedule-border text-sm mt-5">

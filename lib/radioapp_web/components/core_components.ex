@@ -625,6 +625,7 @@ defmodule RadioappWeb.CoreComponents do
         <h3 class="text-center">Admin Functions</h3>
         <div class="text-center">
           <p><a href="/admin/logs">Logs by Date Range</a></p>
+          <p><a href="/admin/charts">Charts</a></p>
           <p><a href="/admin/links">Manage Link Types</a></p>
           <p><a href="/admin/categories">Manage Categories</a></p>
           <p><a href="/users">Manage Users</a></p>
