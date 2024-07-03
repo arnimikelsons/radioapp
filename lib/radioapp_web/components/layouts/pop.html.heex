@@ -10,6 +10,7 @@
     <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
     <%= case @tenant do %>
       <% "cfrc" -> %> <link phx-track-static rel="stylesheet" href={~p"/assets/cfrc.css"} />
+      <% "radio" -> %> <link phx-track-static rel="stylesheet" href={~p"/assets/cfrc.css"} />
       <% _ -> %> <link phx-track-static rel="stylesheet" href={~p"/assets/demo.css"} />
     <% end %>
     <link as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'" rel="stylesheet">
