@@ -332,21 +332,21 @@ defmodule Radioapp.Station do
   end
 
   def list_logs_date_conversion(tenant) do
-    _logs = from(s in Log, 
+    _logs = from(s in Log,
       where: is_nil(s.start_datetime),
       or_where: is_nil(s.end_datetime)
     )
     |> Repo.all(prefix: Triplex.to_prefix(tenant))
-    
+
   end
 
   def update_logs_date_conversion(tenant) do
-    logs = from(s in Log, 
+    logs = from(s in Log,
       where: is_nil(s.start_datetime),
       or_where: is_nil(s.end_datetime)
     )
     |> Repo.all(prefix: Triplex.to_prefix(tenant))
-    |> Repo.preload(:log)
+    |> Repo.preload(:program)
 
     _updated_logs = Enum.each(logs, fn(x) ->
       update_log_utc(x, tenant)
@@ -477,15 +477,15 @@ defmodule Radioapp.Station do
 
   end
   def update_log_utc(%Log{} = log, tenant) do
-    date = Date.to_string(log.log.date)
+    date = Date.to_string(log.date)
     start_time = Time.to_string(log.start_time)
     end_time = Time.to_string(log.end_time)
-    
+
     {:ok, start_datetime, end_datetime} = add_utc(date, start_time, end_time, tenant)
     attrs = %{start_datetime: start_datetime, end_datetime: end_datetime }
 
     _updated = log
-    |> Segment.changeset(attrs)
+    |> Log.changeset(attrs)
     |> Repo.update()
   end
 
@@ -617,16 +617,16 @@ defmodule Radioapp.Station do
   end
 
   def list_segments_date_conversion(tenant) do
-    _segments = from(s in Segment, 
+    _segments = from(s in Segment,
       where: is_nil(s.start_datetime),
       or_where: is_nil(s.end_datetime)
     )
     |> Repo.all(prefix: Triplex.to_prefix(tenant))
-    
+
   end
 
   def update_segments_date_conversion(tenant) do
-    segments = from(s in Segment, 
+    segments = from(s in Segment,
       where: is_nil(s.start_datetime),
       or_where: is_nil(s.end_datetime)
     )
@@ -941,7 +941,7 @@ defmodule Radioapp.Station do
     date = Date.to_string(segment.log.date)
     start_time = Time.to_string(segment.start_time)
     end_time = Time.to_string(segment.end_time)
-    
+
     {:ok, start_datetime, end_datetime} = add_utc(date, start_time, end_time, tenant)
     attrs = %{start_datetime: start_datetime, end_datetime: end_datetime }
 
