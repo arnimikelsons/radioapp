@@ -128,7 +128,6 @@ defmodule RadioappWeb.SegmentLive.Index do
   defp apply_action(socket, :playout_segment_import, _params) do
 
     playout_segments = Station.list_playout_segments_by_log(socket.assigns.log, socket.assigns.tenant)
-
     socket
     |> assign(:page_title, "Import Automated Segments")
     |> assign(:playout_segments, playout_segments)
@@ -142,6 +141,11 @@ defmodule RadioappWeb.SegmentLive.Index do
     end
 
     {:noreply, assign(socket, :segments, list_segments(tenant))}
+  end
+
+  def handle_event("playout_segment_delete", %{"id" => _id}, socket) do
+    # dbg("Playout Segment Delete button clicked")
+    {:noreply, socket}
   end
 
   def handle_event("validate", _params, socket) do

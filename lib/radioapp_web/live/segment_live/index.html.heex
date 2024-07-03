@@ -104,6 +104,13 @@
       </p>
     </section>
   </div>
+
+  <div class="mt-4">
+  <.link patch={~p"/programs/#{@program}/logs/#{@log}/segments/api_import"}>
+    <.button>Import Playout Segments</.button>
+  </.link>
+</div>
+
   <.modal
     :if={@live_action in [:upload_instructions]}
     id="segment-modal"
@@ -149,25 +156,25 @@
       <.header>
         Import Automated Segments
       </.header>
-      <.table id="segments" rows={@playout_segments}> 
-        <:col :let={playout_segment} label="Start"><%= playout_segment.inserted_at %></:col>
-        <:col :let={playout_segment} label="Artist"><%= playout_segment.artist %></:col>
-        <:col :let={playout_segment} label="Song Title"><%= playout_segment.song_title %></:col>
-        <:action :let={playout_segment}>
-          <div class="sr-only">
-            <%!-- <.link navigate={~p"/playout_segments/#{playout_segment}"}>Show</.link> --%>
-          </div>
-          <.link patch={~p"/playout_segments/#{playout_segment}/edit"}><button>Edit</button></.link>
-        </:action>
-        <%!-- <:action :let={playout_segment}>
-          <%= if @user_role == "admin" do %>
-            <.link id={"playout-segment-#{playout_segment.id}"} phx-click={JS.push("delete", value: %{id: playout_segment.id})} data-confirm="Are you sure?">
+      <%= if @playout_segments == [] do %>
+        <p>There were no playout segments found from <%= @log.start_datetime %> to <%= @log.end_datetime %>.</p> 
+      <% else %>
+        <.table id="segments" rows={@playout_segments}> 
+          <:col :let={playout_segment} label="Start"><%= playout_segment.inserted_at %></:col>
+          <:col :let={playout_segment} label="Artist"><%= playout_segment.artist %></:col>
+          <:col :let={playout_segment} label="Song Title"><%= playout_segment.song_title %></:col>
+          <:action :let={playout_segment}>
+            <div class="sr-only">
+            </div>
+            <.link phx-click={JS.push("playout_segment_delete", value: %{id: playout_segment.id})} data-confirm="Are you sure?">
               Delete
-            </.link>
-          <% end %>
-        </:action> --%>
-      </.table>
-
+            </.link>    
+          </:action>
+        </.table>
+        <.link phx-click={JS.push("save_to_log", value: %{playout_segments: @playout_segments})}>
+          <.button>Save to Log</.button>
+        </.link> 
+      <% end %>
     </div>
   </.modal>
 
