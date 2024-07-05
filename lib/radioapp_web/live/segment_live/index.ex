@@ -132,6 +132,7 @@ defmodule RadioappWeb.SegmentLive.Index do
     |> assign(:page_title, "Import Automated Segments")
     |> assign(:playout_segments, playout_segments)
   end
+
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
     tenant = socket.assigns.tenant
@@ -145,6 +146,25 @@ defmodule RadioappWeb.SegmentLive.Index do
 
   def handle_event("playout_segment_delete", %{"id" => _id}, socket) do
     # dbg("Playout Segment Delete button clicked")
+    {:noreply, socket}
+  end
+
+  def handle_event("save_to_log", _params, socket) do
+
+
+    dbg(socket.assigns.playout_segments)
+    Enum.each(socket.assigns.playout_segments, fn(playout_segment) ->
+
+      Station.create_segment_relaxed(
+        socket.assigns.log,
+        %{
+          "artist" => playout_segment.artist,
+          "song_title" => playout_segment.song_title,
+          "start_datetime" => playout_segment.inserted_at
+        },
+        socket.assigns.tenant)
+
+    end)
     {:noreply, socket}
   end
 
