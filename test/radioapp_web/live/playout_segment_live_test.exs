@@ -124,15 +124,19 @@ defmodule RadioappWeb.PlayoutSegmentLiveTest do
       %{conn: conn, user: user}
     end
 
-    test "deletes segment in listing", %{conn: conn} do
-      category = Factory.insert(:category, [], prefix: @prefix)
-      playout_segment = Factory.insert(:playout_segment, [category: category], prefix: @prefix)
+    # Not enabling delete for playout segments in the playout segment listing page.
+    # Can re-enable this test if we enable deleting. Note: delete button didn't work in Liveview for user
+    # But the test did pass.
 
-      {:ok, index_live, _html} = live(conn, ~p"/playout_segments")
+    # test "deletes segment in listing", %{conn: conn} do
+    #   category = Factory.insert(:category, [], prefix: @prefix)
+    #   playout_segment = Factory.insert(:playout_segment, [category: category], prefix: @prefix)
 
-      assert index_live |> element("#playout-segment-#{playout_segment.id}", "Delete") |> render_click()
-      refute has_element?(index_live, "#playout-segment-#{playout_segment.id}")
-    end
+    #   {:ok, index_live, _html} = live(conn, ~p"/playout_segments")
+
+    #   assert index_live |> element("#playout-segment-#{playout_segment.id}", "Delete") |> render_click()
+    #   refute has_element?(index_live, "#playout-segment-#{playout_segment.id}")
+    # end
   end
 
 

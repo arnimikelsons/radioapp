@@ -50,7 +50,6 @@ defmodule RadioappWeb.LogLive.FormComponent do
 
   @impl true
   def handle_event("validate", %{"log" => log_params}, socket) do
-    # dbg(socket.assigns)
     changeset =
       socket.assigns.log
       |> Station.change_log(log_params)
@@ -60,7 +59,6 @@ defmodule RadioappWeb.LogLive.FormComponent do
   end
 
   def handle_event("save", %{"log" => log_params}, socket) do
-    # dbg(socket.assigns)
     save_log(socket, socket.assigns.action, log_params)
   end
 

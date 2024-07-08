@@ -4,8 +4,6 @@ defmodule Radioapp.API.Importer do
 
   def save_playout_segments_to_log(log, playout_segments, tenant) do
 
-    dbg(playout_segments)
-
     Enum.each(playout_segments, fn(playout_segment) ->
 
       Station.create_segment_relaxed(

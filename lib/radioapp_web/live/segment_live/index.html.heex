@@ -166,8 +166,8 @@
           <:action :let={playout_segment}>
             <div class="sr-only">
             </div>
-            <.link phx-click={JS.push("playout_segment_delete", value: %{id: playout_segment.id})} data-confirm="Are you sure?">
-              Delete
+            <.link phx-click={JS.push("playout_segment_remove", value: %{id: playout_segment.id})} >
+              Remove
             </.link>    
           </:action>
         </.table>

@@ -145,20 +145,35 @@ defmodule RadioappWeb.SegmentLive.Index do
     {:noreply, assign(socket, :segments, list_segments(tenant))}
   end
 
-  def handle_event("playout_segment_delete", %{"id" => _id}, socket) do
-    # dbg("Playout Segment Delete button clicked")
-    {:noreply, socket}
+  def handle_event("playout_segment_remove", %{"id" => playout_segment_id}, socket) do
+
+    ps = socket.assigns.playout_segments
+
+    playout_segments = Enum.reject(ps, fn s -> s.id == playout_segment_id end)
+
+    {:noreply,
+      assign(socket,
+        playout_segments: playout_segments)
+    }
   end
 
   def handle_event("save_to_log", _params, socket) do
 
+    log = socket.assigns.log
+    playout_segments = socket.assigns.playout_segments
+    tenant = socket.assigns.tenant
+
     Radioapp.API.Importer.save_playout_segments_to_log(
-      socket.assigns.log,
-      socket.assigns.playout_segments,
-      socket.assigns.tenant)
+      log,
+      playout_segments,
+      tenant)
 
-
-    {:noreply, socket}
+    {:noreply,
+      assign(socket,
+        live_action: :index,
+        playout_segments: Station.list_playout_segments_by_log(log, tenant),
+        segments: Station.list_segments_for_log(log, tenant)
+      )}
   end
 
   def handle_event("validate", _params, socket) do

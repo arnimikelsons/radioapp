@@ -336,4 +336,25 @@ defmodule RadioappWeb.SegmentLiveTest do
 
     # end
   end
+
+  describe "Playout Segment Import into Log" do
+    setup %{conn: conn} do
+      user = Factory.insert(:user, roles: %{@tenant => "user"})
+      conn = log_in_user(conn, user)
+      %{conn: conn, user: user}
+    end
+
+    test "Playout Segments in Modal gets saved as Segments" do
+      # Create a log with a particular date and time
+      # Create a playout segment
+      program = Factory.insert(:program, [], prefix: @prefix)
+      log = Factory.insert(:log, [program: program], prefix: @prefix)
+
+      playout_segment = Factory.insert(:playout_segment, [], prefix: @prefix)
+
+
+
+    end
+
+  end
 end
