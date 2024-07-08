@@ -562,6 +562,10 @@ defmodule Radioapp.Station do
       end
   end
 
+  def add_utc_to_attrs(%{"artist" => _artist,  "date" => _date, "song_title" => _song_title, "start_datetime" => _start_datetime} = attrs, _tenant) do
+    {:ok, attrs}
+  end
+
   defp add_utc(date, start_time, end_time, tenant) do
     %{timezone: station_timezone} = Admin.get_timezone!(tenant)
     case not is_nil(date) and not is_nil(start_time) and not is_nil(end_time) do

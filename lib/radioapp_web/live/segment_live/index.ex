@@ -8,6 +8,7 @@ defmodule RadioappWeb.SegmentLive.Index do
   alias Radioapp.CSV.Importer
 
   @impl true
+  @spec mount(map(), map(), map()) :: {:ok, Phoenix.LiveView.Socket.t()}
   def mount(
         %{
           "program_id" => program_id,
@@ -151,20 +152,12 @@ defmodule RadioappWeb.SegmentLive.Index do
 
   def handle_event("save_to_log", _params, socket) do
 
+    Radioapp.API.Importer.save_playout_segments_to_log(
+      socket.assigns.log,
+      socket.assigns.playout_segments,
+      socket.assigns.tenant)
 
-    dbg(socket.assigns.playout_segments)
-    Enum.each(socket.assigns.playout_segments, fn(playout_segment) ->
 
-      Station.create_segment_relaxed(
-        socket.assigns.log,
-        %{
-          "artist" => playout_segment.artist,
-          "song_title" => playout_segment.song_title,
-          "start_datetime" => playout_segment.inserted_at
-        },
-        socket.assigns.tenant)
-
-    end)
     {:noreply, socket}
   end
 
