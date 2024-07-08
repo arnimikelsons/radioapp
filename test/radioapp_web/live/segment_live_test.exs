@@ -344,15 +344,31 @@ defmodule RadioappWeb.SegmentLiveTest do
       %{conn: conn, user: user}
     end
 
-    test "Playout Segments in Modal gets saved as Segments" do
+    test "Playout Segments in Modal gets saved as Segments to the Log", %{conn: conn} do
+
+      some_datetime = DateTime.utc_now(Calendar.ISO)
+      yesterday = DateTime.add(some_datetime, -1, :day)
+
       # Create a log with a particular date and time
-      # Create a playout segment
       program = Factory.insert(:program, [], prefix: @prefix)
-      log = Factory.insert(:log, [program: program], prefix: @prefix)
+      log = Factory.insert(:log, [
+        program: program,
+        start_datetime: DateTime.add(some_datetime, -25, :hour),
+        end_datetime: DateTime.add(some_datetime, -23, :hour)
+      ], prefix: @prefix)
+      # Create a playout segment
+      playout_segment = Factory.insert(:playout_segment_for_log, [
+        inserted_at: yesterday
+      ], prefix: @prefix)
+      dbg(playout_segment)
+      dbg(log)
 
-      playout_segment = Factory.insert(:playout_segment, [], prefix: @prefix)
+      {:ok, index_live, _html} = live(conn, ~p"/programs/#{program}/logs/#{log}/segments")
 
+      assert index_live |> element("a", "Import Playout Segments") |> render_click() =~
+               "Import Automated Segments"
 
+      assert_patch(index_live, ~p"/programs/#{program}/logs/#{log}/segments/api_import")
 
     end
 
