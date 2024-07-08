@@ -1,6 +1,7 @@
 <div class="max-w-2xl mx-auto">
   <div class="text-content bg-slate-50 p-3 rounded mb-5">
-    <%= if @current_tenant == "radio" do %>
+    <%= case @current_tenant do %>
+    <% "radio" -> %>
       <h1>Listen to CFRC</h1>
       <p>Listen to CFRC wherever you go on your mobile devices! &nbsp;We broadcast in stereo, 24/7, 365 days a year, over-the-air on 101.9FM, via Cogeco cable channel 282, and &nbsp;worldwide through our stream here at CFRC.ca (click our 'now playing' button above).&nbsp; We also air via the following downloadable platforms:&nbsp;</p>
       <div class="flex mt-1">
@@ -20,9 +21,12 @@
       </div>
       <p class="mt-2"><a href="https://podcast.cfrc.ca">And CFRC Podcasts!&nbsp; Subscribe to your favorites today!&nbsp;</a></p>
       <p class="mt-2">When you download an app to your mobile device, simply search CFRC and tap 'heart' for favorite for speedy access to your favorite local programs!</p> 
+    <% "coopradio" -> %>
+      <h1>Vancouver Co-operative Radio</h1>
+      <p>Vancouver Co-operative Radio, CFRO, 100.5FM is an innovative non-profit community radio station & podcast recording studio providing a voice for those underrepresented in mainstream media.
+      Each week, Co-op Radio provides access to community space, training and equipment for 300+ volunteers who produce 140 hours of original programming, in over 10 languages. </p>
 
-
-    <% else %>
+    <% _ -> %>
       <h1>Community Radio Software</h1>
       <p>RadioApp enables you to easily maintain CRTC and  SOCAN logs, live streaming, plus program and schedule pages. It's a fully accessible and secure way to automate your admin.</p>
       <p>This is a demo site to show the capabilities of the software. If you would like more information, please see <a href="https://radioapp.ca">radioapp.ca</a>, and send us a note.</p>
