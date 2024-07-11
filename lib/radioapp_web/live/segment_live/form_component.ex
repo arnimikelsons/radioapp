@@ -102,6 +102,9 @@ defmodule RadioappWeb.SegmentLive.FormComponent do
   end
 
   def handle_event("save", %{"segment" => segment_params}, socket) do
+    # Add UTC datetimes to segment_params
+    segment_params = normalize_datetimes(segment_params, socket.assigns.log, socket.assigns.timezone)
+
     save_segment(socket, socket.assigns.action, segment_params)
   end
 
@@ -137,4 +140,17 @@ defmodule RadioappWeb.SegmentLive.FormComponent do
          |> assign(changeset: changeset)}
     end
   end
+
+  defp normalize_datetimes(segment_params, %{start_datetime: log_start_datetime}, timezone) do
+    dbg(segment_params)
+
+    date = DateTime.to_date(log_start_datetime)
+    {:ok, start_time} = Time.from_iso8601(segment_params.start_time)
+    {:ok, start_datetime} = DateTime.new(date, start_time, timezone)
+
+    Map.put(segment_params, "start_datetime", start_datetime)
+
+    segment_params
+  end
+
 end

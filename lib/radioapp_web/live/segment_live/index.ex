@@ -52,6 +52,7 @@ defmodule RadioappWeb.SegmentLive.Index do
           false
       end
 
+    %{timezone: timezone} = Admin.get_timezone!(tenant)
     {:ok,
      assign(socket,
        program: Station.get_program!(program_id, tenant),
@@ -66,7 +67,8 @@ defmodule RadioappWeb.SegmentLive.Index do
        indigenous_artist: indigenous_artist,
        emerging_artist: emerging_artist,
        tenant: tenant,
-       csv_permission: csv_permission
+       csv_permission: csv_permission,
+       timezone: timezone
      )
       |> assign(:uploaded_files, [])
       |> allow_upload(:csv, accept: ~w(.csv), max_entries: 3)}
