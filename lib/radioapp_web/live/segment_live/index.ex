@@ -53,6 +53,8 @@ defmodule RadioappWeb.SegmentLive.Index do
       end
 
     %{timezone: timezone} = Admin.get_timezone!(tenant)
+
+    dbg(segments)
     {:ok,
      assign(socket,
        program: Station.get_program!(program_id, tenant),

@@ -3,6 +3,8 @@ defmodule RadioappWeb.SegmentLive.FormComponent do
 
   alias Radioapp.Station
   alias Radioapp.Station.Segment
+  alias RadioappWeb.LiveHelpers
+  alias Radioapp.Admin
 
   @impl true
   def render(assigns) do
@@ -58,8 +60,10 @@ defmodule RadioappWeb.SegmentLive.FormComponent do
   @impl true
   def update(%{segment: segment} = assigns, socket) do
 
+    tenant = assigns.tenant
+    socket = assign(socket, timezone: Admin.get_timezone!(tenant))
+
     if assigns.action == :new do
-      tenant = assigns.tenant
       start_time = Station.start_time_of_next_segment(assigns.log, tenant)
       changeset = Station.change_segment(segment, %{start_time: start_time})
 
@@ -103,7 +107,7 @@ defmodule RadioappWeb.SegmentLive.FormComponent do
 
   def handle_event("save", %{"segment" => segment_params}, socket) do
     # Add UTC datetimes to segment_params
-    segment_params = normalize_datetimes(segment_params, socket.assigns.log, socket.assigns.timezone)
+    segment_params = LiveHelpers.normalize_segment_datetimes(segment_params, socket.assigns.log, socket.assigns.timezone)
 
     save_segment(socket, socket.assigns.action, segment_params)
   end
@@ -139,18 +143,6 @@ defmodule RadioappWeb.SegmentLive.FormComponent do
          |> put_flash(:info, "Error creating segment")
          |> assign(changeset: changeset)}
     end
-  end
-
-  defp normalize_datetimes(segment_params, %{start_datetime: log_start_datetime}, timezone) do
-    dbg(segment_params)
-
-    date = DateTime.to_date(log_start_datetime)
-    {:ok, start_time} = Time.from_iso8601(segment_params.start_time)
-    {:ok, start_datetime} = DateTime.new(date, start_time, timezone)
-
-    Map.put(segment_params, "start_datetime", start_datetime)
-
-    segment_params
   end
 
 end
