@@ -54,7 +54,6 @@ defmodule RadioappWeb.SegmentLive.Index do
 
     %{timezone: timezone} = Admin.get_timezone!(tenant)
 
-    dbg(segments)
     {:ok,
      assign(socket,
        program: Station.get_program!(program_id, tenant),
@@ -133,6 +132,9 @@ defmodule RadioappWeb.SegmentLive.Index do
   defp apply_action(socket, :playout_segment_import, _params) do
 
     playout_segments = Station.list_playout_segments_by_log(socket.assigns.log, socket.assigns.tenant)
+
+    # Get a map of sources that are unique sources and put that in a variable
+
     socket
     |> assign(:page_title, "Import Automated Segments")
     |> assign(:playout_segments, playout_segments)
@@ -154,7 +156,7 @@ defmodule RadioappWeb.SegmentLive.Index do
     ps = socket.assigns.playout_segments
 
     playout_segments = Enum.reject(ps, fn s -> s.id == playout_segment_id end)
-
+    dbg(playout_segments)
     {:noreply,
       assign(socket,
         playout_segments: playout_segments)

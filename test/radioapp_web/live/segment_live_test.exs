@@ -394,8 +394,6 @@ defmodule RadioappWeb.SegmentLiveTest do
       playout_segment = Factory.insert(:playout_segment_for_log, [
         inserted_at: some_datetime
       ], prefix: @prefix)
-      dbg(playout_segment)
-      dbg(log)
 
       {:ok, index_live, _html} = live(conn, ~p"/programs/#{program}/logs/#{log}/segments")
 

@@ -15,15 +15,30 @@
  <h2 class="pt-5">Listing Logs</h2>
 
  <.table id="logs" rows={@logs} row_click={&JS.navigate(~p"/programs/#{@program}/logs/#{&1}/segments")}>
-    <:col :let={log} label="Show Date"><%= log.date %></:col>
+    <%!-- <:col :let={log} label="Show Date"><%= log.date %></:col> --%>
+    <:col :let={log} label="Show Date">
+      <%= if log.start_datetime != nil do
+        Date.to_string(DateTime.to_date(DateTime.shift_zone!(log.start_datetime, @timezone))) 
+      end %>
+    </:col>
     <:col :let={log} label="Host"><%= log.host_name %></:col>
-    <:col :let={log} label="Start Time"><%= log.start_time %></:col>
-    <:col :let={log} label="End Time"><%= log.end_time %></:col>
+    <%!-- <:col :let={log} label="Start Time"><%= log.start_time %></:col>
+    <:col :let={log} label="End Time"><%= log.end_time %></:col> --%>
+    <:col :let={log} label="Start Time">
+      <%= if log.start_datetime != nil do
+        Time.to_string(DateTime.to_time(DateTime.shift_zone!(log.start_datetime, @timezone))) 
+      end %>
+    </:col>  
+    <:col :let={log} label="End Time">
+      <%= if log.end_datetime != nil do
+        Time.to_string(DateTime.to_time(DateTime.shift_zone!(log.end_datetime, @timezone)))
+      end %>
+    </:col>
     <:col :let={log} label="Category"><%= log.category %></:col>
     <:col :let={log} label="Notes"><%= log.notes %></:col>
-    <:col :let={log} label="Start Date Time"><%= log.start_datetime %></:col>
+    <%!-- <:col :let={log} label="Start Date Time"><%= log.start_datetime %></:col>
     <:col :let={log} label="End Date Time"><%= log.end_datetime %></:col>
-    
+     --%>
     <:action :let={log}>
       <.link navigate={~p"/programs/#{@program}/logs/#{log}/segments"}>View Log</.link>
       </:action>

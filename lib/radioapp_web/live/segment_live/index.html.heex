@@ -165,10 +165,21 @@
         Import Automated Segments
       </.header>
       <%= if @playout_segments == [] do %>
-        <p>There were no playout segments found from <%= @log.start_datetime %> to <%= @log.end_datetime %>.</p> 
+        <p>There were no playout segments found from 
+          <%= if @log.start_datetime != nil do
+            NaiveDateTime.to_string(DateTime.to_naive(DateTime.shift_zone!(@log.start_datetime, @timezone))) 
+          end %> 
+        to 
+          <%= if @log.end_datetime != nil do
+            NaiveDateTime.to_string(DateTime.to_naive(DateTime.shift_zone!(@log.end_datetime, @timezone)))
+          end %>
+        .</p> 
       <% else %>
         <.table id="segments" rows={@playout_segments}> 
-          <:col :let={playout_segment} label="Start"><%= playout_segment.inserted_at %></:col>
+          <%!-- <:col :let={playout_segment} label="Start"><%= playout_segment.inserted_at %></:col> --%>
+          <:col :let={playout_segment} label="Start">
+            <%= NaiveDateTime.to_string(DateTime.to_naive(DateTime.shift_zone!(playout_segment.inserted_at, @timezone))) %>
+          </:col>
           <:col :let={playout_segment} label="Artist"><%= playout_segment.artist %></:col>
           <:col :let={playout_segment} label="Song Title"><%= playout_segment.song_title %></:col>
           <:action :let={playout_segment}>

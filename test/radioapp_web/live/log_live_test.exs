@@ -71,6 +71,9 @@ defmodule RadioappWeb.LogLiveTest do
 
       assert html =~ "Listing Logs"
       assert html =~ log.notes
+
+      # lists utc datetime value
+
     end
 
     test "saves new log", %{conn: conn} do
@@ -96,6 +99,8 @@ defmodule RadioappWeb.LogLiveTest do
 
       assert html =~ "Log created successfully"
       assert html =~ "some notes"
+
+      # make sure it reads correct utc value
 
 
     end
@@ -124,6 +129,7 @@ defmodule RadioappWeb.LogLiveTest do
       assert html =~ "Log updated successfully"
       assert html =~ "some updated notes"
 
+      # Make sure it's displaying and reading from utc datetime
 
     end
 
@@ -193,6 +199,9 @@ defmodule RadioappWeb.LogLiveTest do
 
       assert html =~ "Log updated successfully"
       assert html =~ "some updated notes"
+
+      # make sure log contains and displays correct utc datetime
+
     end
   end
 end
