@@ -66,7 +66,7 @@
         <div class="container mx-auto">
           <div class="flex flex-wrap justify-between">
             <div class="brand-container flex">
-              <a class="navbar-brand logo-img d-block" href="/">
+              <a class="navbar-brand logo-img d-block" href="https://www.cfrc.ca">
                   <%= if @conn.private.stationdefaults != nil and @conn.private.stationdefaults.logo_path != nil do %>
                     <img src={@conn.private.stationdefaults.logo_path} alt={"#{@conn.private.stationdefaults.org_name} logo"} />
                   <% else  %>
@@ -74,7 +74,7 @@
                   <% end %>
               </a>
               <div class="flex flex-col justify-center title-text ml-6">
-                <a class="navbar-brand p-0 block" href="https://cfrc.editmy.website" aria-label="CFRC">CAMPUS COMMUNITY RADIO</a>
+                <a class="navbar-brand p-0 block" href="https://www.cfrc.ca" aria-label="CFRC">CAMPUS COMMUNITY RADIO</a>
                 <span class="p-0 block" >BROADCASTING FROM QUEEN'S</span> 
                 <span class="p-0 block">UNIVERSITY IN KINGSTON SINCE 1922.</span>
               </div>
