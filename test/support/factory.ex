@@ -64,6 +64,7 @@ end
 
     date_now = DateTime.to_date(Timex.now(timezone))
     time_now = DateTime.to_time(Timex.now(timezone))
+    some_datetime = DateTime.utc_now(Calendar.ISO)
 
     %Radioapp.Station.Log{
       host_name: Faker.Superhero.name(),
@@ -71,12 +72,15 @@ end
       start_time: time_now,
       end_time: Time.add(time_now, 30, :minute),
       category: Faker.Airports.En.name(),
-      language: sequence(:language, ["English", "French", "Swahili"]),
-      notes: Faker.Lorem.Shakespeare.hamlet() |> String.replace("'", "")
+      language: sequence(:language, ["English", "French", "Swahili", "Italian", "Mandarin"]),
+      notes: Faker.Lorem.Shakespeare.hamlet() |> String.replace("'", ""),
+      end_datetime: some_datetime,
+      start_datetime: DateTime.add(some_datetime, -3, :minute)
     }
   end
   def segment_factory do
     some_time = DateTime.to_time(Timex.now("Canada/Pacific"))
+    some_datetime = DateTime.utc_now(Calendar.ISO)
 
     %Radioapp.Station.Segment{
       artist: Faker.Person.En.name(),
@@ -90,7 +94,9 @@ end
       emerging_artist: sequence(:emerging_artist, [true, false]),
       start_time: some_time,
       socan_type: sequence(:socan_type, [" ", "Background", "Feature", "Theme"]),
-      song_title: Faker.Pizza.style()
+      song_title: Faker.Pizza.style(),
+      end_datetime: some_datetime,
+      start_datetime: DateTime.add(some_datetime, -3, :minute)
     }
   end
 
@@ -112,6 +118,29 @@ end
       song_title: Faker.Pizza.style()
     }
   end
+
+  def playout_segment_for_log_factory do
+    some_datetime = DateTime.utc_now(Calendar.ISO)
+
+    %Radioapp.Station.PlayoutSegment{
+      artist: Faker.Person.En.name(),
+      can_con: sequence(:can_con, [true, false]),
+      catalogue_number: Integer.to_string(Faker.random_between(10000, 99999)),
+      end_time: Time.add(some_datetime, -10, :minute),
+      hit: sequence(:hit, [true, false]),
+      instrumental: sequence(:instrumental, [true, false]),
+      new_music: sequence(:new_music, [true, false]),
+      indigenous_artist: sequence(:indigenous_artist, [true, false]),
+      emerging_artist: sequence(:emerging_artist, [true, false]),
+      start_time: Time.add(some_datetime, -5, :minute),
+      socan_type: sequence(:socan_type, [" ", "Background", "Feature", "Theme"]),
+      song_title: Faker.Pizza.style(),
+      inserted_at: some_datetime
+    }
+
+  end
+
+
 
   def link_factory do
     %Radioapp.Admin.Link{

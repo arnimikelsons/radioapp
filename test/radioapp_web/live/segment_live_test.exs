@@ -336,4 +336,71 @@ defmodule RadioappWeb.SegmentLiveTest do
 
     # end
   end
+
+  describe "Playout Segment Import" do
+    setup %{conn: conn} do
+      user = Factory.insert(:user, roles: %{@tenant => "user"})
+      conn = log_in_user(conn, user)
+      %{conn: conn, user: user}
+    end
+
+    test "Playout Segments in Modal get saved as Segments to Log", %{conn: conn} do
+
+      some_datetime = DateTime.utc_now(Calendar.ISO)
+      yesterday = DateTime.add(some_datetime, -1, :day)
+
+      # Create a log with a particular date and time
+      program = Factory.insert(:program, [], prefix: @prefix)
+      log = Factory.insert(:log, [
+        program: program,
+        start_datetime: DateTime.add(some_datetime, -25, :hour),
+        end_datetime: DateTime.add(some_datetime, -23, :hour)
+      ], prefix: @prefix)
+      # Create a playout segment
+      playout_segment = Factory.insert(:playout_segment_for_log, [
+        inserted_at: yesterday
+      ], prefix: @prefix)
+
+      {:ok, index_live, _html} = live(conn, ~p"/programs/#{program}/logs/#{log}/segments")
+
+      assert index_live |> element("a", "Import Playout Segments") |> render_click() =~
+               "Import Automated Segments"
+
+      assert_patch(index_live, ~p"/programs/#{program}/logs/#{log}/segments/api_import")
+
+      assert index_live
+        |> element("a", "Save to Log")
+        |> render_click() =~ "Show Segments for"
+
+      {:ok, _, html} = live(conn, ~p"/programs/#{program}/logs/#{log}/segments")
+
+      assert html =~ program.name
+      assert html =~ playout_segment.song_title
+
+    end
+
+    test "Playout Segment Not in modal when outside Log date time range", %{conn: conn} do
+
+      some_datetime = DateTime.utc_now(Calendar.ISO)
+
+      # Create a log with a particular date and time
+      program = Factory.insert(:program, [], prefix: @prefix)
+      log = Factory.insert(:log, [
+        program: program,
+        start_datetime: DateTime.add(some_datetime, -25, :hour),
+        end_datetime: DateTime.add(some_datetime, -23, :hour)
+      ], prefix: @prefix)
+      # Create a playout segment
+      playout_segment = Factory.insert(:playout_segment_for_log, [
+        inserted_at: some_datetime
+      ], prefix: @prefix)
+
+      {:ok, index_live, _html} = live(conn, ~p"/programs/#{program}/logs/#{log}/segments")
+
+      refute index_live |> element("a", "Import Playout Segments") |> render_click() =~
+               playout_segment.song_title
+
+    end
+
+  end
 end

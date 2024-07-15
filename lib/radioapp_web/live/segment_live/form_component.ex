@@ -3,6 +3,8 @@ defmodule RadioappWeb.SegmentLive.FormComponent do
 
   alias Radioapp.Station
   alias Radioapp.Station.Segment
+  alias RadioappWeb.LiveHelpers
+  alias Radioapp.Admin
 
   @impl true
   def render(assigns) do
@@ -58,8 +60,10 @@ defmodule RadioappWeb.SegmentLive.FormComponent do
   @impl true
   def update(%{segment: segment} = assigns, socket) do
 
+    tenant = assigns.tenant
+    socket = assign(socket, timezone: Admin.get_timezone!(tenant))
+
     if assigns.action == :new do
-      tenant = assigns.tenant
       start_time = Station.start_time_of_next_segment(assigns.log, tenant)
       changeset = Station.change_segment(segment, %{start_time: start_time})
 
@@ -86,7 +90,6 @@ defmodule RadioappWeb.SegmentLive.FormComponent do
       |> Station.change_segment(segment_params)
       |> Map.put(:action, :validate)
 
-    # dbg(params)
     changeset =
       case Map.get(params, "_target") do
         ["segment", "duration"] ->
@@ -103,11 +106,15 @@ defmodule RadioappWeb.SegmentLive.FormComponent do
   end
 
   def handle_event("save", %{"segment" => segment_params}, socket) do
+    # Add UTC datetimes to segment_params
+    segment_params = LiveHelpers.normalize_segment_datetimes(segment_params, socket.assigns.log, socket.assigns.timezone)
+
     save_segment(socket, socket.assigns.action, segment_params)
   end
 
   defp save_segment(socket, :edit, segment_params) do
-    case Station.update_segment(socket.assigns.segment, segment_params) do
+    tenant = socket.assigns.tenant
+    case Station.update_segment(socket.assigns.segment, segment_params, tenant) do
       {:ok, _segment} ->
         {:noreply,
          socket
@@ -137,4 +144,5 @@ defmodule RadioappWeb.SegmentLive.FormComponent do
          |> assign(changeset: changeset)}
     end
   end
+
 end

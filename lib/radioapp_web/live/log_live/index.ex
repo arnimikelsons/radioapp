@@ -12,10 +12,12 @@ defmodule RadioappWeb.LogLive.Index do
     }, session, socket) do
     tenant = Map.fetch!(session, "subdomain")
 
+    %{timezone: timezone} = Admin.get_timezone!(tenant)
+
     socket =
       assign_stationdefaults(session, socket)
       |> assign(:tenant, tenant)
-      |> assign(:timezone, Admin.get_timezone!(tenant))
+      |> assign(:timezone, timezone)
 
     program = Station.get_program!(program_id, tenant)
     {:ok,
@@ -54,6 +56,7 @@ defmodule RadioappWeb.LogLive.Index do
     |> assign(:page_title, "Edit Log")
     |> assign(:program, program)
     |> assign(:log, Station.get_log!(id, tenant))
+    |> assign(:tenant, tenant)
   end
 
 

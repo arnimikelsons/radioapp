@@ -97,10 +97,15 @@ defmodule RadioappWeb.PlayoutSegmentLive.FormComponent do
   end
 
   defp save_playout_segment(socket, :edit, playout_segment_params) do
+
     case Station.update_playout_segment(socket.assigns.playout_segment, playout_segment_params) do
       {:ok, _playout_segment} ->
+
+        tenant = socket.assigns.tenant
+
         {:noreply,
          socket
+         |> assign(playout_segments: Station.list_playout_segments(tenant))
          |> put_flash(:info, "Segment updated successfully")
          |> push_navigate(to: socket.assigns.navigate_edit)}
 
@@ -109,22 +114,4 @@ defmodule RadioappWeb.PlayoutSegmentLive.FormComponent do
     end
   end
 
-  # defp save_segment(socket, :new, playout_segment_params) do
-  #   tenant = socket.assigns.tenant
-  #   log = socket.assigns.log
-
-  #   case Station.create_segment(log, segment_params, tenant) do
-  #     {:ok, _segment} ->
-  #       {:noreply,
-  #        socket
-  #        |> put_flash(:info, "Segment created successfully")
-  #        |> push_navigate(to: socket.assigns.navigate)}
-
-  #     {:error, %Ecto.Changeset{} = changeset} ->
-  #       {:noreply,
-  #        socket
-  #        |> put_flash(:info, "Error creating segment")
-  #        |> assign(changeset: changeset)}
-  #   end
-  # end
 end

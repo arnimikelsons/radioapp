@@ -8,6 +8,7 @@ defmodule RadioappWeb.SegmentLive.Index do
   alias Radioapp.CSV.Importer
 
   @impl true
+  @spec mount(map(), map(), map()) :: {:ok, Phoenix.LiveView.Socket.t()}
   def mount(
         %{
           "program_id" => program_id,
@@ -51,6 +52,8 @@ defmodule RadioappWeb.SegmentLive.Index do
           false
       end
 
+    %{timezone: timezone} = Admin.get_timezone!(tenant)
+
     {:ok,
      assign(socket,
        program: Station.get_program!(program_id, tenant),
@@ -65,7 +68,8 @@ defmodule RadioappWeb.SegmentLive.Index do
        indigenous_artist: indigenous_artist,
        emerging_artist: emerging_artist,
        tenant: tenant,
-       csv_permission: csv_permission
+       csv_permission: csv_permission,
+       timezone: timezone
      )
       |> assign(:uploaded_files, [])
       |> allow_upload(:csv, accept: ~w(.csv), max_entries: 3)}
@@ -125,6 +129,17 @@ defmodule RadioappWeb.SegmentLive.Index do
     |> assign(:page_title, "Upload Instructions")
   end
 
+  defp apply_action(socket, :playout_segment_import, _params) do
+
+    playout_segments = Station.list_playout_segments_by_log(socket.assigns.log, socket.assigns.tenant)
+
+    # Get a map of sources that are unique sources and put that in a variable
+
+    socket
+    |> assign(:page_title, "Import Automated Segments")
+    |> assign(:playout_segments, playout_segments)
+  end
+
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
     tenant = socket.assigns.tenant
@@ -134,6 +149,37 @@ defmodule RadioappWeb.SegmentLive.Index do
     end
 
     {:noreply, assign(socket, :segments, list_segments(tenant))}
+  end
+
+  def handle_event("playout_segment_remove", %{"id" => playout_segment_id}, socket) do
+
+    ps = socket.assigns.playout_segments
+
+    playout_segments = Enum.reject(ps, fn s -> s.id == playout_segment_id end)
+    dbg(playout_segments)
+    {:noreply,
+      assign(socket,
+        playout_segments: playout_segments)
+    }
+  end
+
+  def handle_event("save_to_log", _params, socket) do
+
+    log = socket.assigns.log
+    playout_segments = socket.assigns.playout_segments
+    tenant = socket.assigns.tenant
+
+    Radioapp.API.Importer.save_playout_segments_to_log(
+      log,
+      playout_segments,
+      tenant)
+
+    {:noreply,
+      assign(socket,
+        live_action: :index,
+        playout_segments: Station.list_playout_segments_by_log(log, tenant),
+        segments: Station.list_segments_for_log(log, tenant)
+      )}
   end
 
   def handle_event("validate", _params, socket) do

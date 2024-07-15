@@ -4,6 +4,7 @@ defmodule Radioapp.StationTest do
 
   alias Radioapp.Station
   alias Radioapp.Station.{Program, Timeslot, Log, Segment, Image, PlayoutSegment}
+  alias Radioapp.Admin
 
   @tenant "sample"
 
@@ -50,7 +51,6 @@ defmodule Radioapp.StationTest do
       program = Factory.insert(:program, [], prefix: @prefix)
       assert Station.get_program!(program.id, @tenant) == program
     end
-
 
     # add test for get_program_from_time(weekday, time_now)
 
@@ -232,9 +232,9 @@ defmodule Radioapp.StationTest do
       @update_attrs %{  host_name: "some updated host name",
       notes: "some updated notes",
       category: "Spoken Word",
-      date: ~D[2023-03-18],
-      start_time: ~T[02:11:00Z],
-      end_time: ~T[02:13:00Z],
+      date: "2023-03-18",
+      start_time: "02:11:00",
+      end_time: "02:13:00",
       language: "French"
       }
     @invalid_attrs %{
@@ -265,6 +265,35 @@ defmodule Radioapp.StationTest do
       expected = [log1.id]
       assert expected == Enum.map(Station.list_logs_for_program(program1, @tenant), fn s -> s.id end)
       refute expected == Enum.map(Station.list_logs_for_program(program2, @tenant), fn s -> s.id end)
+    end
+
+    test "list_logs/0 returns all logs with nil" do
+      log = Factory.insert(:log, [host_name: "With Time"], prefix: @prefix)
+      log2 = Factory.insert(:log, [host_name: "Without Time", start_datetime: nil, end_datetime: nil], prefix: @prefix)
+
+      expected = [log.id]
+      refute expected == Enum.map(Station.list_logs_date_conversion(@tenant), fn s -> s.id end)
+      expected2 = [log2.id]
+      assert expected2 == Enum.map(Station.list_logs_date_conversion(@tenant), fn s -> s.id end)
+    end
+
+    test "update_logs/0  with nil datetime" do
+
+      program = Factory.insert(:program, [], prefix: @prefix)
+      log = Factory.insert(:log, [host_name: "With Time", program: program], prefix: @prefix)
+      log2 = Factory.insert(:log, [host_name: "Without Time", program: program, start_datetime: nil, end_datetime: nil], prefix: @prefix)
+
+      expected = [log.id]
+      refute expected == Enum.map(Station.list_logs_date_conversion(@tenant), fn s -> s.id end)
+      expected2 = [log2.id]
+      assert expected2 == Enum.map(Station.list_logs_date_conversion(@tenant), fn s -> s.id end)
+
+      _updates = Station.update_logs_date_conversion(@tenant)
+
+      #logs = Station.list_logs(@tenant)
+
+      assert Station.list_logs_date_conversion(@tenant) == []
+
     end
 
     test "get_log!/1 returns the log with given id" do
@@ -298,10 +327,13 @@ defmodule Radioapp.StationTest do
       assert {:error, %Ecto.Changeset{}} = Station.create_log(program, invalid_attrs, @tenant)
     end
 
-    test "update_log/2 with valid data updates the log" do
+    test "update_log/3 with valid data updates the log" do
       log = Factory.insert(:log, [], prefix: @prefix)
 
-      assert {:ok, %Log{} = log} = Station.update_log(log, @update_attrs)
+      update_attrs = for {k, v} <- @update_attrs,
+              do: {to_string(k), v}, into: %{}
+
+      assert {:ok, %Log{} = log} = Station.update_log(log, update_attrs, @tenant)
 
       assert log.notes == "some updated notes"
       assert log.category == "Spoken Word"
@@ -311,9 +343,9 @@ defmodule Radioapp.StationTest do
       assert log.language == "French"
     end
 
-    test "update_log/2 with invalid data returns error changeset" do
+    test "update_log/3 with invalid data returns error changeset" do
       log = Factory.insert(:log, [], prefix: @prefix)
-      assert {:error, %Ecto.Changeset{}} = Station.update_log(log, @invalid_attrs)
+      assert {:error, %Ecto.Changeset{}} = Station.update_log(log, @invalid_attrs, @tenant)
       get_log = Station.get_log!(log.id, @tenant)
 
       assert get_log.id == log.id
@@ -377,55 +409,87 @@ defmodule Radioapp.StationTest do
   end
 
   test "tracking minutes of segments" do
+  end
 
+  test "log contains the start_datetime utc and end_datetime utc fields with correct values" do
+    # create a new log
+    program = Factory.insert(:program, [], prefix: @prefix)
 
+    valid_attrs = for {k, v} <- @valid_attrs,
+              do: {to_string(k), v}, into: %{}
+
+    assert {:ok, %Log{} = log} = Station.create_log(program, valid_attrs, @tenant)
+    assert log.date == ~D[2023-02-18]
+    assert log.start_time == ~T[01:11:00Z]
+
+    # Value in the utc field corresponds to the input values
+    assert Admin.get_timezone!(@tenant) == %{timezone: "Canada/Eastern"}
+    assert log.start_datetime == ~U[2023-02-18 06:11:00Z]
+  end
+
+  test "update log with new date and start time modifies the utc field" do
+    Factory.insert(:stationdefaults, [timezone: "Canada/Atlantic"], prefix: @prefix)
+
+    log = Factory.insert(:log, [], prefix: @prefix)
+
+    update_attrs = for {k, v} <- @update_attrs,
+              do: {to_string(k), v}, into: %{}
+
+    assert {:ok, %Log{} = log} = Station.update_log(log, update_attrs, @tenant)
+
+    assert log.date == ~D[2023-03-18]
+    assert log.start_time == ~T[02:11:00Z]
+
+    # read the returned log and ensure utc fields have corresponding new values
+    assert Admin.get_timezone!(@tenant) == %{timezone: "Canada/Atlantic"}
+    assert log.start_datetime == ~U[2023-03-18 05:11:00Z]
   end
 
   describe "segments" do
 
     @valid_attrs %{
-      artist: "some artist",
-      can_con: true,
-      catalogue_number: "12345",
-      category_id: 1,
-      start_time: ~T[02:11:00Z],
-      end_time: ~T[02:13:00Z],
-      hit: true,
-      instrumental: false,
-      new_music: true,
-      socan_type: "some socan type",
-      song_title: "some song title",
-      indigenous_artist: true,
-      emerging_artist: false
+      "artist" => "some artist",
+      "can_con" => true,
+      "catalogue_number" => "12345",
+      "category_id" => 1,
+      "start_time" => "02:11:00",
+      "end_time" => "02:13:00",
+      "hit" => true,
+      "instrumental" => false,
+      "new_music" => true,
+      "socan_type" => "some socan type",
+      "song_title" => "some song title",
+      "indigenous_artist" => true,
+      "emerging_artist" => false
     }
     @update_attrs %{
-      artist: "some updateed artist",
-      can_con: false,
-      catalogue_number: "54321",
-      category_id: 2,
-      start_time: ~T[03:11:00Z],
-      end_time: ~T[03:13:00Z],
-      hit: false,
-      instrumental: true,
-      new_music: false,
-      socan_type: "some updated socan type",
-      song_title: "some updated song title",
-      indigenous_artist: false,
-      emerging_artist: true
+      "artist" => "some updateed artist",
+      "can_con" => false,
+      "catalogue_number" => "54321",
+      "category_id" => 2,
+      "start_time" => "03:11:00",
+      "end_time" => "03:13:00",
+      "hit" => false,
+      "instrumental" => true,
+      "new_music" => false,
+      "socan_type" => "some updated socan type",
+      "song_title" => "some updated song title",
+      "indigenous_artist" => false,
+      "emerging_artist" => true
     }
     @invalid_attrs %{
-      artist: nil,
-      can_con: false,
-      catalogue_number: nil,
-      start_time: nil,
-      end_time: nil,
-      hit: false,
-      instrumental: false,
-      new_music: false,
-      socan_type: nil,
-      song_title: nil,
-      indigenous_artist: false,
-      emerging_artist: false
+      "artist" => nil,
+      "can_con" => false,
+      "catalogue_number" => nil,
+      "start_time" => nil,
+      "end_time" => nil,
+      "hit" => false,
+      "instrumental" => false,
+      "new_music" => false,
+      "socan_type" => nil,
+      "song_title" => nil,
+      "indigenous_artist" => false,
+      "emerging_artist" => false
     }
 
     test "list_segments/0 returns all segments" do
@@ -433,7 +497,40 @@ defmodule Radioapp.StationTest do
 
       expected = [segment.id]
       assert expected == Enum.map(Station.list_segments(@tenant), fn s -> s.id end)
+      
     end
+
+    test "list_segments/0 returns all segments with nil" do
+      segment = Factory.insert(:segment, [artist: "With Time"], prefix: @prefix)
+      segment2 = Factory.insert(:segment, [artist: "Without Time", start_datetime: nil, end_datetime: nil], prefix: @prefix)
+
+      expected = [segment.id]
+      refute expected == Enum.map(Station.list_segments_date_conversion(@tenant), fn s -> s.id end)
+      expected2 = [segment2.id]
+      assert expected2 == Enum.map(Station.list_segments_date_conversion(@tenant), fn s -> s.id end)
+    end
+
+    test "update_segments/0  with nil datetime" do
+
+      log = Factory.insert(:log, [date: ~D[2023-03-18]], prefix: @prefix)
+      category = Factory.insert(:category, [id: 1], prefix: @prefix)
+      segment = Factory.insert(:segment, [artist: "With Time", log: log, category: category], prefix: @prefix)
+      segment2 = Factory.insert(:segment, [artist: "Without Time", log: log, start_datetime: nil, end_datetime: nil, category: category], prefix: @prefix)
+
+      expected = [segment.id]
+      refute expected == Enum.map(Station.list_segments_date_conversion(@tenant), fn s -> s.id end)
+      expected2 = [segment2.id]
+      assert expected2 == Enum.map(Station.list_segments_date_conversion(@tenant), fn s -> s.id end)
+
+      _updates = Station.update_segments_date_conversion(@tenant)
+
+      #segments = Station.list_segments(@tenant)
+
+      assert Station.list_segments_date_conversion(@tenant) == []
+
+    end
+
+
 
     test "list_segments_for_log/0 returns all segments for a given log" do
       log1 = Factory.insert(:log, [], prefix: @prefix)
@@ -478,10 +575,11 @@ defmodule Radioapp.StationTest do
       assert {:error, %Ecto.Changeset{}} = Station.create_segment(log, @invalid_attrs, @tenant)
     end
 
-    test "update_segment/2 with valid data updates the segment" do
-      segment = Factory.insert(:segment, [], prefix: @prefix)
+    test "update_segment/3 with valid data updates the segment" do
+      log = Factory.insert(:log, [], prefix: @prefix)
+      segment = Factory.insert(:segment, [log: log], prefix: @prefix)
       _update_category = Factory.insert(:category, [id: 2], prefix: @prefix)
-      assert {:ok, %Segment{} = segment} = Station.update_segment(segment, @update_attrs)
+      assert {:ok, %Segment{} = segment} = Station.update_segment(segment, @update_attrs, @tenant)
       assert segment.can_con == false
       assert segment.catalogue_number == "54321"
       assert segment.start_time == ~T[03:11:00Z]
@@ -495,9 +593,10 @@ defmodule Radioapp.StationTest do
       assert segment.emerging_artist == true
     end
 
-    test "update_segment/2 with invalid data returns error changeset" do
-      segment = Factory.insert(:segment, [], prefix: @prefix)
-      assert {:error, %Ecto.Changeset{}} = Station.update_segment(segment, @invalid_attrs)
+    test "update_segment/3 with invalid data returns error changeset" do
+      log = Factory.insert(:log, [], prefix: @prefix)
+      segment = Factory.insert(:segment, [log: log], prefix: @prefix)
+      assert {:error, %Ecto.Changeset{}} = Station.update_segment(segment, @invalid_attrs, @tenant)
 
       get_segment = Station.get_segment!(segment.id, @tenant)
       assert get_segment.id == segment.id
@@ -512,6 +611,43 @@ defmodule Radioapp.StationTest do
     test "change_segment/1 returns a segment changeset" do
       segment = Factory.insert(:segment, [], prefix: @prefix)
       assert %Ecto.Changeset{} = Station.change_segment(segment)
+    end
+
+    test "create segment populates start_datetime end_datetime UTC fields" do
+      # create a new program, log, and segment
+      Factory.insert(:program, [], prefix: @prefix)
+      log = Factory.insert(:log, [date: ~D[2023-03-18]], prefix: @prefix)
+      Factory.insert(:category, [id: 1], prefix: @prefix)
+
+      assert {:ok, %Segment{} = segment} = Station.create_segment(log, @valid_attrs, @tenant)
+
+      assert segment.start_time == ~T[02:11:00Z]
+      assert segment.end_time == ~T[02:13:00Z]
+
+      # Value in the utc field corresponds to the input values
+      assert Admin.get_timezone!(@tenant) == %{timezone: "Canada/Pacific"}
+      assert segment.start_datetime != nil
+      assert segment.start_datetime != ~U[2023-03-18 02:11:00Z]
+      assert segment.start_datetime == ~U[2023-03-18 09:11:00Z]
+    end
+
+    test "update segment with new time or date modifies UTC fields" do
+      # create a new program, log, and segment
+      Factory.insert(:program, [], prefix: @prefix)
+      log = Factory.insert(:log, [date: ~D[2023-03-18]], prefix: @prefix)
+      Factory.insert(:category, [id: 2], prefix: @prefix)
+
+      segment = Factory.insert(:segment, [log: log, start_time: ~T[13:50:00Z], end_time: ~T[13:55:00Z]], prefix: @prefix)
+
+      assert segment.start_time == ~T[13:50:00Z]
+      assert segment.end_time == ~T[13:55:00Z]
+
+      assert {:ok, %Segment{} = segment} = Station.update_segment(segment, @update_attrs, @tenant)
+
+      # Value in the utc field corresponds to the input values
+      assert Admin.get_timezone!(@tenant) == %{timezone: "Canada/Pacific"}
+      assert segment.start_datetime != nil
+      assert segment.start_datetime == ~U[2023-03-18 10:11:00Z]
     end
   end
 

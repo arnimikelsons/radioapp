@@ -71,6 +71,9 @@ defmodule RadioappWeb.LogLiveTest do
 
       assert html =~ "Listing Logs"
       assert html =~ log.notes
+
+      # lists utc datetime value
+
     end
 
     test "saves new log", %{conn: conn} do
@@ -96,6 +99,8 @@ defmodule RadioappWeb.LogLiveTest do
 
       assert html =~ "Log created successfully"
       assert html =~ "some notes"
+
+      # make sure it reads correct utc value
 
 
     end
@@ -124,6 +129,7 @@ defmodule RadioappWeb.LogLiveTest do
       assert html =~ "Log updated successfully"
       assert html =~ "some updated notes"
 
+      # Make sure it's displaying and reading from utc datetime
 
     end
 
@@ -170,26 +176,16 @@ defmodule RadioappWeb.LogLiveTest do
       %{conn: conn, user: user}
     end
 
-    test "displays log", %{conn: conn} do
-      program = Factory.insert(:program, [], prefix: @prefix)
-      log = Factory.insert(:log, [program: program], prefix: @prefix)
-
-      {:ok, _show_live, html} = live(conn, ~p"/programs/#{program}/logs/#{log}")
-
-      assert html =~ "Log"
-      assert html =~ log.notes
-    end
-
     test "updates log within modal", %{conn: conn} do
       program = Factory.insert(:program, [], prefix: @prefix)
       log = Factory.insert(:log, [program: program], prefix: @prefix)
 
-      {:ok, show_live, _html} = live(conn, ~p"/programs/#{program}/logs/#{log}")
+      {:ok, show_live, _html} = live(conn, ~p"/programs/#{program}/logs")
 
       assert show_live |> element("a", "Edit Log") |> render_click() =~
                "Edit Log"
 
-      assert_patch(show_live, ~p"/programs/#{program}/logs/#{log}/show/edit")
+      assert_patch(show_live, ~p"/programs/#{program}/logs/#{log}/edit")
 
       assert show_live
              |> form("#log-form", log: @invalid_attrs)
@@ -199,10 +195,13 @@ defmodule RadioappWeb.LogLiveTest do
         show_live
         |> form("#log-form", log: @update_attrs)
         |> render_submit()
-        |> follow_redirect(conn, ~p"/programs/#{program}/logs/#{log}")
+        |> follow_redirect(conn, ~p"/programs/#{program}/logs")
 
       assert html =~ "Log updated successfully"
       assert html =~ "some updated notes"
+
+      # make sure log contains and displays correct utc datetime
+
     end
   end
 end

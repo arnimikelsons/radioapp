@@ -2,6 +2,7 @@ defmodule RadioappWeb.LogLive.FormComponent do
   use RadioappWeb, :live_component
 
   alias Radioapp.Station
+  # alias RadoappWeb.LiveHelpers
 
   @impl true
   def render(assigns) do
@@ -24,8 +25,6 @@ defmodule RadioappWeb.LogLive.FormComponent do
         <.input field={{f, :date}} type="date" label="Show Date" />
         <.input field={{f, :start_time}} type="time" label="Start Time" />
         <.input field={{f, :end_time}} type="time" label="End Time" />
-        <%!-- <.input field={{f, :start_datetime}} type="datetime-local" label="Start Date Time" />
-        <.input field={{f, :end_datetime}} type="datetime-local" label="End Date Time" /> --%>
         <.input field={{f, :category}} type="select" label="Category" options={(["Popular Music", "Spoken Word", "Specialty Music", "Multigenre Music"])} />
         <.input field={{f, :language}} type="text" label="Show Language" />
         <.input field={{f, :notes}} type="textarea" label="notes" />
@@ -59,11 +58,17 @@ defmodule RadioappWeb.LogLive.FormComponent do
   end
 
   def handle_event("save", %{"log" => log_params}, socket) do
+    #Add UTC datetimes to log_params
+    # log_params = LiveHelpers.normalize_log_datetimes(
+    #   log_params,
+    #   socket.assigns.timezone)
     save_log(socket, socket.assigns.action, log_params)
   end
 
   defp save_log(socket, :edit, log_params) do
-    case Station.update_log(socket.assigns.log, log_params) do
+
+    tenant = socket.assigns.tenant
+    case Station.update_log(socket.assigns.log, log_params, tenant) do
       {:ok, _log} ->
         {:noreply,
          socket
@@ -76,10 +81,9 @@ defmodule RadioappWeb.LogLive.FormComponent do
   end
 
   defp save_log(socket, :new, log_params) do
+
     tenant = socket.assigns.tenant
     program = socket.assigns.program
-
-
 
     case Station.create_log(program, log_params, tenant) do
       {:ok, _log} ->

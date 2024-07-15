@@ -31,7 +31,7 @@ defmodule Radioapp.Station.PlayoutSegment do
     playout_segment
     |> cast(attrs, [:artist, :can_con, :catalogue_number, :end_time, :hit, :instrumental, :new_music, :indigenous_artist, :emerging_artist, :start_time, :socan_type, :song_title, :category_id, :duration, :body])
     |> normalize_duration()
-    |> validate_required([:artist, :start_time, :song_title])
+    |> validate_required([:artist, :song_title])
   end
 
 
