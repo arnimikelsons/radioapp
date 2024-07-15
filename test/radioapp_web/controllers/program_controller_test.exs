@@ -51,7 +51,7 @@ defmodule RadioappWeb.ProgramControllerTest do
     test "renders form for editing chosen program", %{conn: conn} do
       program = Factory.insert(:program, [], prefix: @prefix)
       conn = get(conn, ~p"/programs/#{program}/edit")
-      assert html_response(conn, 200) =~ "Edit Program"
+      assert html_response(conn, 200) =~ "Edit - #{program.name}"
     end
 
     test "redirects when data is valid", %{conn: conn} do
@@ -68,7 +68,7 @@ defmodule RadioappWeb.ProgramControllerTest do
       program = Factory.insert(:program, [], prefix: @prefix)
 
       conn = put(conn, ~p"/programs/#{program}", program: @invalid_attrs)
-      assert html_response(conn, 200) =~ "Edit Program"
+      assert html_response(conn, 200) =~ "Edit - #{program.name}"
     end
 
     # no delete of programs (they are archived)
@@ -79,7 +79,7 @@ defmodule RadioappWeb.ProgramControllerTest do
     #   assert redirected_to(conn) == ~p"/programs"
 
     #   conn = get(conn, ~p"/programs/#{program}")
-      
+
     #   assert Phoenix.Flash.get(conn.assigns.flash, :info) =~ "User updated successfully."
     # end
   end

@@ -90,16 +90,18 @@ defmodule RadioappWeb.UserResetPasswordLiveTest do
   end
 
   describe "Reset password navigation" do
-    test "redirects to login page when the Log in button is clicked", %{conn: conn, token: token} do
-      {:ok, lv, _html} = live(conn, ~p"/users/reset_password/#{token}")
+    # This login button was removed
 
-      {:ok, conn} =
-        lv
-        |> element(~s|main a:fl-contains("Log in")|)
-        |> render_click()
-        |> follow_redirect(conn, ~p"/users/log_in")
+    # test "redirects to login page when the Log in button is clicked", %{conn: conn, token: token} do
+    #   {:ok, lv, _html} = live(conn, ~p"/users/reset_password/#{token}")
 
-      assert conn.resp_body =~ "Log in"
-    end
+    #   {:ok, conn} =
+    #     lv
+    #     |> element(~s|main a:fl-contains("Log in")|)
+    #     |> render_click()
+    #     |> follow_redirect(conn, ~p"/users/log_in")
+
+    #   assert conn.resp_body =~ "Log in"
+    # end
   end
 end
