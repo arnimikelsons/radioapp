@@ -23,7 +23,8 @@ config :radioapp, RadioappWeb.Endpoint,
   live_view: [signing_salt: "2jlv8atB"],
   check_origin: [
     "//*.radioapp.ca",
-    "//demo.northernvillage.com"
+    "//demo.northernvillage.com",
+    "//radio.cfrc.ca"
   ]
 
 # Configures the mailer
@@ -88,7 +89,7 @@ config :phoenix, :json_library, Jason
 
 # Configure the CORS plugin
 config :cors_plug,
-  origin: ["http://localhost:4000/", "https://demo.radioapp.ca/"],
+  origin: ["http://localhost:4000/", "https://demo.radioapp.ca/", "https://cfrc.editmy.website", "https://cfrc.ca", "https://www.cfrc.ca", "https://radio.fly.dev/", "https://radio.cfrc.ca/"],
   max_age: 86400,
   methods: ["GET"],
   send_preflight_response?: false

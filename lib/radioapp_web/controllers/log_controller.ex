@@ -1,7 +1,7 @@
 defmodule RadioappWeb.LogController do
   use RadioappWeb, :controller
 
-  alias Radioapp.Station
+  alias Radioapp.{Station, Admin}
   alias Radioapp.CSV.Builder
 
   defmodule SearchParams do
@@ -43,27 +43,49 @@ defmodule RadioappWeb.LogController do
     search = SearchParams.new(%{})
     tenant = RadioappWeb.get_tenant(conn)
     current_user = conn.assigns.current_user
-    user_role = 
-      if Map.get(current_user.roles, tenant) == nil do
-        Map.get(current_user.roles, "admin")
-      else 
-        Map.get(current_user.roles, tenant)
-      end
+    user_role=Admin.get_user_role(current_user, tenant)
     render(conn, "index.html", search: search, logs: [], user_role: user_role)
   end
 
   def search(conn, %{"search_params" => params}) do
     search = SearchParams.new(params)
     tenant = RadioappWeb.get_tenant(conn)
+    current_user = conn.assigns.current_user
     logs =
       if search.valid? do
         Station.list_full_logs(SearchParams.apply(search), tenant)
       else
         []
       end
+    user_role=Admin.get_user_role(current_user, tenant)
 
-    render(conn, "index.html", search: search, logs: logs)
+    render(conn, "index.html", search: search, logs: logs, user_role: user_role)
   end
+
+  def charts(conn, _params) do
+    search = SearchParams.new(%{})
+    tenant = RadioappWeb.get_tenant(conn)
+    current_user = conn.assigns.current_user
+    user_role=Admin.get_user_role(current_user, tenant)
+    render(conn, "charts.html", search: search, charts: [], user_role: user_role)
+  end
+
+  def search_charts(conn, %{"search_params" => params}) do
+    search = SearchParams.new(params)
+    tenant = RadioappWeb.get_tenant(conn)
+    current_user = conn.assigns.current_user
+    charts =
+      if search.valid? do
+        Station.list_charts(SearchParams.apply(search), tenant)
+      else
+        []
+      end
+      
+    user_role=Admin.get_user_role(current_user, tenant)
+
+    render(conn, "charts.html", search: search, charts: charts, user_role: user_role)
+  end
+
 
   def export(conn, %{"search_params" => params}) do
     tenant = RadioappWeb.get_tenant(conn)

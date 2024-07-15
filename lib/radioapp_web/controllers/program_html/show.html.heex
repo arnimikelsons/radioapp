@@ -8,6 +8,15 @@
                 user_role={@user_role}
                 conn={@conn}
                 />
+  <% "radio" -> %> <.show_cfrc
+                current_user={@current_user} 
+                current_tenant={@current_tenant} 
+                cols={@cols}
+                program={@program}
+                timeslots={@timeslots}
+                user_role={@user_role}
+                conn={@conn}
+                />
   <% _ -> %>
     <div class="max-w-2xl mx-auto">
       <.header>

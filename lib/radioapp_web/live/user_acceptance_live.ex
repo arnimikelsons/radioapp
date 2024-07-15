@@ -25,9 +25,9 @@ defmodule RadioappWeb.UserAcceptanceLive do
       </:actions>
     </.simple_form>
 
-    <p>
+    <%!-- <p>
       <.link href={~p"/users/log_in"}>Log in</.link>
-    </p>
+    </p> --%>
     """
   end
 

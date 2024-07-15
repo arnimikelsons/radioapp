@@ -1,8 +1,37 @@
 <div class="max-w-2xl mx-auto">
-  <div class="text-content bg-slate-50 p-3 rounded mb-5">
-    <h1>Community Radio Software</h1>
-    <p>RadioApp enables you to easily maintain CRTC and  SOCAN logs, live streaming, plus program and schedule pages. It's a fully accessible and secure way to automate your admin.</p>
-    <p>This is a demo site to show the capabilities of the software. If you would like more information, please see <a href="https://radioapp.ca">radioapp.ca</a>, and send us a note.</p>
+  <div class="text-content p-3 rounded mb-5">
+    <%= case @current_tenant do %>
+    <% "radio" -> %>
+      <h1>Listen to CFRC</h1>
+      <p>Listen to CFRC wherever you go on your mobile devices! &nbsp;We broadcast in stereo, 24/7, 365 days a year, over-the-air on 101.9FM, via Cogeco cable channel 282, and &nbsp;worldwide through our stream here at CFRC.ca (click our 'now playing' button above).&nbsp; We also air via the following downloadable platforms:&nbsp;</p>
+      <div class="flex mt-1">
+        <div class="sm:w-2/3">
+            <ul class="list-disc list-inside pl-3">
+            <li><a href="http://audio.cfrc.ca:8000/listen.pls">Live .mp3 audio stream through iTunes</a></li>
+            <li><a href="https://tunein.com/radio/CFRC-1019-s31142/">TuneIn App (download and stream)</a></li>
+            <li><a href="http://radio.garden/visit/kingston/aU1opXUt">Radio Garden App (download and stream)</a></li>
+            <li><a href="https://www.dlnow.co/simple-radio?gclid=Cj0KCQiA962BBhCzARIsAIpWEL2ejVb6zLUKXqGCqR3HudpVFUWmaetEn_Ekkz0VSPVrAGAD5S1PbEoaAmwwEALw_wcB">Simple Radio App (download link)</a></li>
+            <li><a href="https://www.radio-canada-online.com/cfrc-1019">Radio Player Canada (download and stream)</a></li>
+          </ul>
+        </div>
+        <div class="sm:w-1/3">
+        <!-- IMPORTANT: grab this image if this is staying here -->
+          <p><a href="https://www.radio-canada-online.com/cfrc-1019"><img src="/images/rp_promobox_2018.png" alt="Radio Canada player logo" width="400" height="158"></a></p>
+        </div>
+      </div>
+      <p class="mt-2"><a href="https://podcast.cfrc.ca">And CFRC Podcasts!&nbsp; Subscribe to your favorites today!&nbsp;</a></p>
+      <p class="mt-2">When you download an app to your mobile device, simply search CFRC and tap 'heart' for favorite for speedy access to your favorite local programs!</p> 
+    <% "coopradio" -> %>
+      <h1>Vancouver Co-operative Radio</h1>
+      <p>Vancouver Co-operative Radio, CFRO, 100.5FM is an innovative non-profit community radio station & podcast recording studio providing a voice for those underrepresented in mainstream media.
+      Each week, Co-op Radio provides access to community space, training and equipment for 300+ volunteers who produce 140 hours of original programming, in over 10 languages. </p>
+
+    <% _ -> %>
+      <h1>Community Radio Software</h1>
+      <p>RadioApp enables you to easily maintain CRTC and  SOCAN logs, live streaming, plus program and schedule pages. It's a fully accessible and secure way to automate your admin.</p>
+      <p>This is a demo site to show the capabilities of the software. If you would like more information, please see <a href="https://radioapp.ca">radioapp.ca</a>, and send us a note.</p>
+ 
+    <% end %>
   </div>
 
   <h2  class="pb-3">Program Schedule</h2>
@@ -33,7 +62,7 @@
     <div class="w-1/2 md:w-5/12 p-2 overflow-wrap">Description</div>
   </div>
   <div class="timeslot-cover">
-    <div :for={timeslot <- @timeslots_by_day} id="timeslots" class="flex flex-wrap schedule-border text-sm even:">
+    <div :for={timeslot <- @timeslots_by_day} id="timeslots" class="flex flex-wrap schedule-border text-sm even:bg-slate-100">
       <div class="w-1/2 md:w-1/12 p-2"><%= timeslot.starttimereadable %></div>
       <div class="w-1/2 md:w-1/6 p-2"><.link navigate={~p"/programs/#{timeslot.program}"}><%= timeslot.program.name %></.link></div>
       <div class="w-1/2 md:w-1/6 p-2"><%= timeslot.program.genre %></div>

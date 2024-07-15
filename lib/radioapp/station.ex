@@ -371,6 +371,7 @@ defmodule Radioapp.Station do
     |> Repo.preload(log: [:program], category: [])
   end
 
+
   def list_playout_segments_by_log(log, tenant) do
 
     from(p in PlayoutSegment,
@@ -379,6 +380,27 @@ defmodule Radioapp.Station do
       order_by: [asc: p.inserted_at]
     )
     |> Repo.all(prefix: Triplex.to_prefix(tenant))
+    
+  end
+  
+  def list_charts(params, tenant) do
+    charts_query =
+      from(s in Segment,
+        inner_join: l in assoc(s, :log),
+        inner_join: c in assoc(s, :category),
+        where: l.date >= ^params.start_date,
+        where: l.date <= ^params.end_date,
+        where: fragment("CAST(?.code as integer) between 20 and 39", c),
+        group_by: [s.artist, s.song_title],
+        order_by: [desc: count(s.song_title), asc: s.artist, asc: s.song_title],
+        select: %{
+          artist: s.artist,
+          song_title: s.song_title,
+          count: count(s.song_title)
+        }
+      )
+
+    Repo.all(charts_query, prefix: Triplex.to_prefix(tenant))
   end
 
   def previous_month(%Date{day: day} = date) do

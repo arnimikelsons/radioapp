@@ -16,6 +16,12 @@
               current_tenant={@current_tenant} 
               inner_content={@inner_content} 
               conn={@conn}
+              />   
+  <% "radio" -> %> <.root_cfrc 
+              current_user={@current_user} 
+              current_tenant={@current_tenant} 
+              inner_content={@inner_content} 
+              conn={@conn}
               />          
   <% _ -> %> <.root_demo 
               current_user={@current_user} 
