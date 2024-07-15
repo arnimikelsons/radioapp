@@ -380,9 +380,9 @@ defmodule Radioapp.Station do
       order_by: [asc: p.inserted_at]
     )
     |> Repo.all(prefix: Triplex.to_prefix(tenant))
-    
+
   end
-  
+
   def list_charts(params, tenant) do
     charts_query =
       from(s in Segment,
@@ -964,17 +964,22 @@ defmodule Radioapp.Station do
   end
 
   def update_segment_utc(%Segment{} = segment, tenant) do
+
     date = Date.to_string(segment.log.date)
-    start_time = Time.to_string(segment.start_time)
-    end_time = Time.to_string(segment.end_time)
 
-    {:ok, start_datetime, end_datetime} = add_utc(date, start_time, end_time, tenant)
-    attrs = %{start_datetime: start_datetime, end_datetime: end_datetime }
+    if segment.start_time != nil and segment.end_time != nil do
 
-    _updated = segment
-    |> Segment.changeset(attrs)
-    |> Repo.update()
+      start_time = Time.to_string(segment.start_time)
+      end_time = Time.to_string(segment.end_time)
 
+      {:ok, start_datetime, end_datetime} = add_utc(date, start_time, end_time, tenant)
+      attrs = %{start_datetime: start_datetime, end_datetime: end_datetime }
+
+      _updated = segment
+      |> Segment.changeset(attrs)
+      |> Repo.update()
+
+    end
   end
   @doc """
   Deletes a segment.

@@ -22,7 +22,7 @@ Playout System
     </div>
     <.link patch={~p"/playout_segments/#{playout_segment}/edit"}><button>Edit</button></.link>
   </:action>
-  <%!-- <:action :let={playout_segment}>
+  <%!-- NOTE: Delete button doesn't work but the test does pass <:action :let={playout_segment}>
     <%= if @user_role == "admin" or @user_role == "super_admin" do %>
       <.link id={"playout-segment-#{playout_segment.id}"} phx-click={JS.push("delete", value: %{id: playout_segment.id})} data-confirm="Are you sure?">
         Delete
