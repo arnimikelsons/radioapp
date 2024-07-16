@@ -3,9 +3,9 @@ Playout System
 </.header>
 
 <.table id="segments" rows={@playout_segments}> 
-  <:col :let={playout_segment} label="Start"><%= playout_segment.inserted_at %></:col>
-  <%!-- <:col :let={playout_segment} label="Start Time"><%= playout_segment.start_time %></:col>
-  <:col :let={playout_segment} label="End Time"><%= playout_segment.end_time %></:col> --%>
+  <:col :let={playout_segment} label="Start">
+    <%= NaiveDateTime.to_string(DateTime.to_naive(DateTime.shift_zone!(playout_segment.inserted_at, @timezone))) %>
+  </:col>
   <:col :let={playout_segment} label="Artist"><%= playout_segment.artist %></:col>
   <:col :let={playout_segment} label="Song Title"><%= playout_segment.song_title %></:col>
   <:col :let={playout_segment} label="Category"><%= if playout_segment.category != nil do %><%= playout_segment.category.code %><% end %></:col>

@@ -1045,6 +1045,54 @@ defmodule Radioapp.Station do
 
 
   @doc """
+  Returns a list of playout segments matching the given `filter`.
+
+  Example filter:
+
+  %{sources: ["ACR Cloud", "Studio 1"]}
+  """
+
+  def list_playout_segments_by_log_and_filter(filter, log, tenant) when is_map(filter) do
+    from(p in PlayoutSegment,
+    where: p.inserted_at >= ^log.start_datetime,
+    where: p.inserted_at <= ^log.end_datetime,
+    order_by: [asc: p.inserted_at]
+    )
+    |> filter_by_sources(filter)
+    |> Repo.all(prefix: Triplex.to_prefix(tenant))
+    |> Repo.preload([:category])
+  end
+
+  defp filter_by_sources(query, %{sources: [""]}), do: query
+
+  defp filter_by_sources(query, %{sources: sources}) do
+
+
+
+    # case Enum.find(sources, fn source -> source == "on" end) do
+    #   "on" ->
+
+    #     where(query, [playout_segment], playout_segment.source in ^sources)
+    #     |> where(query, [playout_segment], is_nil(playout_segment.source))
+
+    #   nil ->
+        where(query, [playout_segment], playout_segment.source in ^sources)
+
+    # end
+
+
+
+  end
+
+  def list_distinct_sources(tenant) do
+    from(ps in PlayoutSegment,
+      select: ps.source,
+      order_by: [desc: :inserted_at],
+      distinct: ps.source,
+      where: not is_nil(ps.source))
+    |> Repo.all(prefix: Triplex.to_prefix(tenant))
+  end
+  @doc """
   Gets a single playout_segment.
 
   Raises `Ecto.NoResultsError` if the PlayoutSegment does not exist.

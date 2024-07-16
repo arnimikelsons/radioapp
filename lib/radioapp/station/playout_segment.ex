@@ -19,7 +19,7 @@ defmodule Radioapp.Station.PlayoutSegment do
     field :start_time, :time
     field :duration, :string, virtual: true
     field :body, :string
-
+    field :source, :string
 
     belongs_to :category, Category
 
@@ -29,7 +29,7 @@ defmodule Radioapp.Station.PlayoutSegment do
   @doc false
   def changeset(playout_segment, attrs) do
     playout_segment
-    |> cast(attrs, [:artist, :can_con, :catalogue_number, :end_time, :hit, :instrumental, :new_music, :indigenous_artist, :emerging_artist, :start_time, :socan_type, :song_title, :category_id, :duration, :body])
+    |> cast(attrs, [:artist, :can_con, :catalogue_number, :end_time, :hit, :instrumental, :new_music, :indigenous_artist, :emerging_artist, :start_time, :socan_type, :song_title, :category_id, :duration, :body, :source])
     |> normalize_duration()
     |> validate_required([:artist, :song_title])
   end

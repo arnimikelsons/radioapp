@@ -164,6 +164,32 @@
       <.header>
         Import Automated Segments
       </.header>
+      <form phx-change="filter">
+        <div class="sources">
+          <%= for source <- @sources do %>
+            <%!-- <%= if source == nil do %>
+              <input 
+                type="checkbox"
+                name="sources[]"
+                value={nil}
+                id="source-nil"
+                checked={source in @filter.sources}
+              />
+              <label for={source}>Unspecified Source</label>
+            <% else %> --%>
+              <input 
+                type="checkbox"
+                name="sources[]"
+                value={source}
+                id={source}
+                checked={source in @filter.sources}
+              />
+              <label for={source}><%= source %></label>
+            <%!-- <% end %> --%>
+          <% end %>
+          <input type="hidden" name="sources[]" value="" />
+        </div>
+      </form>
       <%= if @playout_segments == [] do %>
         <p>There were no playout segments found from 
           <%= if @log.start_datetime != nil do
