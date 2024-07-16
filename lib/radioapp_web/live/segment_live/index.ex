@@ -54,6 +54,7 @@ defmodule RadioappWeb.SegmentLive.Index do
 
     %{timezone: timezone} = Admin.get_timezone!(tenant)
     dbg(Station.list_distinct_sources(tenant))
+    sources = Station.list_distinct_sources(tenant)
     {:ok,
      assign(socket,
        program: Station.get_program!(program_id, tenant),
@@ -70,8 +71,8 @@ defmodule RadioappWeb.SegmentLive.Index do
        tenant: tenant,
        csv_permission: csv_permission,
        timezone: timezone,
-       filter: %{sources: []},
-       sources: Station.list_distinct_sources(tenant)
+       filter: %{sources: sources},
+       sources: sources
      )
       |> assign(:uploaded_files, [])
       |> allow_upload(:csv, accept: ~w(.csv), max_entries: 3)}
@@ -230,7 +231,7 @@ defmodule RadioappWeb.SegmentLive.Index do
 
     playout_segments = Station.list_playout_segments_by_log_and_filter(filter, socket.assigns.log, socket.assigns.tenant)
     dbg(filter)
-    dbg(socket.assigns.sources)
+    dbg(playout_segments)
     {:noreply, assign(socket, playout_segments: playout_segments, filter: filter)}
   end
 

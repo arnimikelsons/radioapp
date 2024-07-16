@@ -2208,14 +2208,6 @@ input:checked+.slider:before {
   overflow: hidden;
 }
 
-/* CSV Upload drag and drop zone */
-/* .col-flex {
-  display: flex;
-  width:100%;
-}
-.col-flex section {
-  width: 100%;
-} */
 .dropzone {
   padding: 10px;
   border-radius: 4px;
@@ -2232,6 +2224,32 @@ input:checked+.slider:before {
 
 .dropzone label {
   cursor: pointer;
+}
+
+/*** IMPORT AUTOMATED SEGMENTS ***/
+
+.filters .sources input[type="checkbox"]:checked + label {
+  background-color: black;
+  color: white;
+  border-color: black;
+}
+.filters .sources label:first-of-type {
+  border-right-width: 1px;
+  border-left-width: 1px;
+  border-top-left-radius: 0.5rem; /* 8px */
+  border-bottom-left-radius: 0.5rem; /* 8px */
+}
+.filters .sources input[type="checkbox"]:checked + label:first-of-type {
+  border-right-color: white;
+}
+.filters .sources label:last-of-type {
+  border-right-width: 1px;
+  border-left-width: 1px;
+  border-top-right-radius: 0.5rem; /* 8px */
+  border-bottom-right-radius: 0.5rem; /* 8px */
+}
+.filters .sources input[type="checkbox"]:checked + label:last-of-type {
+  border-left-color: white;
 }
 
 

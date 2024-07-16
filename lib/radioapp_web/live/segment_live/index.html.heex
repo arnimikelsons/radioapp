@@ -164,34 +164,40 @@
       <.header>
         Import Automated Segments
       </.header>
-      <form phx-change="filter">
-        <div class="sources">
-          <%= for source <- @sources do %>
-            <%!-- <%= if source == nil do %>
-              <input 
-                type="checkbox"
-                name="sources[]"
-                value={nil}
-                id="source-nil"
-                checked={source in @filter.sources}
-              />
-              <label for={source}>Unspecified Source</label>
-            <% else %> --%>
-              <input 
-                type="checkbox"
-                name="sources[]"
-                value={source}
-                id={source}
-                checked={source in @filter.sources}
-              />
-              <label for={source}><%= source %></label>
-            <%!-- <% end %> --%>
-          <% end %>
-          <input type="hidden" name="sources[]" value="" />
+      <form phx-change="filter" class="max-w-xl mb-4">
+        <div class="filters flex items-baseline justify-around">
+          <div class="sources flex">
+            <%= for source <- @sources do %>
+              <%!-- <%= if source == nil do %>
+                <input 
+                  type="checkbox"
+                  name="sources[]"
+                  value={nil}
+                  id="source-nil"
+                  checked={source in @filter.sources}
+                />
+                <label for={source}>Unspecified Source</label>
+              <% else %> --%>
+                <input 
+                  class="opacity-0 fixed w-0"
+                  type="checkbox"
+                  name="sources[]"
+                  value={source}
+                  id={source}
+                  checked={source in @filter.sources}
+                />
+                <label 
+                  for={source}
+                  class="inline-block border-t border-b border-slate-950 bg-slate-100 text-black text-sm font-semibold leading-6 active:text-white/80 py-3 px-4 hover:bg-zinc-300 hover:cursor-pointer"
+                ><%= source %></label>
+              <%!-- <% end %> --%>
+            <% end %>
+            <input type="hidden" name="sources[]" value="" />
+          </div>
         </div>
       </form>
       <%= if @playout_segments == [] do %>
-        <p>There were no playout segments found from 
+        <p id="empty_p_s" :if={Enum.empty?(@playout_segments)}>There were no playout segments found from 
           <%= if @log.start_datetime != nil do
             NaiveDateTime.to_string(DateTime.to_naive(DateTime.shift_zone!(@log.start_datetime, @timezone))) 
           end %> 
@@ -200,8 +206,9 @@
             NaiveDateTime.to_string(DateTime.to_naive(DateTime.shift_zone!(@log.end_datetime, @timezone)))
           end %>
         .</p> 
-      <% else %>
-        <.table id="segments" rows={@playout_segments}> 
+      <% end %>
+      <%= unless @playout_segments == [] do %>
+        <.table :if={Enum.any?(@playout_segments)} id="segments" rows={@playout_segments}> 
           <%!-- <:col :let={playout_segment} label="Start"><%= playout_segment.inserted_at %></:col> --%>
           <:col :let={playout_segment} label="Start">
             <%= NaiveDateTime.to_string(DateTime.to_naive(DateTime.shift_zone!(playout_segment.inserted_at, @timezone))) %>

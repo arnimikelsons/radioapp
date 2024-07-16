@@ -37,7 +37,7 @@ defmodule RadioappWeb.Api.SongController do
     %{timezone: timezone} = Admin.get_timezone!(tenant)
     time_now = DateTime.to_time(Timex.now(timezone))
 
-    with {:ok, %PlayoutSegment{} = playout_segment} <- Station.create_playout_segment(%{song_title: title, artist: artist, start_time: time_now}, tenant) do
+    with {:ok, %PlayoutSegment{} = playout_segment} <- Station.create_playout_segment(%{song_title: title, artist: artist, start_time: time_now, source: "Unknown"}, tenant) do
       conn
       |> put_status(:created)
       |> put_resp_header("location", ~p"/api/songs/#{playout_segment}")

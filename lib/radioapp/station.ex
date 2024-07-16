@@ -1063,7 +1063,7 @@ defmodule Radioapp.Station do
     |> Repo.preload([:category])
   end
 
-  defp filter_by_sources(query, %{sources: [""]}), do: query
+  # defp filter_by_sources(query, %{sources: [""]}), do: query
 
   defp filter_by_sources(query, %{sources: sources}) do
 
