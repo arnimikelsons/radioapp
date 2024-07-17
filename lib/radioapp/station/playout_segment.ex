@@ -19,7 +19,7 @@ defmodule Radioapp.Station.PlayoutSegment do
     field :start_time, :time
     field :duration, :string, virtual: true
     field :body, :string
-    field :source, :string, default: "Unknown"
+    field :source, :string, default: "Default"
 
     belongs_to :category, Category
 
