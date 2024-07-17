@@ -136,11 +136,18 @@ defmodule RadioappWeb.SegmentLive.Index do
 
     playout_segments = Station.list_playout_segments_by_log(socket.assigns.log, socket.assigns.tenant)
 
-    # Get a map of sources that are unique sources and put that in a variable
+    initial_playout_segments =
+    if playout_segments == [] do
+      false
+    else
+      true
+    end
 
     socket
     |> assign(:page_title, "Import Automated Segments")
     |> assign(:playout_segments, playout_segments)
+    |> assign(:initial_playout_segments, initial_playout_segments)
+
   end
 
   @impl true
@@ -159,7 +166,9 @@ defmodule RadioappWeb.SegmentLive.Index do
     ps = socket.assigns.playout_segments
 
     playout_segments = Enum.reject(ps, fn s -> s.id == playout_segment_id end)
+
     dbg(playout_segments)
+
     {:noreply,
       assign(socket,
         playout_segments: playout_segments)

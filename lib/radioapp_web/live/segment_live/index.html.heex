@@ -196,6 +196,7 @@
           </div>
         </div>
       </form>
+      
       <%= if @playout_segments == [] do %>
         <p id="empty_p_s" :if={Enum.empty?(@playout_segments)}>There were no playout segments found from 
           <%= if @log.start_datetime != nil do
