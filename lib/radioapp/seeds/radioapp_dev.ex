@@ -2,6 +2,7 @@ defmodule Radioapp.Seeds.RadioappDev do
 
   alias Radioapp.Accounts
   alias Radioapp.Admin
+  alias Radioapp.Station
 
   # NOTE: Add email_confirmed_at to user changeset to seed working logins; remove after running
   def run(tenant) do
@@ -25,7 +26,7 @@ defmodule Radioapp.Seeds.RadioappDev do
       password: "super-duper-secret",
       hashed_password: Bcrypt.hash_pwd_salt("super-secret"),
     })
-    {:ok, _} = Admin.create_stationdefaults(
+    {:ok, stationdefaults} = Admin.create_stationdefaults(
       %{
         callsign: "RadioApp",
         from_email: "radioapp@northernvillage.net",
@@ -36,10 +37,53 @@ defmodule Radioapp.Seeds.RadioappDev do
         playout_type: "audio/mpeg",
         timezone: "Canada/Eastern",
         intro_email_subject: "Welcome to RadioApp: Website Management and Radio Logging Software",
-        intro_email_body: "You are invited to join the Radioapp online App to manage your radio program."
+        intro_email_body: "You are invited to join the Radioapp online App to manage your radio program.",
+        api_permission: "user",
+        csv_permission: "user"
       },
       tenant
     )
+    {:ok, program} = Station.create_program(
+      %{
+        name: "Shbang",
+        genre: "Ambient/Electronic",
+        description: "Far flung field recordings from the islands",
+        short_description: "Electronic Ambient Experimental"
+      },
+      tenant
+    )
+    timezone = stationdefaults.timezone
+    date_now = DateTime.to_date(Timex.now(timezone))
+    time_now = Time.truncate(DateTime.to_time(Timex.now(timezone)), :second)
+    start_time_string = Time.to_string(time_now)
+    end_time_string = Time.to_string(Time.add(time_now, 60, :minute))
+    utc_datetime = DateTime.utc_now(Calendar.ISO)
+
+    {:ok, _} = Station.create_log(
+      program,
+      %{
+        "host_name" => "David Parker",
+        "notes" => "A sample log",
+        "date" => date_now,
+        "start_time" => start_time_string,
+        "end_time" => end_time_string,
+        "start_datetime" => utc_datetime,
+        "category" =>  "Music",
+        "end_datetime" => DateTime.add(utc_datetime, 60, :minute)
+
+      },
+      tenant
+    )
+    {:ok, _} = Station.create_playout_segment(
+      %{
+        artist: "Aaron Dilloway",
+        start_time: time_now,
+        song_title: "Rozard Mix",
+        source: "Studio 1"
+      },
+      tenant
+    )
+
 
 
 
