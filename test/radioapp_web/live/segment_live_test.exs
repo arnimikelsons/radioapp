@@ -339,6 +339,7 @@ defmodule RadioappWeb.SegmentLiveTest do
 
   describe "Playout Segment Import" do
     setup %{conn: conn} do
+      _stationdefaults=Radioapp.Admin.get_stationdefaults!(@tenant)
       user = Factory.insert(:user, roles: %{@tenant => "user"})
       conn = log_in_user(conn, user)
       %{conn: conn, user: user}
@@ -362,7 +363,6 @@ defmodule RadioappWeb.SegmentLiveTest do
       ], prefix: @prefix)
 
       {:ok, index_live, _html} = live(conn, ~p"/programs/#{program}/logs/#{log}/segments")
-
       assert index_live |> element("a", "Import Playout Segments") |> render_click() =~
                "Import Automated Segments"
 

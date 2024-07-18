@@ -185,7 +185,11 @@ end
       support_email: "some support email",
       tos_url: "some tos",
       website_url: "some website url",
-      csv_permission: "user"
+      csv_permission: "user", 
+      api_permission: "user",
+      intro_email_body: "Some intro email body",
+      intro_email_subject: "some intro email subject",
+      socan_permission: "user"
     }
   end
 end

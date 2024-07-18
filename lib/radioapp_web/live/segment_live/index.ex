@@ -37,20 +37,10 @@ defmodule RadioappWeb.SegmentLive.Index do
     segments = Station.list_segments_for_log(log, tenant)
     [new_music, can_con_music, instrumental_music, hit_music, indigenous_artist, emerging_artist] = Station.track_minutes(log, tenant)
 
-    %{csv_permission: permission} = Admin.get_stationdefaults!(tenant)
-    csv_permission =
-      case permission do
-        "admin" ->
-          if user_role == "admin" or user_role == "super_admin" do
-            true
-          else
-            false
-          end
-        "user" ->
-          true
-        "none" ->
-          false
-      end
+    %{csv_permission: csv_permission, api_permission: api_permission, socan_permission: socan_permission} = Admin.get_stationdefaults!(tenant)
+    csv_permission = get_permission(csv_permission, user_role)
+    api_permission = get_permission(api_permission, user_role)
+    socan_permission = get_permission(socan_permission, user_role)
 
     %{timezone: timezone} = Admin.get_timezone!(tenant)
 
@@ -69,6 +59,8 @@ defmodule RadioappWeb.SegmentLive.Index do
        emerging_artist: emerging_artist,
        tenant: tenant,
        csv_permission: csv_permission,
+       api_permission: api_permission,
+       socan_permission: socan_permission,
        timezone: timezone
      )
       |> assign(:uploaded_files, [])
@@ -80,6 +72,20 @@ defmodule RadioappWeb.SegmentLive.Index do
     {:noreply, apply_action(socket, socket.assigns.live_action, params)}
   end
 
+  defp get_permission(permission, user_role) do
+    case permission do
+      "admin" ->
+        if user_role == "admin" or user_role == "super_admin" do
+          true
+        else
+          false
+        end
+      "user" ->
+        true
+      "none" ->
+        false
+    end
+  end
   defp apply_action(socket, :new, %{
          "program_id" => program_id,
          "log_id" => log_id

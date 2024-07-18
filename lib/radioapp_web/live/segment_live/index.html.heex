@@ -4,45 +4,84 @@
 
 <p><strong>Notes:</strong> <%= @log.notes %><br></p>
 <hr class="p-3">
-
-<.table id="segments" rows={@segments}> 
-  <%!-- <:col :let={segment} label="Date"><%= Date.to_string(DateTime.to_date(DateTime.shift_zone!(segment.start_datetime, @timezone))) %></:col> --%>
-  <:col :let={segment} label="Start Time">
-    <%= if segment.start_datetime != nil do
-      Time.to_string(DateTime.to_time(DateTime.shift_zone!(segment.start_datetime, @timezone))) 
-    end %>
-  </:col>  
-  <:col :let={segment} label="End Time">
-    <%= if segment.end_datetime != nil do
-      Time.to_string(DateTime.to_time(DateTime.shift_zone!(segment.end_datetime, @timezone)))
-    end %>
-  </:col>
-  <:col :let={segment} label="Artist"><%= segment.artist %></:col>
-  <:col :let={segment} label="Song Title"><%= segment.song_title %></:col>
-  <:col :let={segment} label="Category"><%= if segment.category != nil do %><%= segment.category.code %><% end %></:col>
-  <:col :let={segment} label="SOCAN"><%= segment.socan_type %></:col>
-  <:col :let={segment} label="Catalogue #"><%= segment.catalogue_number %></:col>
-  <%!-- <:col :let={segment} label="Start DateTime"><%= segment.start_datetime %></:col>
-  <:col :let={segment} label="End DateTime"><%= segment.end_datetime %></:col> --%>
-  <:col :let={segment} label="New"><%= if segment.new_music do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
-  <:col :let={segment} label="Inst"><%= if segment.instrumental do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
-  <:col :let={segment} label="Can"><%= if segment.can_con do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
-  <:col :let={segment} label="Indg"><%= if segment.indigenous_artist do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
-  <:col :let={segment} label="Emrg"><%= if segment.emerging_artist do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
-  <:action :let={segment}>
-    <div class="sr-only">
-      <.link navigate={~p"/programs/#{@program}/logs/#{@log}/segments/#{segment}"}>Show</.link>
-    </div>
-    <.link patch={~p"/programs/#{@program}/logs/#{@log}/segments/#{segment}/edit"}>Edit</.link>
-  </:action>
-  <%!-- <:action :let={segment}>
-    <%= if @current_role == "admin" do %>
-      <.link phx-click={JS.push("delete", value: %{id: segment.id})} data-confirm="Are you sure?">
-        Delete
-      </.link>
-    <% end %>
-  </:action> --%>
-</.table>
+<%= if @socan_permission do %>
+  <.table id="segments" rows={@segments}> 
+    <%!-- <:col :let={segment} label="Date"><%= Date.to_string(DateTime.to_date(DateTime.shift_zone!(segment.start_datetime, @timezone))) %></:col> --%>
+    <:col :let={segment} label="Start Time">
+      <%= if segment.start_datetime != nil do
+        Time.to_string(DateTime.to_time(DateTime.shift_zone!(segment.start_datetime, @timezone))) 
+      end %>
+    </:col>  
+    <:col :let={segment} label="End Time">
+      <%= if segment.end_datetime != nil do
+        Time.to_string(DateTime.to_time(DateTime.shift_zone!(segment.end_datetime, @timezone)))
+      end %>
+    </:col>
+    <:col :let={segment} label="Artist"><%= segment.artist %></:col>
+    <:col :let={segment} label="Song Title"><%= segment.song_title %></:col>
+    <:col :let={segment} label="Category"><%= if segment.category != nil do %><%= segment.category.code %><% end %></:col>
+    <:col :let={segment} label="SOCAN"><%= segment.socan_type %></:col>
+    <:col :let={segment} label="Catalogue #"><%= segment.catalogue_number %></:col>
+    <%!-- <:col :let={segment} label="Start DateTime"><%= segment.start_datetime %></:col>
+    <:col :let={segment} label="End DateTime"><%= segment.end_datetime %></:col> --%>
+    <:col :let={segment} label="New"><%= if segment.new_music do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+    <:col :let={segment} label="Inst"><%= if segment.instrumental do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+    <:col :let={segment} label="Can"><%= if segment.can_con do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+    <:col :let={segment} label="Indg"><%= if segment.indigenous_artist do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+    <:col :let={segment} label="Emrg"><%= if segment.emerging_artist do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+    <:action :let={segment}>
+      <div class="sr-only">
+        <.link navigate={~p"/programs/#{@program}/logs/#{@log}/segments/#{segment}"}>Show</.link>
+      </div>
+      <.link patch={~p"/programs/#{@program}/logs/#{@log}/segments/#{segment}/edit"}>Edit</.link>
+    </:action>
+    <%!-- <:action :let={segment}>
+      <%= if @current_role == "admin" do %>
+        <.link phx-click={JS.push("delete", value: %{id: segment.id})} data-confirm="Are you sure?">
+          Delete
+        </.link>
+      <% end %>
+    </:action> --%>
+  </.table>
+<% else %>
+   <.table id="segments" rows={@segments}> 
+    <%!-- <:col :let={segment} label="Date"><%= Date.to_string(DateTime.to_date(DateTime.shift_zone!(segment.start_datetime, @timezone))) %></:col> --%>
+    <:col :let={segment} label="Start Time">
+      <%= if segment.start_datetime != nil do
+        Time.to_string(DateTime.to_time(DateTime.shift_zone!(segment.start_datetime, @timezone))) 
+      end %>
+    </:col>  
+    <:col :let={segment} label="End Time">
+      <%= if segment.end_datetime != nil do
+        Time.to_string(DateTime.to_time(DateTime.shift_zone!(segment.end_datetime, @timezone)))
+      end %>
+    </:col>
+    <:col :let={segment} label="Artist"><%= segment.artist %></:col>
+    <:col :let={segment} label="Song Title"><%= segment.song_title %></:col>
+    <:col :let={segment} label="Category"><%= if segment.category != nil do %><%= segment.category.code %><% end %></:col>
+    <:col :let={segment} label="Catalogue #"><%= segment.catalogue_number %></:col>
+    <%!-- <:col :let={segment} label="Start DateTime"><%= segment.start_datetime %></:col>
+    <:col :let={segment} label="End DateTime"><%= segment.end_datetime %></:col> --%>
+    <:col :let={segment} label="New"><%= if segment.new_music do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+    <:col :let={segment} label="Inst"><%= if segment.instrumental do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+    <:col :let={segment} label="Can"><%= if segment.can_con do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+    <:col :let={segment} label="Indg"><%= if segment.indigenous_artist do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+    <:col :let={segment} label="Emrg"><%= if segment.emerging_artist do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+    <:action :let={segment}>
+      <div class="sr-only">
+        <.link navigate={~p"/programs/#{@program}/logs/#{@log}/segments/#{segment}"}>Show</.link>
+      </div>
+      <.link patch={~p"/programs/#{@program}/logs/#{@log}/segments/#{segment}/edit"}>Edit</.link>
+    </:action>
+    <%!-- <:action :let={segment}>
+      <%= if @current_role == "admin" do %>
+        <.link phx-click={JS.push("delete", value: %{id: segment.id})} data-confirm="Are you sure?">
+          Delete
+        </.link>
+      <% end %>
+    </:action> --%>
+  </.table>
+<% end %>
 
 <div class="mt-4 text-right">
   <.link patch={~p"/programs/#{@program}/logs/#{@log}/segments/new"}>
@@ -112,12 +151,14 @@
       </p>
     </section>
   </div>
+  <%= if @api_permission do %>
+    <div class="mt-4">
+      <.link patch={~p"/programs/#{@program}/logs/#{@log}/segments/api_import"}>
+        <.button>Import Playout Segments</.button>
+      </.link>
+    </div>
+  <% end %>
 
-  <div class="mt-4">
-  <.link patch={~p"/programs/#{@program}/logs/#{@log}/segments/api_import"}>
-    <.button>Import Playout Segments</.button>
-  </.link>
-</div>
 
   <.modal
     :if={@live_action in [:upload_instructions]}
@@ -216,6 +257,7 @@
     log={@log}
     list_categories={@list_categories}
     segment={@segment}
+    socan_permission={@socan_permission}
     navigate={~p"/programs/#{@program}/logs/#{@log}/segments/new"}
     navigate_edit={~p"/programs/#{@program}/logs/#{@log}/segments"}
   />
