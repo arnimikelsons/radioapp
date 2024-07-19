@@ -83,6 +83,15 @@ defmodule Radioapp.Seeds.RadioappDev do
       },
       tenant
     )
+    {:ok, _} = Station.create_playout_segment(
+      %{
+        artist: "Fred Smith",
+        start_time: time_now,
+        song_title: "Some Band",
+        source: "Studio 2"
+      },
+      tenant
+    )
 
 
 

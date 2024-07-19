@@ -166,6 +166,7 @@
       </.header>
       <form phx-change="filter" class="max-w-xl mb-4">
         <div class="filters flex items-baseline justify-around">
+          <strong>Sources: </strong>
           <div class="sources flex">
             <%= for source <- @sources do %>
               <%!-- <%= if source == nil do %>
@@ -198,15 +199,19 @@
       </form>
       
       <%= if @playout_segments == [] do %>
-        <p id="empty_p_s" :if={Enum.empty?(@playout_segments)}>There were no playout segments found from 
-          <%= if @log.start_datetime != nil do
-            NaiveDateTime.to_string(DateTime.to_naive(DateTime.shift_zone!(@log.start_datetime, @timezone))) 
-          end %> 
-        to 
-          <%= if @log.end_datetime != nil do
-            NaiveDateTime.to_string(DateTime.to_naive(DateTime.shift_zone!(@log.end_datetime, @timezone)))
-          end %>
-        .</p> 
+        <%= if @initial_playout_segments do %>
+          <p>All segments have been removed. Select a Source to show playout segments</p>
+        <% else %>
+          <p id="empty_p_s" :if={Enum.empty?(@playout_segments)}>There were no playout segments found from 
+            <%= if @log.start_datetime != nil do
+              NaiveDateTime.to_string(DateTime.to_naive(DateTime.shift_zone!(@log.start_datetime, @timezone))) 
+            end %> 
+          to 
+            <%= if @log.end_datetime != nil do
+              NaiveDateTime.to_string(DateTime.to_naive(DateTime.shift_zone!(@log.end_datetime, @timezone)))
+            end %>
+          .</p> 
+        <% end %>
       <% end %>
       <%= unless @playout_segments == [] do %>
         <.table :if={Enum.any?(@playout_segments)} id="playout-segments" rows={@playout_segments}>
@@ -225,7 +230,9 @@
           </:action>
         </.table>
         <.link phx-click="save_to_log">
-          <.button>Save to Log</.button>
+          <div class="mt-3">
+            <.button>Save to Log</.button>
+          </div>
         </.link> 
       <% end %>
     </div>
