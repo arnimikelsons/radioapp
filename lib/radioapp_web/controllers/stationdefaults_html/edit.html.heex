@@ -30,6 +30,7 @@
       <.input field={{f, :timezone}} options={( [ "Canada/Eastern" | @timezones ] )} type="select" label="Timezone * (required)" placeholder="Please Select" required />
       <.input field={{f, :csv_permission}} options={( [ "none", "admin", "user" ] )} type="select" label="Grant access to upload CSVs to logs" />
       <.input field={{f, :api_permission}} options={( [ "none", "admin", "user" ] )} type="select" label="Grant access to access APIs" />
+      <.input field={{f, :socan_permission}} options={( [ "none", "admin", "user" ] )} type="select" label="Grant access to access SOCAN dropdown" />
       <:actions>
         <.button>Save station defaults</.button>
       </:actions>
