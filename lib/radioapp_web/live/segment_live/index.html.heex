@@ -165,8 +165,8 @@
         Import Automated Segments
       </.header>
       <form phx-change="filter" class="max-w-xl mb-4">
-        <div class="filters flex items-baseline justify-around">
-          <strong>Sources: </strong>
+        <div class="filters flex items-baseline justify-start">
+          <strong>Sources:&nbsp;&nbsp;</strong>
           <div class="sources flex">
             <%= for source <- @sources do %>
               <%!-- <%= if source == nil do %>
