@@ -456,7 +456,6 @@ defmodule RadioappWeb.CoreComponents do
           </tr>
         </thead>
         <tbody class="relative divide-y divide-zinc-100 border-t border-zinc-200 text-sm leading-6 text-zinc-700">
-        <tr class="hidden only:table-row"><td>No Streamed Items</td></tr>
           <tr
             :for={row <- @rows}
             id={"#{@id}-#{Phoenix.Param.to_param(row)}"}
