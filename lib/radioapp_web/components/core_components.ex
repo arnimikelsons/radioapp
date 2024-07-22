@@ -456,6 +456,7 @@ defmodule RadioappWeb.CoreComponents do
           </tr>
         </thead>
         <tbody class="relative divide-y divide-zinc-100 border-t border-zinc-200 text-sm leading-6 text-zinc-700">
+        <tr class="hidden only:table-row"><td>No Streamed Items</td></tr>
           <tr
             :for={row <- @rows}
             id={"#{@id}-#{Phoenix.Param.to_param(row)}"}
@@ -632,7 +633,7 @@ defmodule RadioappWeb.CoreComponents do
           <p><a href="/timeslots">Show all Timeslots</a></p>
           <p><a href="/stationdefaults/1/edit">Edit Station Defaults</a></p>
         </div>
-    
+
         <div class="text-center">
           <p>-- API settings --</p>
           <p><a href="/admin/apikey">API Keys</a></p>

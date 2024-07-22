@@ -28,12 +28,15 @@ defmodule RadioappWeb.PlayoutSegmentLive.Index do
         Map.get(current_user.roles, tenant)
       end
 
+    %{timezone: timezone} = Admin.get_timezone!(tenant)
+
     {:ok,
      assign(socket,
        playout_segments: playout_segments,
        current_role: current_role,
        tenant: tenant,
-       user_role: user_role
+       user_role: user_role,
+       timezone: timezone
      )}
   end
 

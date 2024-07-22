@@ -43,7 +43,8 @@ defmodule RadioappWeb.SegmentLive.Index do
     socan_permission = get_permission(socan_permission, user_role)
 
     %{timezone: timezone} = Admin.get_timezone!(tenant)
-
+    dbg(Station.list_distinct_sources(tenant))
+    sources = Station.list_distinct_sources(tenant)
     {:ok,
      assign(socket,
        program: Station.get_program!(program_id, tenant),
@@ -59,9 +60,11 @@ defmodule RadioappWeb.SegmentLive.Index do
        emerging_artist: emerging_artist,
        tenant: tenant,
        csv_permission: csv_permission,
+       timezone: timezone,
+       filter: %{sources: sources},
+       sources: sources,
        api_permission: api_permission,
-       socan_permission: socan_permission,
-       timezone: timezone
+       socan_permission: socan_permission
      )
       |> assign(:uploaded_files, [])
       |> allow_upload(:csv, accept: ~w(.csv), max_entries: 3)}
@@ -139,11 +142,18 @@ defmodule RadioappWeb.SegmentLive.Index do
 
     playout_segments = Station.list_playout_segments_by_log(socket.assigns.log, socket.assigns.tenant)
 
-    # Get a map of sources that are unique sources and put that in a variable
+    initial_playout_segments =
+    if playout_segments == [] do
+      false
+    else
+      true
+    end
 
     socket
     |> assign(:page_title, "Import Automated Segments")
     |> assign(:playout_segments, playout_segments)
+    |> assign(:initial_playout_segments, initial_playout_segments)
+
   end
 
   @impl true
@@ -162,7 +172,9 @@ defmodule RadioappWeb.SegmentLive.Index do
     ps = socket.assigns.playout_segments
 
     playout_segments = Enum.reject(ps, fn s -> s.id == playout_segment_id end)
+
     dbg(playout_segments)
+
     {:noreply,
       assign(socket,
         playout_segments: playout_segments)
@@ -226,6 +238,16 @@ defmodule RadioappWeb.SegmentLive.Index do
             |> redirect(to: "/programs/#{socket.assigns.program.id}/logs/#{log.id}/segments")
             |> put_flash(:error, reason)}
     end
+  end
+
+  def handle_event("filter", %{"sources" => sources}, socket) do
+
+    filter = %{sources: sources}
+
+    playout_segments = Station.list_playout_segments_by_log_and_filter(filter, socket.assigns.log, socket.assigns.tenant)
+    dbg(filter)
+    dbg(playout_segments)
+    {:noreply, assign(socket, playout_segments: playout_segments, filter: filter)}
   end
 
   defp list_segments(tenant) do
