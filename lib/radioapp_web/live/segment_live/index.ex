@@ -43,7 +43,6 @@ defmodule RadioappWeb.SegmentLive.Index do
     socan_permission = get_permission(socan_permission, user_role)
 
     %{timezone: timezone} = Admin.get_timezone!(tenant)
-    dbg(Station.list_distinct_sources(tenant))
     sources = Station.list_distinct_sources(tenant)
     {:ok,
      assign(socket,
@@ -173,8 +172,6 @@ defmodule RadioappWeb.SegmentLive.Index do
 
     playout_segments = Enum.reject(ps, fn s -> s.id == playout_segment_id end)
 
-    dbg(playout_segments)
-
     {:noreply,
       assign(socket,
         playout_segments: playout_segments)
@@ -245,8 +242,6 @@ defmodule RadioappWeb.SegmentLive.Index do
     filter = %{sources: sources}
 
     playout_segments = Station.list_playout_segments_by_log_and_filter(filter, socket.assigns.log, socket.assigns.tenant)
-    dbg(filter)
-    dbg(playout_segments)
     {:noreply, assign(socket, playout_segments: playout_segments, filter: filter)}
   end
 
