@@ -364,7 +364,7 @@ defmodule RadioappWeb.SegmentLiveTest do
 
       {:ok, index_live, _html} = live(conn, ~p"/programs/#{program}/logs/#{log}/segments")
       assert index_live |> element("a", "Import Playout Segments") |> render_click() =~
-               "Import Automated Segments"
+               "Import Playout Segments"
 
       assert_patch(index_live, ~p"/programs/#{program}/logs/#{log}/segments/api_import")
 
