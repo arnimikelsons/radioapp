@@ -106,6 +106,7 @@ defmodule RadioappWeb.LogController do
           :artist,
           :song_title,
           :category,
+          :category_name,
           :socan_type,
           :catalogue_number,
           :new_music,
