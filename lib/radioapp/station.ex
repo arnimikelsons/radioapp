@@ -392,7 +392,7 @@ defmodule Radioapp.Station do
         where: l.date <= ^params.end_date,
         where: fragment("CAST(?.code as integer) between 20 and 39", c),
         group_by: [s.artist, s.song_title],
-        order_by: [desc: count(s.song_title), asc: s.artist, asc: s.song_title],
+        order_by: [desc: count(s.song_title)],
         select: %{
           artist: s.artist,
           song_title: s.song_title,
@@ -402,6 +402,7 @@ defmodule Radioapp.Station do
 
     Repo.all(charts_query, prefix: Triplex.to_prefix(tenant))
   end
+  
 
   def previous_month(%Date{day: day} = date) do
     days = max(day, Date.add(date, -day).day)

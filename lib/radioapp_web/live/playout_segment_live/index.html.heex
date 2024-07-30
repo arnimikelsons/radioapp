@@ -1,7 +1,25 @@
 <.header>
 Playout System
 </.header>
-
+<!--
+    <.simple_form :let={f} for={@search} action={~p"/admin/search_charts"}>
+      <.error :if={ !@search.valid? }>
+        Oops, something went wrong! Please check the errors below.
+      </.error>
+      <div class="row">
+        <div class="grid md:grid-cols-4 date-field">
+          <.input field={{f, :start_date}} type="date" label="Start Date" />
+        </div>
+        <div class="grid md:grid-cols-4 date-field">
+          <.input field={{f, :end_date}} type="date" label="End Date" />
+        </div>
+      </div>
+      <:actions>
+        <.button>Get charts</.button>
+        <%!-- <.button formaction={~p"/admin/logs/export"}>Download CSV</.button> --%>
+      </:actions>
+    </.simple_form>
+-->
 <.table id="segments" rows={@playout_segments}> 
   <:col :let={playout_segment} label="Source"><%= playout_segment.source %></:col>
   <:col :let={playout_segment} label="Start">

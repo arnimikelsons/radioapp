@@ -626,11 +626,13 @@ defmodule RadioappWeb.CoreComponents do
         <div class="text-center">
           <p><a href="/admin/logs">Logs by Date Range</a></p>
           <p><a href="/admin/charts">Charts</a></p>
+          <p><a href="/playout_segments">View Playout Segments</a></p>
           <p><a href="/admin/links">Manage Link Types</a></p>
           <p><a href="/admin/categories">Manage Categories</a></p>
           <p><a href="/users">Manage Users</a></p>
           <p><a href="/timeslots">Show all Timeslots</a></p>
           <p><a href="/stationdefaults/1/edit">Edit Station Defaults</a></p>
+          
         </div>
 
         <div class="text-center">

@@ -20,6 +20,7 @@ defmodule RadioappWeb.PlayoutSegmentLive.Index do
     current_role = socket.assigns.current_user.role
     playout_segments = Station.list_playout_segments(tenant)
     current_user = socket.assigns.current_user
+    #search = SearchParams.new(%{})
 
     user_role =
       if Map.get(current_user.roles, tenant) == nil do
@@ -36,7 +37,8 @@ defmodule RadioappWeb.PlayoutSegmentLive.Index do
        current_role: current_role,
        tenant: tenant,
        user_role: user_role,
-       timezone: timezone
+       timezone: timezone,
+       search: search
      )}
   end
 
