@@ -3,7 +3,7 @@ defmodule RadioappWeb.PlayoutSegmentLive.FormComponent do
 
   alias Radioapp.Station
   alias Radioapp.Station.PlayoutSegment
-
+# keeping this in case it is needed. It is in liveview format
   @impl true
   def render(assigns) do
     ~H"""
