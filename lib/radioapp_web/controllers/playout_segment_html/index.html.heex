@@ -25,8 +25,11 @@ Playout System
 
 <.table id="playout_segments" rows={@playout_segments}> 
   <:col :let={playout_segment} label="Source"><%= playout_segment.source %></:col>
-  <:col :let={playout_segment} label="Start">
-    <%= NaiveDateTime.to_string(DateTime.to_naive(DateTime.shift_zone!(playout_segment.inserted_at, @timezone))) %>
+  <:col :let={playout_segment} label="Start Date">
+    <%= Date.to_string(DateTime.to_date(DateTime.shift_zone!(playout_segment.inserted_at, @timezone))) %>
+  </:col>
+  <:col :let={playout_segment} label="Start Time">
+    <%= Time.to_string(DateTime.to_time(DateTime.shift_zone!(playout_segment.inserted_at, @timezone))) %>
   </:col>
   <:col :let={playout_segment} label="Artist"><%= playout_segment.artist %></:col>
   <:col :let={playout_segment} label="Song Title"><%= playout_segment.song_title %></:col>

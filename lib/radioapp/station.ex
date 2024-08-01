@@ -413,10 +413,6 @@ defmodule Radioapp.Station do
     Date.add(date, -7)
   end
 
-  def previous_week(date) do
-    Datetime.add(date, -7, :day)
-  end
-
 
   @doc """
   Gets a single log.
@@ -1103,17 +1099,17 @@ defmodule Radioapp.Station do
         where(query, [playout_segment], playout_segment.source in ^sources)
 
     # end
-
-
-
   end
 
-  def list_distinct_sources(tenant) do
+  def list_distinct_sources(log, tenant) do
     from(ps in PlayoutSegment,
       select: ps.source,
       order_by: [desc: :inserted_at],
       distinct: ps.source,
-      where: not is_nil(ps.source))
+      where: not is_nil(ps.source), 
+      where: ps.inserted_at >= ^log.start_datetime,
+      where: ps.inserted_at <= ^log.end_datetime
+      )
     |> Repo.all(prefix: Triplex.to_prefix(tenant))
   end
   @doc """

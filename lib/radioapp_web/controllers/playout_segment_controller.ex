@@ -2,7 +2,7 @@ defmodule RadioappWeb.PlayoutSegmentController do
   use RadioappWeb, :controller
 
   alias Radioapp.{Station, Admin}
-  #alias Radioapp.CSV.Builder
+  alias Radioapp.CSV.Builder
 
   defmodule SearchParams do
     use Ecto.Schema
@@ -43,7 +43,15 @@ defmodule RadioappWeb.PlayoutSegmentController do
     tenant = RadioappWeb.get_tenant(conn)
     current_user = conn.assigns.current_user
     user_role=Admin.get_user_role(current_user, tenant)
-    render(conn, "index.html", search: search, playout_segments: [], user_role: user_role)
+    %{timezone: timezone} = Admin.get_stationdefaults!(tenant)
+    playout_segments =
+      if search.valid? do
+        Station.list_full_playout_segments(SearchParams.apply(search), tenant)
+      else
+        []
+      end
+    dbg(playout_segments)
+    render(conn, "index.html", search: search, playout_segments: playout_segments, user_role: user_role, timezone: timezone)
   end
 
   def search(conn, %{"search_params" => params}) do
