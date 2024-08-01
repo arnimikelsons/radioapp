@@ -413,6 +413,11 @@ defmodule Radioapp.Station do
     Date.add(date, -7)
   end
 
+  def previous_week(date) do
+    Datetime.add(date, -7, :day)
+  end
+
+
   @doc """
   Gets a single log.
 
@@ -1043,6 +1048,23 @@ defmodule Radioapp.Station do
     from(p in PlayoutSegment, order_by: [desc: :inserted_at])
     |> Repo.all(prefix: Triplex.to_prefix(tenant))
     |> Repo.preload([:category])
+  end
+
+  def list_full_playout_segments(params, tenant) do
+    late_time = "11:59:59"
+    early_time = "00:00:00"
+    {:ok, start_datetime, _some_datetime} = add_utc(params.start_date, late_time, late_time, tenant)
+    {:ok, end_datetime, _some_datetime} = add_utc(params.end_date, early_time, early_time, tenant)
+
+
+    from(s in PlayoutSegment,
+      where: s.inserted_at >= ^start_datetime,
+      where: s.inserted_at <= ^end_datetime,
+      order_by: [asc: s.inserted_at]
+      
+    )
+    |> Repo.all(prefix: Triplex.to_prefix(tenant))
+    |> Repo.preload(category: [])
   end
 
 

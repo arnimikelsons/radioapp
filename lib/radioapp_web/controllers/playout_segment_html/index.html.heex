@@ -1,0 +1,44 @@
+<.header>
+Playout System
+</.header>
+
+
+
+<.simple_form :let={f} for={@search} action={~p"/playout_segments/search"}>
+
+  <div class="row">
+    <div class="grid md:grid-cols-4 date-field">
+      <.input field={{f, :start_date}} type="date" label="Start Date" />
+    </div>
+    <div class="grid md:grid-cols-4 date-field">
+      <.input field={{f, :end_date}} type="date" label="End Date" />
+    </div>
+  </div>
+  <:actions>
+    <.button>Get playout segments</.button>
+  </:actions>
+</.simple_form>
+
+
+
+
+
+<.table id="playout_segments" rows={@playout_segments}> 
+  <:col :let={playout_segment} label="Source"><%= playout_segment.source %></:col>
+  <:col :let={playout_segment} label="Start">
+    <%= NaiveDateTime.to_string(DateTime.to_naive(DateTime.shift_zone!(playout_segment.inserted_at, @timezone))) %>
+  </:col>
+  <:col :let={playout_segment} label="Artist"><%= playout_segment.artist %></:col>
+  <:col :let={playout_segment} label="Song Title"><%= playout_segment.song_title %></:col>
+  <:col :let={playout_segment} label="Category"><%= if playout_segment.category != nil do %><%= playout_segment.category.code %><% end %></:col>
+  <:col :let={playout_segment} label="SOCAN"><%= playout_segment.socan_type %></:col>
+  <:col :let={playout_segment} label="Catalogue #"><%= playout_segment.catalogue_number %></:col>
+  <:col :let={playout_segment} label="New"><%= if playout_segment.new_music do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+  <:col :let={playout_segment} label="Inst"><%= if playout_segment.instrumental do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+  <:col :let={playout_segment} label="Can"><%= if playout_segment.can_con do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+  <:col :let={playout_segment} label="Indg"><%= if playout_segment.indigenous_artist do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+  <:col :let={playout_segment} label="Emrg"><%= if playout_segment.emerging_artist do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+
+</.table>
+
+

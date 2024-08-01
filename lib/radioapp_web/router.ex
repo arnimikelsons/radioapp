@@ -183,10 +183,8 @@ defmodule RadioappWeb.Router do
     get "/admin", PageController, :admin
 
     # Add PlayoutSegment resources
-    live "/playout_segments", PlayoutSegmentLive.Index, :index
-    live "/playout_segments/:id/edit", PlayoutSegmentLive.Index, :edit
-    live "/playout_segments/import", PlayoutSegmentLive.Index, :import
-
+    get "/playout_segments", PlayoutSegmentController, :index
+    post "/playout_segments/search", PlayoutSegmentController, :search
   end
 
 
