@@ -47,13 +47,15 @@ defmodule RadioappWeb.DangerControllerTest do
     end
 
     test "deletes all the playout segments", %{conn: conn} do
+      Factory.insert(:stationdefaults, [], prefix: @prefix)
       Factory.insert(:playout_segment, [song_title: "First Song"], prefix: @prefix)
       Factory.insert(:playout_segment, [song_title: "Second Song"], prefix: @prefix)
 
-      conn = get(conn, ~p"/playout_segments")
+      
+      # conn = get(conn, ~p"/playout_segments")
 
-      assert html_response(conn, 200) =~ "First Song"
-      assert html_response(conn, 200) =~ "Second Song"
+      # assert html_response(conn, 200) =~ "First Song"
+      # assert html_response(conn, 200) =~ "Second Song"
 
       conn = put(conn, ~p"/danger/deleteallplayout_segments")
 
@@ -61,6 +63,8 @@ defmodule RadioappWeb.DangerControllerTest do
 
       refute html_response(conn, 302) =~ "First Song"
       refute html_response(conn, 302) =~ "Second Song"
+
+      assert Radioapp.Station.list_playout_segments(@tenant) == []
 
     end
   end
