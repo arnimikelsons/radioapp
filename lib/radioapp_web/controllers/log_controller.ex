@@ -86,7 +86,7 @@ defmodule RadioappWeb.LogController do
     render(conn, "charts.html", search: search, charts: charts, user_role: user_role)
   end
 
-
+  
   def export(conn, %{"search_params" => params}) do
     tenant = RadioappWeb.get_tenant(conn)
     logs = Station.list_segments_for_date(params, tenant)
@@ -129,4 +129,59 @@ defmodule RadioappWeb.LogController do
       filename: "log-download.csv"
     )
   end
+
+  def log_index(conn,  %{"log_id" => log_id}) do
+    
+    tenant = RadioappWeb.get_tenant(conn)
+    current_user = conn.assigns.current_user
+    log = Station.get_log!(log_id, tenant)
+    segments = Station.list_segments_for_log(log, tenant)
+    render(conn, "log.html", current_user: current_user, log: log, segments: segments)
+  end
+
+
+  def export_log(conn, %{"log_id" => log_id}) do
+    tenant = RadioappWeb.get_tenant(conn)
+    log = Station.get_log!(log_id, tenant)
+    segments = Station.list_segments_for_log_export(log, tenant)
+    dbg(segments)
+    csv =
+      Builder.to_csv2(
+        [
+          # :start_datetime, 
+          # :end_datetime,
+          # time would need to be *_datetime not *_time because you 
+          # can't convert to time in the select / allow import to import datetime
+          :start_time,
+          :end_time,
+          :artist,
+          :song_title,
+          :category, 
+          :socan_type,
+          :catalogue_number, 
+          :new_music, 
+          :instrumental,
+          :can_con,
+          :hit, 
+          :indigenous_artist, 
+          :emerging_artist, 
+          :duration
+        ],
+        segments
+      )
+      |> Enum.join()
+
+
+    conn
+    |> send_download(
+      {:binary, csv},
+      content_type: "application/csv",
+      disposition: :attachment,
+      filename: "log-download.csv"
+    )
+  end
+
+
+
+
 end

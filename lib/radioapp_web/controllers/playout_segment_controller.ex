@@ -2,7 +2,6 @@ defmodule RadioappWeb.PlayoutSegmentController do
   use RadioappWeb, :controller
 
   alias Radioapp.{Station, Admin}
-  alias Radioapp.CSV.Builder
 
   defmodule SearchParams do
     use Ecto.Schema
@@ -70,49 +69,5 @@ defmodule RadioappWeb.PlayoutSegmentController do
     user_role=Admin.get_user_role(current_user, tenant)
 
     render(conn, "index.html", search: search, playout_segments: playout_segments, user_role: user_role, timezone: timezone)
-  end
-
-
-  def export(conn, %{"search_params" => params}) do
-    tenant = RadioappWeb.get_tenant(conn)
-    logs = Station.list_segments_for_date(params, tenant)
-
-    csv =
-      Builder.to_csv2(
-        [
-          :program_name,
-          :host_name,
-          :log_category,
-          :date,
-          :log_start_time,
-          :log_end_time,
-          :language,
-          :start_time,
-          :end_time,
-          :artist,
-          :song_title,
-          :category,
-          :category_name,
-          :socan_type,
-          :catalogue_number,
-          :new_music,
-          :instrumental,
-          :can_con,
-          :hit,
-          :indigenous_artist,
-          :emerging_artist
-        ],
-        logs
-      )
-      |> Enum.join()
-
-
-    conn
-    |> send_download(
-      {:binary, csv},
-      content_type: "application/csv",
-      disposition: :attachment,
-      filename: "log-download.csv"
-    )
   end
 end
