@@ -1,24 +1,31 @@
-<.header>
-Playout System
-</.header>
+<div class="row">
+  <div class="md:w-3/4">
+    <.header>
+    Playout System
+    </.header>
+    <p>The following is the raw records of "playout segments", that have been imported via the API. The playout segmements can be imported into a given log, for the timeframe of that log. Different sources for that time period are shown and can be selected.</p>
 
 
+    <.simple_form :let={f} for={@search} action={~p"/playout_segments/search"}>
 
-<.simple_form :let={f} for={@search} action={~p"/playout_segments/search"}>
-
-  <div class="row">
-    <div class="grid md:grid-cols-4 date-field">
-      <.input field={{f, :start_date}} type="date" label="Start Date" />
-    </div>
-    <div class="grid md:grid-cols-4 date-field">
-      <.input field={{f, :end_date}} type="date" label="End Date" />
-    </div>
+      <div class="row">
+        <div class="grid md:grid-cols-4 date-field">
+          <.input field={{f, :start_date}} type="date" label="Start Date" />
+        </div>
+        <div class="grid md:grid-cols-4 date-field">
+          <.input field={{f, :end_date}} type="date" label="End Date" />
+        </div>
+      </div>
+      <:actions>
+        <.button>Get playout segments</.button>
+      </:actions>
+    </.simple_form>
   </div>
-  <:actions>
-    <.button>Get playout segments</.button>
-  </:actions>
-</.simple_form>
+  <div class="md:w-1/4">
+    <.admin_menu user_role={@user_role} />
 
+  </div>
+</div>
 
 
 

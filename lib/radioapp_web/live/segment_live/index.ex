@@ -43,7 +43,6 @@ defmodule RadioappWeb.SegmentLive.Index do
     socan_permission = get_permission(socan_permission, user_role)
 
     %{timezone: timezone} = Admin.get_timezone!(tenant)
-    sources = Station.list_distinct_sources(tenant)
     {:ok,
      assign(socket,
        program: Station.get_program!(program_id, tenant),
@@ -60,8 +59,6 @@ defmodule RadioappWeb.SegmentLive.Index do
        tenant: tenant,
        csv_permission: csv_permission,
        timezone: timezone,
-       filter: %{sources: sources},
-       sources: sources,
        api_permission: api_permission,
        socan_permission: socan_permission
      )
@@ -138,8 +135,9 @@ defmodule RadioappWeb.SegmentLive.Index do
   end
 
   defp apply_action(socket, :playout_segment_import, _params) do
-
+    tenant = socket.assigns.tenant
     playout_segments = Station.list_playout_segments_by_log(socket.assigns.log, socket.assigns.tenant)
+    sources = Station.list_distinct_sources(socket.assigns.log, tenant)
 
     initial_playout_segments =
     if playout_segments == [] do
@@ -152,6 +150,8 @@ defmodule RadioappWeb.SegmentLive.Index do
     |> assign(:page_title, "Import Automated Segments")
     |> assign(:playout_segments, playout_segments)
     |> assign(:initial_playout_segments, initial_playout_segments)
+    |> assign(:sources, sources)
+    |> assign(filter: %{sources: sources})
 
   end
 
