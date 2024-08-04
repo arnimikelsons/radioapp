@@ -175,10 +175,12 @@ defmodule RadioappWeb.Router do
     live "/programs/:program_id/logs/:log_id/segments/:id/edit", SegmentLive.Index, :edit
     live "/programs/:program_id/logs/:log_id/segments/upload_instructions", SegmentLive.Index, :upload_instructions
     live "/programs/:program_id/logs/:log_id/segments/api_import", SegmentLive.Index, :playout_segment_import
+    get "/programs/:program_id/logs/:log_id/segments/export", LogController, :export_log
+    get "/programs/:program_id/logs/:log_id/segments/log", LogController, :log_index
 
-
-    live "/programs/:program_id/logs/:log_id/segments/:id", SegmentLive.Show, :show
+    #live "/programs/:program_id/logs/:log_id/segments/:id", SegmentLive.Show, :show
     live "/programs/:program_id/logs/:log_id/segments/:id/show/edit", SegmentLive.Show, :edit
+
 
     get "/admin", PageController, :admin
 
@@ -264,7 +266,7 @@ defmodule RadioappWeb.Router do
  end
 
  scope "/danger", RadioappWeb do
-  pipe_through([:browser, :super_admin])
+  pipe_through [:browser, :super_admin]
   put("/deleteallplayout_segments", DangerController, :deleteallplayout_segments)
   get("/deleteplayout_segments", DangerController, :deleteplayout_segments)
 

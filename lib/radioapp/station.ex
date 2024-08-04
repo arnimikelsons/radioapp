@@ -707,6 +707,34 @@ defmodule Radioapp.Station do
     |> Repo.preload([:category, log: [:program]])
   end
 
+  def list_segments_for_log_export(log, tenant) do
+    segments = from(s in Segment, 
+      left_join: c in assoc(s, :category),
+      where: s.log_id == ^log.id, 
+      order_by: [asc: :start_time],
+      select: %{
+        start_datetime: s.start_datetime,
+        end_datetime: s.end_datetime,
+        artist: s.artist,
+        song_title: s.song_title,
+        category: c.code,
+        # category_name: c.name,
+        catalogue_number: s.catalogue_number,
+        socan_type: s.socan_type,
+        new_music: s.new_music,
+        instrumental: s.instrumental,
+        can_con: s.can_con,
+        hit: s.hit,
+        indigenous_artist: s.indigenous_artist,
+        emerging_artist: s.emerging_artist}
+    )
+    |> Repo.all(prefix: Triplex.to_prefix(tenant))
+
+    dbg(segments)
+  end
+
+
+
   def start_time_of_next_segment(log, tenant) do
     query =
       from s in Segment,

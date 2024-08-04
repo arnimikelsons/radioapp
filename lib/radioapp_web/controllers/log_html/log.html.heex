@@ -1,0 +1,31 @@
+
+  <.header>
+    Log for Export
+    <:actions>
+      <.link class="float-right m-3" href={~p"/programs/#{@log.program}/logs/#{@log}/segments"}><.button>Return to Log</.button></.link>
+      <.link class="float-right m-3" href={~p"/programs/#{@log.program}/logs/#{@log}/segments/export"}><.button>Download Log CSV</.button></.link> 
+    </:actions>
+  </.header>
+<p>This page is for downloading a CSV of this log, primarily for the purposes of importing to another log in the case that a show is a repeat.</p>
+<hr class="p-3">
+<div class="row">
+  <.table id="segments" rows={@segments}>
+    <:col :let={segment} label="Start Time"><%= segment.start_time %></:col>
+    <:col :let={segment} label="End Time"><%= segment.end_time %></:col>
+    <:col :let={segment} label="Artist"><%= segment.artist %></:col>
+    <:col :let={segment} label="Song Title"><%= segment.song_title %></:col>
+
+    <:col :let={segment} label="Category"><%= segment.category.code %></:col>
+    <:col :let={segment} label="Category Name"><%= segment.category.name %></:col>
+    <:col :let={segment} label="Catalogue #"><%= segment.catalogue_number %></:col>
+    <:col :let={segment} label="SOCAN"><%= segment.socan_type %></:col> 
+    
+    <:col :let={segment} label="New Music"><%= if segment.new_music do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+    <:col :let={segment} label="Instrumental"><%= if segment.instrumental do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+    <:col :let={segment} label="Can Con"><%= if segment.can_con do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+    <:col :let={segment} label="Hit"><%= if segment.hit do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+    <:col :let={segment} label="Indg"><%= if segment.indigenous_artist do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+    <:col :let={segment} label="Emrg"><%= if segment.emerging_artist do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+  </.table>
+
+</div>
