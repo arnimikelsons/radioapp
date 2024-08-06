@@ -1077,14 +1077,14 @@ defmodule Radioapp.Station do
   def list_full_playout_segments(params, tenant) do
     late_time = "11:59:59"
     early_time = "00:00:00"
-    {:ok, start_datetime, _some_datetime} = add_utc(params.start_date, late_time, late_time, tenant)
-    {:ok, end_datetime, _some_datetime} = add_utc(params.end_date, early_time, early_time, tenant)
+    {:ok, start_datetime, _some_datetime} = add_utc(params.start_date, early_time, late_time, tenant)
+    {:ok,  _some_datetime, end_datetime} = add_utc(params.end_date, early_time, late_time, tenant)
 
-
+dbg(end_datetime)
     from(s in PlayoutSegment,
       where: s.inserted_at >= ^start_datetime,
       where: s.inserted_at <= ^end_datetime,
-      order_by: [asc: s.inserted_at]
+      order_by: [desc: s.inserted_at]
       
     )
     |> Repo.all(prefix: Triplex.to_prefix(tenant))
@@ -1104,7 +1104,7 @@ defmodule Radioapp.Station do
     from(p in PlayoutSegment,
     where: p.inserted_at >= ^log.start_datetime,
     where: p.inserted_at <= ^log.end_datetime,
-    order_by: [asc: p.inserted_at]
+    order_by: [desc: p.inserted_at]
     )
     |> filter_by_sources(filter)
     |> Repo.all(prefix: Triplex.to_prefix(tenant))

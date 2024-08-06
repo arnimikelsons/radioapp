@@ -30,9 +30,9 @@
     <:col :let={segment} label="Indg"><%= if segment.indigenous_artist do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
     <:col :let={segment} label="Emrg"><%= if segment.emerging_artist do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
     <:action :let={segment}>
-      <div class="sr-only">
+      <%!-- <div class="sr-only">
         <.link navigate={~p"/programs/#{@program}/logs/#{@log}/segments/#{segment}"}>Show</.link>
-      </div>
+      </div> --%>
       <.link patch={~p"/programs/#{@program}/logs/#{@log}/segments/#{segment}/edit"}>Edit</.link>
     </:action>
     <%!-- <:action :let={segment}>
@@ -68,9 +68,9 @@
     <:col :let={segment} label="Indg"><%= if segment.indigenous_artist do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
     <:col :let={segment} label="Emrg"><%= if segment.emerging_artist do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
     <:action :let={segment}>
-      <div class="sr-only">
+      <%!-- <div class="sr-only">
         <.link navigate={~p"/programs/#{@program}/logs/#{@log}/segments/#{segment}"}>Show</.link>
-      </div>
+      </div> --%>
       <.link patch={~p"/programs/#{@program}/logs/#{@log}/segments/#{segment}/edit"}>Edit</.link>
     </:action>
     <%!-- <:action :let={segment}>
