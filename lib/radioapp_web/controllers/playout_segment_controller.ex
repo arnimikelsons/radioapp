@@ -49,7 +49,6 @@ defmodule RadioappWeb.PlayoutSegmentController do
       else
         []
       end
-    dbg(playout_segments)
     render(conn, "index.html", search: search, playout_segments: playout_segments, user_role: user_role, timezone: timezone)
   end
 

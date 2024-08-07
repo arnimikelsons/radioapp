@@ -702,7 +702,7 @@ defmodule Radioapp.Station do
   end
 
   def list_segments_for_log(log, tenant) do
-    from(s in Segment, where: [log_id: ^log.id], order_by: [asc: :start_time])
+    from(s in Segment, where: [log_id: ^log.id], order_by: [desc: :start_time])
     |> Repo.all(prefix: Triplex.to_prefix(tenant))
     |> Repo.preload([:category, log: [:program]])
   end
@@ -1075,12 +1075,12 @@ defmodule Radioapp.Station do
   end
 
   def list_full_playout_segments(params, tenant) do
-    late_time = "11:59:59"
-    early_time = "00:00:00"
+    %{timezone: timezone} = Admin.get_timezone!(tenant)
+    late_time = DateTime.shift_zone!("11:59:59", timezone)
+    early_time = DateTime.shift_zone!("00:00:00", timezone)
     {:ok, start_datetime, _some_datetime} = add_utc(params.start_date, early_time, late_time, tenant)
     {:ok,  _some_datetime, end_datetime} = add_utc(params.end_date, early_time, late_time, tenant)
 
-dbg(end_datetime)
     from(s in PlayoutSegment,
       where: s.inserted_at >= ^start_datetime,
       where: s.inserted_at <= ^end_datetime,
