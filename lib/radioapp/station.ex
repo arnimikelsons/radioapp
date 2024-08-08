@@ -702,7 +702,7 @@ defmodule Radioapp.Station do
   end
 
   def list_segments_for_log(log, tenant) do
-    from(s in Segment, where: [log_id: ^log.id], order_by: [desc: :start_time])
+    from(s in Segment, where: [log_id: ^log.id], order_by: [asc: :start_time])
     |> Repo.all(prefix: Triplex.to_prefix(tenant))
     |> Repo.preload([:category, log: [:program]])
   end
