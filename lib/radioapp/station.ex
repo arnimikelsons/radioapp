@@ -354,7 +354,7 @@ defmodule Radioapp.Station do
   end
 
   def list_logs_for_program(program, tenant) do
-    from(l in Log, where: [program_id: ^program.id], order_by: [asc: :date])
+    from(l in Log, where: [program_id: ^program.id], order_by: [desc: :date])
     |> Repo.all(prefix: Triplex.to_prefix(tenant))
     |> Repo.preload(:program)
   end
