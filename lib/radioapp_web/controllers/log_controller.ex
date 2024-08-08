@@ -164,8 +164,7 @@ defmodule RadioappWeb.LogController do
           :can_con,
           :hit, 
           :indigenous_artist, 
-          :emerging_artist, 
-          :duration
+          :emerging_artist
         ],
         segments
       )

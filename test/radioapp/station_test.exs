@@ -621,14 +621,15 @@ defmodule Radioapp.StationTest do
 
       assert {:ok, %Segment{} = segment} = Station.create_segment(log, @valid_attrs, @tenant)
 
-      assert segment.start_time == ~T[02:11:00Z]
-      assert segment.end_time == ~T[02:13:00Z]
+      assert segment.start_time == ~T[02:11:00]
+      assert segment.end_time == ~T[02:13:00]
 
       # Value in the utc field corresponds to the input values
-      assert Admin.get_timezone!(@tenant) == %{timezone: "Canada/Pacific"}
+      # Using Saskatewan, because they don't have daylight saving time
+      assert Admin.get_timezone!(@tenant) == %{timezone: "Canada/Saskatchewan"}
       assert segment.start_datetime != nil
       assert segment.start_datetime != ~U[2023-03-18 02:11:00Z]
-      assert segment.start_datetime == ~U[2023-03-18 09:11:00Z]
+      assert segment.start_datetime == ~U[2023-03-18 08:11:00Z]
     end
 
     test "update segment with new time or date modifies UTC fields" do
@@ -637,17 +638,17 @@ defmodule Radioapp.StationTest do
       log = Factory.insert(:log, [date: ~D[2023-03-18]], prefix: @prefix)
       Factory.insert(:category, [id: 2], prefix: @prefix)
 
-      segment = Factory.insert(:segment, [log: log, start_time: ~T[13:50:00Z], end_time: ~T[13:55:00Z]], prefix: @prefix)
+      segment = Factory.insert(:segment, [log: log, start_time: ~T[13:50:00], end_time: ~T[13:55:00]], prefix: @prefix)
 
-      assert segment.start_time == ~T[13:50:00Z]
-      assert segment.end_time == ~T[13:55:00Z]
+      assert segment.start_time == ~T[13:50:00]
+      assert segment.end_time == ~T[13:55:00]
 
       assert {:ok, %Segment{} = segment} = Station.update_segment(segment, @update_attrs, @tenant)
 
       # Value in the utc field corresponds to the input values
-      assert Admin.get_timezone!(@tenant) == %{timezone: "Canada/Pacific"}
+      assert Admin.get_timezone!(@tenant) == %{timezone: "Canada/Saskatchewan"}
       assert segment.start_datetime != nil
-      assert segment.start_datetime == ~U[2023-03-18 10:11:00Z]
+      assert segment.start_datetime == ~U[2023-03-18 09:11:00Z]
     end
   end
 

@@ -675,6 +675,8 @@ defmodule Radioapp.Station do
       where: l.date <= ^end_date,
       order_by: [asc: :start_time],
       select: %{
+        start_time: s.start_time, 
+        end_time: s.end_time,
         program_name: p.name,
         host_name: l.host_name,
         log_category: l.category,
@@ -713,8 +715,8 @@ defmodule Radioapp.Station do
       where: s.log_id == ^log.id, 
       order_by: [asc: :start_time],
       select: %{
-        start_datetime: s.start_datetime,
-        end_datetime: s.end_datetime,
+        start_time: s.start_time,
+        end_time: s.end_time,
         artist: s.artist,
         song_title: s.song_title,
         category: c.code,

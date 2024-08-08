@@ -59,7 +59,7 @@ end
   end
 
   def log_factory do
-    timezone = "Canada/Pacific"
+    timezone = "Canada/Saskatchewan"
     insert(:stationdefaults, [timezone: timezone, callsign: "CLDP" ], prefix: @prefix)
 
     date_now = DateTime.to_date(Timex.now(timezone))
@@ -79,7 +79,7 @@ end
     }
   end
   def segment_factory do
-    some_time = DateTime.to_time(Timex.now("Canada/Pacific"))
+    some_time = DateTime.to_time(Timex.now("Canada/Saskatchewan"))
     some_datetime = DateTime.utc_now(Calendar.ISO)
 
     %Radioapp.Station.Segment{
@@ -101,7 +101,7 @@ end
   end
 
   def playout_segment_factory do
-    some_time = DateTime.to_time(Timex.now("Canada/Pacific"))
+    some_time = DateTime.to_time(Timex.now("Canada/Saskatchewan"))
 
     %Radioapp.Station.PlayoutSegment{
       artist: Faker.Person.En.name(),
