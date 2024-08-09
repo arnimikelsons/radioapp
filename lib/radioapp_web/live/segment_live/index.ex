@@ -37,10 +37,11 @@ defmodule RadioappWeb.SegmentLive.Index do
     segments = Station.list_segments_for_log(log, tenant)
     [new_music, can_con_music, instrumental_music, hit_music, indigenous_artist, emerging_artist] = Station.track_minutes(log, tenant)
 
-    %{csv_permission: csv_permission, api_permission: api_permission, socan_permission: socan_permission} = Admin.get_stationdefaults!(tenant)
+    %{csv_permission: csv_permission, api_permission: api_permission, socan_permission: socan_permission, export_log_permission: export_log_permission} = Admin.get_stationdefaults!(tenant)
     csv_permission = get_permission(csv_permission, user_role)
     api_permission = get_permission(api_permission, user_role)
     socan_permission = get_permission(socan_permission, user_role)
+    export_log_permission = get_permission(export_log_permission, user_role)
 
     %{timezone: timezone} = Admin.get_timezone!(tenant)
     {:ok,
@@ -60,7 +61,8 @@ defmodule RadioappWeb.SegmentLive.Index do
        csv_permission: csv_permission,
        timezone: timezone,
        api_permission: api_permission,
-       socan_permission: socan_permission
+       socan_permission: socan_permission,
+       export_log_permission: export_log_permission
      )
       |> assign(:uploaded_files, [])
       |> allow_upload(:csv, accept: ~w(.csv), max_entries: 3)}

@@ -100,11 +100,10 @@
     <p>Emerging Artist: <%= @emerging_artist %>%</p>
   </div>
 </div>
-<%= if @tenant == "radio" do %>
-  <%= if @current_role == "admin" or @current_role == "super_admin" do%>
-    <.link class="float-right m-3" href={~p"/programs/#{@log.program}/logs/#{@log}/segments/log"}>Download Log CSV</.link>
-  <% end %>
+<%= if @export_log_permission  do %>
+  <.link class="float-right m-3" href={~p"/programs/#{@log.program}/logs/#{@log}/segments/log"}>Download Log CSV</.link>
 <% end %>
+
 <%= if @csv_permission do %>
 
   <div class="flex flex-wrap">

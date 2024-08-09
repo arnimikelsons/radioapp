@@ -31,6 +31,7 @@
       <.input field={{f, :csv_permission}} options={( [ "none", "admin", "user" ] )} type="select" label="Grant access to upload CSVs to logs" />
       <.input field={{f, :api_permission}} options={( [ "none", "admin", "user" ] )} type="select" label="Grant access to access APIs" />
       <.input field={{f, :socan_permission}} options={( [ "none", "admin", "user" ] )} type="select" label="Grant access to access SOCAN dropdown" />
+      <.input field={{f, :export_log_permission}} options={( [ "none", "admin", "user" ] )} type="select" label="Grant access to access to export Log" />
       <:actions>
         <.button>Save station defaults</.button>
       </:actions>

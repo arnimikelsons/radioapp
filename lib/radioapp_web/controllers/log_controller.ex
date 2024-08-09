@@ -144,7 +144,6 @@ defmodule RadioappWeb.LogController do
     tenant = RadioappWeb.get_tenant(conn)
     log = Station.get_log!(log_id, tenant)
     segments = Station.list_segments_for_log_export(log, tenant)
-    dbg(segments)
     csv =
       Builder.to_csv2(
         [
