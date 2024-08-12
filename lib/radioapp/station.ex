@@ -1078,8 +1078,8 @@ defmodule Radioapp.Station do
 
   def list_full_playout_segments(params, tenant) do
     %{timezone: timezone} = Admin.get_timezone!(tenant)
-    late_time = DateTime.shift_zone!("11:59:59", timezone)
-    early_time = DateTime.shift_zone!("00:00:00", timezone)
+    late_time = "11:59:59"
+    early_time = "00:00:00"
     {:ok, start_datetime, _some_datetime} = add_utc(params.start_date, early_time, late_time, tenant)
     {:ok,  _some_datetime, end_datetime} = add_utc(params.end_date, early_time, late_time, tenant)
 
