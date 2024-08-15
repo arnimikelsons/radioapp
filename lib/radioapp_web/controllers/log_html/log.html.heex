@@ -16,8 +16,8 @@
     <:col :let={segment} label="Artist"><%= segment.artist %></:col>
     <:col :let={segment} label="Song Title"><%= segment.song_title %></:col>
 
-    <:col :let={segment} label="Category"><%= segment.category.code %></:col>
-    <:col :let={segment} label="Category Name"><%= segment.category.name %></:col>
+    <:col :let={segment} label="Category"><%= if segment.category_id != nil do %><%= segment.category.code %><% end %></:col>
+    <:col :let={segment} label="Category Name"><%= if segment.category_id != nil do %><%= segment.category.name %><% end %></:col>
     <:col :let={segment} label="Catalogue #"><%= segment.catalogue_number %></:col>
     <:col :let={segment} label="SOCAN"><%= segment.socan_type %></:col> 
     
