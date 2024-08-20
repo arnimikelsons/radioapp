@@ -556,6 +556,7 @@ defmodule Radioapp.Station do
 
   """
   def add_utc_to_attrs(%{"date" => date, "start_time" => start_time, "end_time" => end_time } = attrs, tenant) do
+    
     case add_utc(date, start_time, end_time, tenant) do
       {:ok, start_datetime, end_datetime} ->
         attrs =
@@ -592,41 +593,49 @@ defmodule Radioapp.Station do
 
   defp add_utc(date, start_time, end_time, tenant) do
     %{timezone: station_timezone} = Admin.get_timezone!(tenant)
-    case not is_nil(date) and not is_nil(start_time) and not is_nil(end_time) do
+    case start_time == "" or end_time == "" do
       true ->
-        # Fix start time error missing seconds value
-        start_time =
-          case String.length(start_time) do
-            5 ->
-              start_time <> ":00"
-            8 ->
-              start_time
-            _ ->
-              nil
-          end
-        # Convert start_datetime to UTC
-        {:ok, start_date_time_naive} = NaiveDateTime.from_iso8601("#{date} #{start_time}")
-        {:ok, start_datetime} = DateTime.from_naive(start_date_time_naive, station_timezone)
-
-        # Fix end time error missing seconds value
-        end_time =
-          case String.length(end_time) do
-            5 ->
-              end_time <> ":00"
-            8 ->
-              end_time
-            _ ->
-              nil
-          end
-        # Convert end_datetime to UTC
-        {:ok, end_date_time_naive} = NaiveDateTime.from_iso8601("#{date} #{end_time}")
-        {:ok, end_datetime} = DateTime.from_naive(end_date_time_naive, station_timezone)
-
+        start_datetime = nil
+        end_datetime = nil
         {:ok, start_datetime, end_datetime}
       false ->
-        {:error, "Missing date and/or time"}
+        case not is_nil(date) and not is_nil(start_time) and not is_nil(end_time) do
+          true ->
+            # Fix start time error missing seconds value
+            start_time =
+              case String.length(start_time) do
+                5 ->
+                  start_time <> ":00"
+                8 ->
+                  start_time
+                _ ->
+                  nil
+              end
+            # Convert start_datetime to UTC
+            {:ok, start_date_time_naive} = NaiveDateTime.from_iso8601("#{date} #{start_time}")
+            {:ok, start_datetime} = DateTime.from_naive(start_date_time_naive, station_timezone)
+
+            # Fix end time error missing seconds value
+            end_time =
+              case String.length(end_time) do
+                5 ->
+                  end_time <> ":00"
+                8 ->
+                  end_time
+                _ ->
+                  nil
+              end
+            # Convert end_datetime to UTC
+            {:ok, end_date_time_naive} = NaiveDateTime.from_iso8601("#{date} #{end_time}")
+            {:ok, end_datetime} = DateTime.from_naive(end_date_time_naive, station_timezone)
+
+            {:ok, start_datetime, end_datetime}
+          false ->
+            {:error, "Missing date and/or time"}
+
+          end
+      end
     end
-  end
 
   @doc """
   Returns the list of segments.
@@ -732,7 +741,6 @@ defmodule Radioapp.Station do
     )
     |> Repo.all(prefix: Triplex.to_prefix(tenant))
 
-    dbg(segments)
   end
 
 
@@ -1077,7 +1085,7 @@ defmodule Radioapp.Station do
   end
 
   def list_full_playout_segments(params, tenant) do
-    %{timezone: timezone} = Admin.get_timezone!(tenant)
+    #%{timezone: timezone} = Admin.get_timezone!(tenant)
     late_time = "11:59:59"
     early_time = "00:00:00"
     {:ok, start_datetime, _some_datetime} = add_utc(params.start_date, early_time, late_time, tenant)

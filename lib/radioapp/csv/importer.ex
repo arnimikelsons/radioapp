@@ -29,8 +29,7 @@ defmodule Radioapp.CSV.Importer do
 
   @relaxed_required_columns [
     "artist",
-    "song_title",
-    "category"
+    "song_title"
   ]
 
   def csv_row_to_table_record(data, log, tenant) do
@@ -120,7 +119,7 @@ defmodule Radioapp.CSV.Importer do
         Map.put(row, "category_id", category_id)
 
       nil ->
-        {:error}
+        row
     end
   end
 
