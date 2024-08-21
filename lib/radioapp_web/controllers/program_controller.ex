@@ -39,6 +39,7 @@ defmodule RadioappWeb.ProgramController do
     tenant = RadioappWeb.get_tenant(conn)
     program = Station.get_program!(id, tenant)
     timeslots = Station.list_timeslots_for_program(program, tenant)
+    archives = Station.list_timeslots_for_archives(timeslots, tenant)
     image =
     case program.images do
       %Image{} = image ->

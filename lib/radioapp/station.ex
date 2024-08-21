@@ -224,6 +224,10 @@ defmodule Radioapp.Station do
     |> Repo.preload(program: [link1: [], link2: [], link3: []])
   end
 
+  def list_timeslots_for_archives(timeslots, tenant) do
+    # from timeslots, loop over the last 8 weeks to output the archives that can be played
+  end
+
   def list_timeslots_by_day(day, tenant) do
     from(t in Timeslot, where: t.day == ^day, order_by: [asc: :starttime])
     |> Repo.all(prefix: Triplex.to_prefix(tenant))
