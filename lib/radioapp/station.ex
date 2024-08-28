@@ -624,7 +624,7 @@ defmodule Radioapp.Station do
                 _ ->
                   ""
               end
-              dbg(start_time)
+
             # Convert start_datetime to UTC
             {:ok, start_date_time_naive} = NaiveDateTime.from_iso8601("#{date} #{start_time}")
             {:ok, start_datetime} = DateTime.from_naive(start_date_time_naive, station_timezone)
@@ -634,12 +634,15 @@ defmodule Radioapp.Station do
               case String.length(end_time) do
                 5 ->
                   end_time <> ":00"
+                7 ->
+                  "0#{end_time}"
                 8 ->
                   end_time
                 _ ->
                   nil
               end
             # Convert end_datetime to UTC
+
             {:ok, end_date_time_naive} = NaiveDateTime.from_iso8601("#{date} #{end_time}")
             {:ok, end_datetime} = DateTime.from_naive(end_date_time_naive, station_timezone)
 
