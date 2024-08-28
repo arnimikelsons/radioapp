@@ -226,6 +226,11 @@ defmodule Radioapp.Station do
 
   def list_timeslots_for_archives(timeslots, tenant) do
     # from timeslots, loop over the last 8 weeks to output the archives that can be played
+    length = length(timeslots)
+    dbg(timeslots)
+    # Find today; find # of weeks for archive from settings, find that day
+    # Loop over days starting at today, going back to end day, and out
+    # Output date, so a URL can be assembled, or assemble the URL
   end
 
   def list_timeslots_by_day(day, tenant) do
@@ -602,7 +607,9 @@ defmodule Radioapp.Station do
         start_datetime = nil
         end_datetime = nil
         {:ok, start_datetime, end_datetime}
+        
       false ->
+        dbg(String.length(start_time))
         case not is_nil(date) and not is_nil(start_time) and not is_nil(end_time) do
           true ->
             # Fix start time error missing seconds value
@@ -610,11 +617,14 @@ defmodule Radioapp.Station do
               case String.length(start_time) do
                 5 ->
                   start_time <> ":00"
+                7 ->
+                  "0#{start_time}"
                 8 ->
                   start_time
                 _ ->
-                  nil
+                  ""
               end
+              dbg(start_time)
             # Convert start_datetime to UTC
             {:ok, start_date_time_naive} = NaiveDateTime.from_iso8601("#{date} #{start_time}")
             {:ok, start_datetime} = DateTime.from_naive(start_date_time_naive, station_timezone)
