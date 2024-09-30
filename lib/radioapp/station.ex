@@ -224,13 +224,38 @@ defmodule Radioapp.Station do
     |> Repo.preload(program: [link1: [], link2: [], link3: []])
   end
 
-  def list_timeslots_for_archives(timeslots, tenant) do
+  def list_timeslots_for_archives(program, tenant) do
     # from timeslots, loop over the last 8 weeks to output the archives that can be played
-    length = length(timeslots)
-    dbg(timeslots)
+    
+
+    raw_timeslots = from(t in Timeslot, 
+      where: [program_id: ^program.id],
+      order_by: [desc: t.day, asc: t.starttime],
+      select: %{
+      day: t.day,
+      starttime: t.starttime, 
+      starttimereadable: t.starttimereadable
+    })
+    |> Repo.all(prefix: Triplex.to_prefix(tenant))
+    dbg(raw_timeslots)
+    stationdefaults = Admin.get_stationdefaults!(tenant)
+
     # Find today; find # of weeks for archive from settings, find that day
     # Loop over days starting at today, going back to end day, and out
     # Output date, so a URL can be assembled, or assemble the URL
+    today = Date.beginning_of_week(Timex.now(stationdefaults.timezone))
+
+     all_timeslots = for x <- 0..-7 do
+      timeslot_date = today |> Timex.shift(weeks: x)
+      for t <- raw_timeslots do
+        if Kday.kday_nearest(timeslot_date,t.day) <= today do
+          {Kday.kday_nearest(timeslot_date,t.day), t.starttimereadable}
+        end
+
+      end
+    end
+    dbg(all_timeslots)
+    
   end
 
   def list_timeslots_by_day(day, tenant) do
@@ -736,7 +761,7 @@ defmodule Radioapp.Station do
   end
 
   def list_segments_for_log_export(log, tenant) do
-    segments = from(s in Segment, 
+    _segments = from(s in Segment, 
       left_join: c in assoc(s, :category),
       where: s.log_id == ^log.id, 
       order_by: [asc: :start_time],

@@ -39,7 +39,8 @@ defmodule RadioappWeb.ProgramController do
     tenant = RadioappWeb.get_tenant(conn)
     program = Station.get_program!(id, tenant)
     timeslots = Station.list_timeslots_for_program(program, tenant)
-    archives = Station.list_timeslots_for_archives(timeslots, tenant)
+    list_timeslots = Station.list_timeslots_for_archives(program, tenant)
+
     image =
     case program.images do
       %Image{} = image ->
@@ -65,7 +66,7 @@ defmodule RadioappWeb.ProgramController do
       end
     end
 
-    render(conn, :show, timeslots: timeslots, program: program, image: image, user_role: user_role, cols: cols)
+    render(conn, :show, timeslots: timeslots, program: program, image: image, user_role: user_role, cols: cols, list_timeslots: list_timeslots)
   end
 
   def edit(conn, %{"id" => id}) do
