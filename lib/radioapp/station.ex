@@ -247,14 +247,15 @@ defmodule Radioapp.Station do
 
      all_timeslots = for x <- 0..-7 do
       timeslot_date = today |> Timex.shift(weeks: x)
-      for t <- raw_timeslots do
+      timeslots = for t <- raw_timeslots do
         if Kday.kday_nearest(timeslot_date,t.day) <= today do
           {Kday.kday_nearest(timeslot_date,t.day), t.starttimereadable}
         end
 
       end
+      dbg(all_timeslots)
     end
-    dbg(all_timeslots)
+    
     
   end
 
