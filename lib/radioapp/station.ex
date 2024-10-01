@@ -234,29 +234,59 @@ defmodule Radioapp.Station do
       select: %{
       day: t.day,
       starttime: t.starttime, 
-      starttimereadable: t.starttimereadable
+      starttimereadable: t.starttimereadable,
+      runtime: t.runtime
     })
     |> Repo.all(prefix: Triplex.to_prefix(tenant))
-    dbg(raw_timeslots)
+
     stationdefaults = Admin.get_stationdefaults!(tenant)
 
     # Find today; find # of weeks for archive from settings, find that day
     # Loop over days starting at today, going back to end day, and out
     # Output date, so a URL can be assembled, or assemble the URL
-    today = Date.beginning_of_week(Timex.now(stationdefaults.timezone))
+    today = Timex.today(stationdefaults.timezone)
+    tz = Timex.now(stationdefaults.timezone)
+    beginning_of_week = Date.beginning_of_week(tz)
+    weeks = [0..-7]
+      all_timeslots = for x <- 0..-7 do
+        timeslot_date = beginning_of_week |> Timex.shift(weeks: x)
 
-     all_timeslots = for x <- 0..-7 do
-      timeslot_date = today |> Timex.shift(weeks: x)
-      timeslots = for t <- raw_timeslots do
-        if Kday.kday_nearest(timeslot_date,t.day) <= today do
-          {Kday.kday_nearest(timeslot_date,t.day), t.starttimereadable}
-        end
-
+        timeslots = for t <- raw_timeslots do
+          kday_date = Kday.kday_on_or_after(timeslot_date,t.day)
+          audio_url = build_audio_url(kday_date, t.starttime, tz, tenant)
+          t_date = kday_date |> Timex.shift(days: 1)
+          if Timex.before?(t_date, today) do
+            %{date: Calendar.strftime(kday_date, "%B %d %Y"), starttime: t.starttimereadable, audio_url: audio_url}
+          end
+          # if t.runtime > 60 do
+          #   if Timex.before?(t_date, today) do
+          #     hour2 = t.starttime |> Timex.shift(hours: 1)
+          #     %{date: Calendar.strftime(kday_date, "%B %d %Y"), starttime: hour2, audio_url: audio_url}
+          #   end
+          # else
+          #   if t.runtime > 30 and Calendar.strftime(t.starttime, "%M") >= 30
+          #   if Timex.before?(t_date, today) do
+          #     hour2 = t.starttime |> Timex.shift(hours: 1)
+          #     %{date: Calendar.strftime(kday_date, "%B %d %Y"), starttime: hour2, audio_url: audio_url}
+          #   end
+          # end
       end
-      dbg(all_timeslots)
     end
-    
-    
+    final_timeslots = Enum.flat_map(all_timeslots, &(&1))
+    dbg(final_timeslots)
+  end
+
+  defp build_audio_url(date, starttime, tz, tenant) do
+    case tenant do
+      "cfrc" -> 
+        {:ok, datetime} = NaiveDateTime.new(date, starttime)
+        audio_datetime = Calendar.strftime(datetime, "%Y-%m-%d-%H")
+        dbg(datetime)
+        audio_url = "https://audio.cfrc.ca/archives/#{audio_datetime}.mp3"
+        # 2024-09-30-13.mp3"
+        dbg(audio_url)
+    end
+
   end
 
   def list_timeslots_by_day(day, tenant) do

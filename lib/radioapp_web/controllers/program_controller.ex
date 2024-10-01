@@ -39,7 +39,21 @@ defmodule RadioappWeb.ProgramController do
     tenant = RadioappWeb.get_tenant(conn)
     program = Station.get_program!(id, tenant)
     timeslots = Station.list_timeslots_for_program(program, tenant)
-    list_timeslots = Station.list_timeslots_for_archives(program, tenant)
+    current_user = conn.assigns.current_user
+    user_role =
+    if Map.get(current_user.roles, tenant) == nil do
+      Map.get(current_user.roles, "admin")
+    else
+      Map.get(current_user.roles, tenant)
+    end
+    %{enable_archives: enable_archives} = Admin.get_stationdefaults!(tenant)
+
+    archive_permission = Admin.get_permission(enable_archives, user_role)
+    list_timeslots = if archive_permission do
+      Station.list_timeslots_for_archives(program, tenant)
+    else 
+      []
+    end
 
     image =
     case program.images do

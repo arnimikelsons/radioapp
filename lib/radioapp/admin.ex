@@ -251,6 +251,21 @@ defmodule Radioapp.Admin do
     Repo.one(Stationdefaults, prefix: Triplex.to_prefix(tenant))
   end
 
+  def get_permission(permission, user_role) do
+    case permission do
+      "admin" ->
+        if user_role == "admin" or user_role == "super_admin" do
+          true
+        else
+          false
+        end
+      "user" ->
+        true
+      "none" ->
+        false
+    end
+  end
+
   def get_timezone!(tenant) do
     stationdefaults = Repo.all(Stationdefaults, prefix: Triplex.to_prefix(tenant))
     case stationdefaults do
