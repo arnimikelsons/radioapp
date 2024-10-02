@@ -265,9 +265,9 @@ defmodule Radioapp.Station do
           [%{date: nil, starttime: nil, audio_url: nil}]
         end
       end
-      timeslots = Enum.flat_map(rough_timeslots, &(&1))
+      _timeslots = Enum.flat_map(rough_timeslots, &(&1))
     end
-    final_timeslots = Enum.flat_map(all_timeslots, &(&1))
+    _final_timeslots = Enum.flat_map(all_timeslots, &(&1))
   end
 
   def build_audio_url(date, starttime, tenant) do
@@ -282,7 +282,7 @@ defmodule Radioapp.Station do
         audio_datetime = Calendar.strftime(datetime, "%Y-%m-%d-%H")
         _audio_url = "https://someurl.ca/archives/#{audio_datetime}.mp3"  
       _ ->
-        audio_url = nil
+        _audio_url = nil
     end
 
   end
