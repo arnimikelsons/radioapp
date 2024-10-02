@@ -26,7 +26,7 @@ defmodule RadioappWeb.ImageControllerTest do
 
   def image_fixture(_attrs \\ %{}) do
     program = Factory.insert(:program, [], prefix: @prefix)
-
+    _stationdefaults = Factory.insert(:stationdefaults, [], prefix: @prefix)
     assert {:ok, %Image{} = image} =
              Station.create_image_from_plug_upload(
                program,
@@ -47,6 +47,7 @@ defmodule RadioappWeb.ImageControllerTest do
     describe "manage programs" do
       setup %{conn: conn} do
         user = Factory.insert(:user, roles: %{@tenant => "user"})
+        
 
         conn = log_in_user(conn, user)
         %{conn: conn, user: user}
@@ -59,6 +60,7 @@ defmodule RadioappWeb.ImageControllerTest do
 
 
     test "redirects to show when data is valid", %{conn: conn} do
+      _stationdefaults = Factory.insert(:stationdefaults, [], prefix: @prefix)
       program = Factory.insert(:program, [], prefix: @prefix)
       conn = post(conn, ~p"/programs/#{program.id}/images", image: @valid_attrs)
 

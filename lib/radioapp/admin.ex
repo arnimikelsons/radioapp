@@ -260,7 +260,11 @@ defmodule Radioapp.Admin do
           false
         end
       "user" ->
-        true
+        if user_role == "admin" or user_role == "super_admin" or user_role == "user" do
+          true
+        else
+          false
+        end
       "none" ->
         false
     end

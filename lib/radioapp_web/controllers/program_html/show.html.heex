@@ -102,13 +102,31 @@
             </div>  
           </div>
         <% end %>
-
       </div>
-       <h3>Archives</h3>
+      <%= if @enable_archives == "enabled" do %>
+        <div class="md:w-1/3 p-3" id="programArchivesContainer">
+          <%= if @list_timeslots == [] do %>
+            <div><h3 id="archivesTitle">No archives available</h3></div>
+          <% else %>
+            <h5 id="subHeading"></h5><br>
+            <div><h3 id="archivesTitle"><%= @program.name %> Archives</h3></div>
+            <%= for t <- @list_timeslots do %>
+              <%= if t.audio_url != nil do %>
+                <div class="audio-wrapper">
+                  <%= t.date %> at <%= t.starttime %><br>
+                  <audio class="controls" controls="controls"><source src={t.audio_url} type="audio/mpeg"></audio>
+                </div>
+              <% end %> 
+            <% end %> 
+          <% end %>
+        </div> 
+      <% end %>
+      
+       <%!-- <h3>Archives</h3>
         <%= for t <- @list_timeslots do %>
           <%= if t != nil do %>
             <%= t.date %> at <%= t.starttime %><br>
           <% end %> 
-        <% end %> 
+        <% end %>  --%>
     </div>  
 <% end %>

@@ -46,7 +46,7 @@ defmodule RadioappWeb.SegmentLive.Index do
     %{timezone: timezone} = Admin.get_timezone!(tenant)
     {:ok,
      assign(socket,
-       program: Station.Admin.get_program!(program_id, tenant),
+       program: Station.get_program!(program_id, tenant),
        log: log,
        talking: talking,
        segments: segments,

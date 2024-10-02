@@ -40,16 +40,24 @@ defmodule RadioappWeb.ProgramController do
     program = Station.get_program!(id, tenant)
     timeslots = Station.list_timeslots_for_program(program, tenant)
     current_user = conn.assigns.current_user
-    user_role =
-    if Map.get(current_user.roles, tenant) == nil do
-      Map.get(current_user.roles, "admin")
-    else
-      Map.get(current_user.roles, tenant)
-    end
-    %{enable_archives: enable_archives} = Admin.get_stationdefaults!(tenant)
+    # user_role =
+    # if Map.get(current_user.roles, tenant) == nil do
+    #   Map.get(current_user.roles, "admin")
+    # else
+    #   Map.get(current_user.roles, tenant)
+    # end
+    # %{enable_archives: enable_archives} = Admin.get_stationdefaults!(tenant)
 
-    archive_permission = Admin.get_permission(enable_archives, user_role)
-    list_timeslots = if archive_permission do
+    # archive_permission = Admin.get_permission(enable_archives, user_role)
+    # list_timeslots = if archive_permission do
+    #   Station.list_timeslots_for_archives(program, tenant)
+    # else 
+    #   []
+    # end
+
+    stationdefaults = Admin.get_stationdefaults!(tenant)
+    enable_archives = stationdefaults.enable_archives
+    list_timeslots = if enable_archives == "enabled" do
       Station.list_timeslots_for_archives(program, tenant)
     else 
       []
@@ -80,7 +88,7 @@ defmodule RadioappWeb.ProgramController do
       end
     end
 
-    render(conn, :show, timeslots: timeslots, program: program, image: image, user_role: user_role, cols: cols, list_timeslots: list_timeslots)
+    render(conn, :show, timeslots: timeslots, program: program, image: image, user_role: user_role, cols: cols, list_timeslots: list_timeslots, enable_archives: enable_archives)
   end
 
   def edit(conn, %{"id" => id}) do

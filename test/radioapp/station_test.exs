@@ -147,6 +147,62 @@ defmodule Radioapp.StationTest do
       refute expected == Enum.map(Station.list_timeslots_by_day(2, @tenant), fn t -> t.id end)
     end
 
+    test "list_timeslots_for_archives" do
+      stationdefaults = Factory.insert(:stationdefaults, [timezone: "Canada/Atlantic"], prefix: @prefix)
+      program1 = Factory.insert(:program, [], prefix: @prefix)
+      timeslot1 = Factory.insert(:timeslot, [
+        day: 4, 
+        runtime: 60, 
+        starttime: ~T[10:00:00], 
+        starttimereadable: "10:00 am", 
+        program: program1], 
+        prefix: @prefix)
+      timeslot2 = Factory.insert(:timeslot, [
+        day: 1, 
+        runtime: 60, 
+        starttime: ~T[09:00:00], 
+        starttimereadable: "9:00 am", 
+        program: program1], 
+        prefix: @prefix)
+        
+      final_timeslots = Station.list_timeslots_for_archives(program1, @tenant)
+
+      # this is working because day 1 in timeslot2 == beginning_of_week
+      today = Timex.today(stationdefaults.timezone)
+      tz = Timex.now(stationdefaults.timezone)
+      beginning_of_week = Date.beginning_of_week(tz)
+      get_date = beginning_of_week |> Timex.shift(weeks: -2)
+      test_date = Calendar.strftime(get_date, "%B %d %Y")
+
+      audio_url = Station.build_audio_url(get_date, timeslot2.starttime, @tenant)
+
+      
+      assert Enum.any?(final_timeslots,
+      fn timeslot -> timeslot.starttime == "9:00 am" end)
+      refute Enum.any?(final_timeslots,
+      fn timeslot -> timeslot.starttime == "6:00 am" end)
+
+      assert Enum.any?(final_timeslots,
+      fn timeslot -> timeslot.date == test_date end)
+
+      assert Enum.any?(final_timeslots,
+      fn timeslot -> timeslot.audio_url == audio_url end)
+
+
+    end
+
+    # test "build_audio_url/3 for archive player" do
+    #   date = ~D[2024-08-12]
+    #   starttime = ~T[10:00:00]
+    #   
+    # end
+
+
+
+
+
+
+
     test "get_timeslot!/1 returns the timeslot with given id" do
       program = Factory.insert(:program, [], prefix: @prefix)
       timeslot = Factory.insert(:timeslot, [program: program], prefix: @prefix)

@@ -17,7 +17,7 @@
       <%= for timeslot <- @timeslots do %>
         <%= #Link only when logged in %>
         <p><%= Timex.day_name(timeslot.day) %>, <%= timeslot.starttimereadable %> for <%= timeslot.runtime %> minutes.
-        <%= if @current_user do%><%= if @current_user.role == :admin do %>
+        <%= if @current_user do%><%= if @current_user.role == :admin or @user_role == "super_admin" do %>
           <.link href={~p"/programs/#{@program}/timeslots/#{timeslot}/edit"}>Edit</.link>    
           <.link href={~p"/programs/#{@program}/timeslots/#{timeslot}"} method="delete" data-confirm="Are you sure?">
             Delete
@@ -69,40 +69,15 @@
         <h5 id="subHeading"></h5><br>
         <div><h3 id="archivesTitle"><%= @program.name %> Archives</h3></div>
         <%= for t <- @list_timeslots do %>
-          <%= if t != nil do %>
+          <%= if t.date != nil do %>
             <div class="audio-wrapper">
-              <%= t.date %> at <%= t.starttime %> on <%= t.audio_url %><br>
-              
+              <%= t.date %> at <%= t.starttime %><br>
               <audio class="controls" controls="controls"><source src={t.audio_url} type="audio/mpeg"></audio>
             </div>
           <% end %> 
         <% end %> 
       <% end %>
     </div> 
-    <%!-- <div class="md:w-1/3 p-3" id="programArchivesContainer">
-      <%= if @program.timeslots == [] do %>
-        <div><h3 id="archivesTitle">No archives available</h3></div>
-      <% else %>
-        <h5 id="subHeading"></h5><br>
-
-        <div><h3 id="archivesTitle"><%= @program.name %> archives</h3></div>
-        <div id="music2Container"></div>
-        <div id="pageShowTitle" style="display:none" contenteditable="true"><%= @program.name %></div>
-        <div style="display:none">
-          <%= for timeslot <- @timeslots do %>
-            <p class="timeslotDay"><%= Timex.day_name(timeslot.day) %></p>
-            <p class="timeslotDayInt"><%= rem timeslot.day, 7 %></p>
-            <p class="timeslotStartTime"><%= timeslot.starttime %></p>
-            <p class="timeslotRunTime" ><%= timeslot.runtime %></p>
-          <% end %>
-          <p><span id="numberOfTimeslots" ><%= length(@timeslots) %></span></p>
-        </div>
-
-        <h4 id ="archivesSubTitle" class="archivesSubTitle">Download recent episodes</h4>
-        <div id="thisWeek" style="clear: both"></div>
-        <div id="lastWeek" style="margin-bottom: 15px;"></div>
-      <% end %>
-    </div>  --%>
   </div>
   <%= if @program.images != nil do %>
     <img id="program-image" src={~p"/programs/#{@program}/images/#{@program.images.id}"} />

@@ -238,7 +238,6 @@ defmodule Radioapp.Station do
       runtime: t.runtime
     })
     |> Repo.all(prefix: Triplex.to_prefix(tenant))
-
     stationdefaults = Admin.get_stationdefaults!(tenant)
 
     # Find today; find # of weeks for archive from settings, find that day
@@ -247,44 +246,43 @@ defmodule Radioapp.Station do
     today = Timex.today(stationdefaults.timezone)
     tz = Timex.now(stationdefaults.timezone)
     beginning_of_week = Date.beginning_of_week(tz)
-    weeks = [0..-7]
-      all_timeslots = for x <- 0..-7 do
-        timeslot_date = beginning_of_week |> Timex.shift(weeks: x)
-
-        timeslots = for t <- raw_timeslots do
-          kday_date = Kday.kday_on_or_after(timeslot_date,t.day)
-          audio_url = build_audio_url(kday_date, t.starttime, tz, tenant)
-          t_date = kday_date |> Timex.shift(days: 1)
-          if Timex.before?(t_date, today) do
-            %{date: Calendar.strftime(kday_date, "%B %d %Y"), starttime: t.starttimereadable, audio_url: audio_url}
-          end
-          # if t.runtime > 60 do
-          #   if Timex.before?(t_date, today) do
-          #     hour2 = t.starttime |> Timex.shift(hours: 1)
-          #     %{date: Calendar.strftime(kday_date, "%B %d %Y"), starttime: hour2, audio_url: audio_url}
-          #   end
-          # else
-          #   if t.runtime > 30 and Calendar.strftime(t.starttime, "%M") >= 30
-          #   if Timex.before?(t_date, today) do
-          #     hour2 = t.starttime |> Timex.shift(hours: 1)
-          #     %{date: Calendar.strftime(kday_date, "%B %d %Y"), starttime: hour2, audio_url: audio_url}
-          #   end
-          # end
+    all_timeslots = for x <- 0..-7 do
+      timeslot_date = beginning_of_week |> Timex.shift(weeks: x)
+      rough_timeslots = for t <- raw_timeslots do
+        kday_date = Kday.kday_on_or_after(timeslot_date,t.day)
+        audio_url = build_audio_url(kday_date, t.starttime, tenant)
+        t_date = kday_date |> Timex.shift(days: 1)
+        if Timex.before?(t_date, today) do
+          cond do
+            t.runtime > 60 ->
+              _hour2 = Time.to_string(Time.add(t.starttime, 3600))
+              [%{date: Calendar.strftime(kday_date, "%B %d %Y"), starttime: t.starttimereadable, audio_url: audio_url}] ++
+              [%{date: Calendar.strftime(kday_date, "%B %d %Y"), starttime: "Hour 2", audio_url: audio_url}]
+            true ->
+              [%{date: Calendar.strftime(kday_date, "%B %d %Y"), starttime: t.starttimereadable, audio_url: audio_url}]
+            end
+        else 
+          [%{date: nil, starttime: nil, audio_url: nil}]
+        end
       end
+      timeslots = Enum.flat_map(rough_timeslots, &(&1))
     end
     final_timeslots = Enum.flat_map(all_timeslots, &(&1))
-    dbg(final_timeslots)
   end
 
-  defp build_audio_url(date, starttime, tz, tenant) do
+  def build_audio_url(date, starttime, tenant) do
     case tenant do
       "cfrc" -> 
         {:ok, datetime} = NaiveDateTime.new(date, starttime)
         audio_datetime = Calendar.strftime(datetime, "%Y-%m-%d-%H")
-        dbg(datetime)
-        audio_url = "https://audio.cfrc.ca/archives/#{audio_datetime}.mp3"
-        # 2024-09-30-13.mp3"
-        dbg(audio_url)
+        _audio_url = "https://audio.cfrc.ca/archives/#{audio_datetime}.mp3"
+      "sample" -> 
+        # for tests
+        {:ok, datetime} = NaiveDateTime.new(date, starttime)
+        audio_datetime = Calendar.strftime(datetime, "%Y-%m-%d-%H")
+        _audio_url = "https://someurl.ca/archives/#{audio_datetime}.mp3"  
+      _ ->
+        audio_url = nil
     end
 
   end
@@ -665,7 +663,6 @@ defmodule Radioapp.Station do
         {:ok, start_datetime, end_datetime}
         
       false ->
-        dbg(String.length(start_time))
         case not is_nil(date) and not is_nil(start_time) and not is_nil(end_time) do
           true ->
             # Fix start time error missing seconds value

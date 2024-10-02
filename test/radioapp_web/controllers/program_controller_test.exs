@@ -20,6 +20,7 @@ defmodule RadioappWeb.ProgramControllerTest do
   describe "manage programs" do
     setup %{conn: conn} do
       user = Factory.insert(:user, roles: %{@tenant => "user"}, full_name: "Some Full Name")
+      _stationdefaults = Factory.insert(:stationdefaults, [], prefix: @prefix)
       conn = log_in_user(conn, user)
       %{conn: conn, user: user}
     end
@@ -39,7 +40,7 @@ defmodule RadioappWeb.ProgramControllerTest do
       conn = get(conn, ~p"/programs/#{id}")
       assert html_response(conn, 200) =~ "Edit Program"
       # there are no timeslots so show that there are no archives
-      assert html_response(conn, 200) =~ "No archives available"
+      assert html_response(conn, 200) =~ "No timeslots defined"
 
     end
 
