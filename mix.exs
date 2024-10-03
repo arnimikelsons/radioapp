@@ -64,7 +64,8 @@ defmodule Radioapp.MixProject do
       {:sweet_xml, "~> 0.6"},
       {:triplex, "~> 1.3.0"},
       {:appsignal, "~> 2.0"},
-      {:appsignal_phoenix, "~> 2.0"}
+      {:appsignal_phoenix, "~> 2.0"},
+      {:kday, "~> 1.0"}
     ]
   end
 

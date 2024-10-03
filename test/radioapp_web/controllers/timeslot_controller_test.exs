@@ -58,6 +58,7 @@ defmodule RadioappWeb.TimeslotControllerTest do
   describe "manage timeslots" do
     setup %{conn: conn} do
       user = Factory.insert(:user, roles: %{@tenant => "admin"})
+      _stationdefaults = Factory.insert(:stationdefaults, [], prefix: @prefix)
       conn = log_in_user(conn, user)
       %{conn: conn, user: user}
     end
@@ -93,7 +94,6 @@ defmodule RadioappWeb.TimeslotControllerTest do
       # Then we are redirected to the program index page with the new timeslot
       assert %{id: _id} = redirected_params(conn)
       assert redirected_to(conn) == ~p"/programs/#{program.id}"
-
 
       # And the show template is rendered
       conn = get(conn, ~p"/programs/#{program.id}")

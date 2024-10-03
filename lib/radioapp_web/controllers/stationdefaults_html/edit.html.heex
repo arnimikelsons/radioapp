@@ -32,6 +32,7 @@
       <.input field={{f, :api_permission}} options={( [ "none", "admin", "user" ] )} type="select" label="Grant access to access APIs" />
       <.input field={{f, :socan_permission}} options={( [ "none", "admin", "user" ] )} type="select" label="Grant access to access SOCAN dropdown" />
       <.input field={{f, :export_log_permission}} options={( [ "none", "admin", "user" ] )} type="select" label="Grant access to access to export Log" />
+      <.input field={{f, :enable_archives}} options={( [ "none", "enabled" ] )} type="select" label="Enable archive access (needs setup)" />
       <:actions>
         <.button>Save station defaults</.button>
       </:actions>

@@ -18,6 +18,33 @@ p {
   margin-bottom: 1rem;
 }
 
+.audio-container-popup {
+  padding: 15px;
+  border: 2px solid black;
+  border-radius: 8px;
+  box-shadow: 3px 3px;
+  background-color: #ccac24;
+}
+
+.audio-wrapper {
+  margin: 15px 5px;
+  text-align: center;
+  font-size: .8em;
+  font-weight: bold;
+}
+
+/* @media (min-width: 765px) {
+  .audio-wrapper {
+    border: 1px solid black;
+    margin: 15px 15px;
+  }
+} */
+
+.controls {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
 .text-tip {
   margin-top: 0 !important;
   float: right;
@@ -2228,27 +2255,35 @@ input:checked+.slider:before {
 
 /*** IMPORT AUTOMATED SEGMENTS ***/
 
-.filters .sources input[type="checkbox"]:checked + label {
+.filters .sources input[type="checkbox"]:checked+label {
   background-color: black;
   color: white;
   border-color: black;
 }
+
 .filters .sources label:first-of-type {
   border-right-width: 1px;
   border-left-width: 1px;
-  border-top-left-radius: 0.5rem; /* 8px */
-  border-bottom-left-radius: 0.5rem; /* 8px */
+  border-top-left-radius: 0.5rem;
+  /* 8px */
+  border-bottom-left-radius: 0.5rem;
+  /* 8px */
 }
-.filters .sources input[type="checkbox"]:checked + label:first-of-type {
+
+.filters .sources input[type="checkbox"]:checked+label:first-of-type {
   border-right-color: white;
 }
+
 .filters .sources label:last-of-type {
   border-right-width: 1px;
   border-left-width: 1px;
-  border-top-right-radius: 0.5rem; /* 8px */
-  border-bottom-right-radius: 0.5rem; /* 8px */
+  border-top-right-radius: 0.5rem;
+  /* 8px */
+  border-bottom-right-radius: 0.5rem;
+  /* 8px */
 }
-.filters .sources input[type="checkbox"]:checked + label:last-of-type {
+
+.filters .sources input[type="checkbox"]:checked+label:last-of-type {
   border-left-color: white;
 }
 

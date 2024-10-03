@@ -5,10 +5,11 @@
                 cols={@cols}
                 program={@program}
                 timeslots={@timeslots}
+                list_timeslots={@list_timeslots }
                 user_role={@user_role}
                 conn={@conn}
                 />
-  <% "radio" -> %> <.show_cfrc
+  <% "radio" -> %> <.show_radio
                 current_user={@current_user} 
                 current_tenant={@current_tenant} 
                 cols={@cols}
@@ -70,31 +71,7 @@
                   <%= if @program.link2 != nil do %><.link navigate={"#{@program.link2_url}"}><i class={"fa-2x #{@program.link2.icon}"}></i></.link><% end %>
                   <%= if @program.link3 != nil do %><.link navigate={"#{@program.link3_url}"}><i class={"fa-2x #{@program.link3.icon}"}></i></.link><% end %></p>
                 <% end %>
-                    <!--
-                      <div class="md:w-1/3 p-3" id="programArchivesContainer">
-                        <%= if @program.timeslots == [] do %>
-                          <div><h3 id="archivesTitle">No archives available</h3></div>
-                        <% else %>
-                          <h5 id="subHeading"></h5><br>
-
-                          <div><h3 id="archivesTitle"><%= @program.name %> archives</h3></div>
-                          <div id="music2Container"></div>
-                          <div id="pageShowTitle" style="display:none" contenteditable="true"><%= @program.name %></div>
-                          <div style="display:none">
-                            <%= for timeslot <- @timeslots do %>
-                              <p class="timeslotDay"><%= Timex.day_name(timeslot.day) %></p>
-                              <p class="timeslotDayInt"><%= rem timeslot.day, 7 %></p>
-                              <p class="timeslotStartTime"><%= timeslot.starttime %></p>
-                              <p class="timeslotRunTime" ><%= timeslot.runtime %></p>
-                            <% end %>
-                            <p><span id="numberOfTimeslots" ><%= length(@timeslots) %></span></p>
-                          </div>
-
-                          <h4 id ="archivesSubTitle" class="archivesSubTitle">Download recent episodes</h4>
-                          <div id="thisWeek" style="clear: both"></div>
-                          <div id="lastWeek" style="margin-bottom: 15px;"></div>
-                        <% end %>
-                      </div> -->
+                    
               </div>
             </div>
           </div>
@@ -126,5 +103,30 @@
           </div>
         <% end %>
       </div>
+      <%= if @enable_archives == "enabled" do %>
+        <div class="md:w-1/3 p-3" id="programArchivesContainer">
+          <%= if @list_timeslots == [] do %>
+            <div><h3 id="archivesTitle">No archives available</h3></div>
+          <% else %>
+            <h5 id="subHeading"></h5><br>
+            <div><h3 id="archivesTitle"><%= @program.name %> Archives</h3></div>
+            <%= for t <- @list_timeslots do %>
+              <%= if t.audio_url != nil do %>
+                <div class="audio-wrapper">
+                  <%= t.date %> at <%= t.starttime %><br>
+                  <audio class="controls" controls="controls"><source src={t.audio_url} type="audio/mpeg"></audio>
+                </div>
+              <% end %> 
+            <% end %> 
+          <% end %>
+        </div> 
+      <% end %>
+      
+       <%!-- <h3>Archives</h3>
+        <%= for t <- @list_timeslots do %>
+          <%= if t != nil do %>
+            <%= t.date %> at <%= t.starttime %><br>
+          <% end %> 
+        <% end %>  --%>
     </div>  
 <% end %>

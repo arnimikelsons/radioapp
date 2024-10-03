@@ -75,6 +75,12 @@ defmodule Radioapp.CSV.Importer do
 
   defp column_names_match_db(column_names) do
     csv_cols = Map.values(column_names)
+    # Attempt to add column names that are needed
+    
+    # submitted_cols = MapSet.new(Map.values(column_names))
+    # needed_cols = MapSet.new(["start_time", "end_time", "category"])
+    #csv_cols = MapSet.to_list(MapSet.union(submitted_cols,needed_cols))
+
     case Enum.all?(csv_cols, fn csv_col ->
           Enum.member?(@segment_columns, csv_col)
         end)

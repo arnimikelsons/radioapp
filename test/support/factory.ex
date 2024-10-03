@@ -189,7 +189,8 @@ end
       api_permission: "user",
       intro_email_body: "Some intro email body",
       intro_email_subject: "some intro email subject",
-      socan_permission: "user"
+      socan_permission: "user", 
+      enable_archives: "none"
     }
   end
 end

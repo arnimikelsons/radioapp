@@ -111,6 +111,15 @@ defmodule Radioapp.AdminTest do
       assert %Ecto.Changeset{} = Admin.change_category(category)
     end
   end
+  describe "test get_permission" do
+    test "user permission is true for admin and user, not for none" do
+      stationdefaults = Factory.insert(:stationdefaults, [csv_permission: "user"], prefix: @prefix)
+      _current_user = Factory.insert(:user, roles: %{@tenant => "user"}, full_name: "Some Full Name")
+      assert Admin.get_permission(stationdefaults.csv_permission, "user") == true
+      assert Admin.get_permission(stationdefaults.csv_permission, "admin") == true
+      assert Admin.get_permission(stationdefaults.csv_permission, "none") == false
+    end
+  end
 
   describe "stationdefaults" do
 

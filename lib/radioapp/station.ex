@@ -224,6 +224,69 @@ defmodule Radioapp.Station do
     |> Repo.preload(program: [link1: [], link2: [], link3: []])
   end
 
+  def list_timeslots_for_archives(program, tenant) do
+    # from timeslots, loop over the last 8 weeks to output the archives that can be played
+    
+
+    raw_timeslots = from(t in Timeslot, 
+      where: [program_id: ^program.id],
+      order_by: [desc: t.day, asc: t.starttime],
+      select: %{
+      day: t.day,
+      starttime: t.starttime, 
+      starttimereadable: t.starttimereadable,
+      runtime: t.runtime
+    })
+    |> Repo.all(prefix: Triplex.to_prefix(tenant))
+    stationdefaults = Admin.get_stationdefaults!(tenant)
+
+    # Find today; find # of weeks for archive from settings, find that day
+    # Loop over days starting at today, going back to end day, and out
+    # Output date, so a URL can be assembled, or assemble the URL
+    today = Timex.today(stationdefaults.timezone)
+    tz = Timex.now(stationdefaults.timezone)
+    beginning_of_week = Date.beginning_of_week(tz)
+    all_timeslots = for x <- 0..-7 do
+      timeslot_date = beginning_of_week |> Timex.shift(weeks: x)
+      rough_timeslots = for t <- raw_timeslots do
+        kday_date = Kday.kday_on_or_after(timeslot_date,t.day)
+        audio_url = build_audio_url(kday_date, t.starttime, tenant)
+        t_date = kday_date |> Timex.shift(days: 1)
+        if Timex.before?(t_date, today) do
+          cond do
+            t.runtime > 60 ->
+              _hour2 = Time.to_string(Time.add(t.starttime, 3600))
+              [%{date: Calendar.strftime(kday_date, "%B %d %Y"), starttime: "at #{t.starttimereadable}", audio_url: audio_url}] ++
+              [%{date: Calendar.strftime(kday_date, "%B %d %Y"), starttime: "Hour 2", audio_url: audio_url}]
+            true ->
+              [%{date: Calendar.strftime(kday_date, "%B %d %Y"), starttime: "at #{t.starttimereadable}", audio_url: audio_url}]
+            end
+        else 
+          [%{date: nil, starttime: nil, audio_url: nil}]
+        end
+      end
+      _timeslots = Enum.flat_map(rough_timeslots, &(&1))
+    end
+    _final_timeslots = Enum.flat_map(all_timeslots, &(&1))
+  end
+
+  def build_audio_url(date, starttime, tenant) do
+    case tenant do
+      "cfrc" -> 
+        {:ok, datetime} = NaiveDateTime.new(date, starttime)
+        audio_datetime = Calendar.strftime(datetime, "%Y-%m-%d-%H")
+        _audio_url = "https://audio.cfrc.ca/archives/#{audio_datetime}.mp3"
+      "sample" -> 
+        # for tests
+        {:ok, datetime} = NaiveDateTime.new(date, starttime)
+        audio_datetime = Calendar.strftime(datetime, "%Y-%m-%d-%H")
+        _audio_url = "https://someurl.ca/archives/#{audio_datetime}.mp3"  
+      _ ->
+        _audio_url = nil
+    end
+
+  end
+
   def list_timeslots_by_day(day, tenant) do
     from(t in Timeslot, where: t.day == ^day, order_by: [asc: :starttime])
     |> Repo.all(prefix: Triplex.to_prefix(tenant))
@@ -598,6 +661,7 @@ defmodule Radioapp.Station do
         start_datetime = nil
         end_datetime = nil
         {:ok, start_datetime, end_datetime}
+        
       false ->
         case not is_nil(date) and not is_nil(start_time) and not is_nil(end_time) do
           true ->
@@ -606,11 +670,14 @@ defmodule Radioapp.Station do
               case String.length(start_time) do
                 5 ->
                   start_time <> ":00"
+                7 ->
+                  "0#{start_time}"
                 8 ->
                   start_time
                 _ ->
-                  nil
+                  ""
               end
+
             # Convert start_datetime to UTC
             {:ok, start_date_time_naive} = NaiveDateTime.from_iso8601("#{date} #{start_time}")
             {:ok, start_datetime} = DateTime.from_naive(start_date_time_naive, station_timezone)
@@ -620,12 +687,15 @@ defmodule Radioapp.Station do
               case String.length(end_time) do
                 5 ->
                   end_time <> ":00"
+                7 ->
+                  "0#{end_time}"
                 8 ->
                   end_time
                 _ ->
                   nil
               end
             # Convert end_datetime to UTC
+
             {:ok, end_date_time_naive} = NaiveDateTime.from_iso8601("#{date} #{end_time}")
             {:ok, end_datetime} = DateTime.from_naive(end_date_time_naive, station_timezone)
 
@@ -719,7 +789,7 @@ defmodule Radioapp.Station do
   end
 
   def list_segments_for_log_export(log, tenant) do
-    segments = from(s in Segment, 
+    _segments = from(s in Segment, 
       left_join: c in assoc(s, :category),
       where: s.log_id == ^log.id, 
       order_by: [asc: :start_time],
