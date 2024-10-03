@@ -3,8 +3,8 @@
     <%= @program.name %><%= if @program.hide == true do %> (hidden)<% end %>
   </.header>
   
-  <div class="flex">
-    <div class="md:w-2/3">
+  <div class="flex flex-wrap">
+    <div class="md:w-2/3 w-full">
       <div class="show-description p-2 px-4">
         <h3 class="pt-3"><strong>Show Description</strong></h3>
         <%= raw(Earmark.as_html!(@program.description)) %>
@@ -62,16 +62,15 @@
     <% end %>
   <% end %>
     </div>
-    <div class="md:w-1/3 p-3" id="programArchivesContainer">
+    <div class="md:w-1/3 w-full" id="programArchivesContainer">
       <%= if @list_timeslots == [] do %>
-        <div><h3 id="archivesTitle">No archives available</h3></div>
+        <div><h3 id="archivesTitle" class="text-center">No archives available</h3></div>
       <% else %>
-        <h5 id="subHeading"></h5><br>
-        <div><h3 id="archivesTitle"><%= @program.name %> Archives</h3></div>
+        <div><h3 id="archivesTitle" class="text-center"><%= @program.name %> Archives</h3></div>
         <%= for t <- @list_timeslots do %>
           <%= if t.date != nil do %>
             <div class="audio-wrapper">
-              <%= t.date %> at <%= t.starttime %><br>
+              <%= t.date %> <%= t.starttime %> &nbsp;&nbsp;&nbsp;<a href={t.audio_url}><i class="fa-solid fa-download fa-lg"></i></a><br>
               <audio class="controls" controls="controls"><source src={t.audio_url} type="audio/mpeg"></audio>
             </div>
           <% end %> 

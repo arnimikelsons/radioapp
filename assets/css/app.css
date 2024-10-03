@@ -27,15 +27,22 @@ p {
 }
 
 .audio-wrapper {
-  border: #000 1px solid;
   margin: 15px 5px;
   text-align: center;
   font-size: .8em;
   font-weight: bold;
 }
 
+/* @media (min-width: 765px) {
+  .audio-wrapper {
+    border: 1px solid black;
+    margin: 15px 15px;
+  }
+} */
+
 .controls {
   max-width: 100%;
+  margin: 0 auto;
 }
 
 .text-tip {

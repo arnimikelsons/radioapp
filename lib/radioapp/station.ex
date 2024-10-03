@@ -256,10 +256,10 @@ defmodule Radioapp.Station do
           cond do
             t.runtime > 60 ->
               _hour2 = Time.to_string(Time.add(t.starttime, 3600))
-              [%{date: Calendar.strftime(kday_date, "%B %d %Y"), starttime: t.starttimereadable, audio_url: audio_url}] ++
+              [%{date: Calendar.strftime(kday_date, "%B %d %Y"), starttime: "at #{t.starttimereadable}", audio_url: audio_url}] ++
               [%{date: Calendar.strftime(kday_date, "%B %d %Y"), starttime: "Hour 2", audio_url: audio_url}]
             true ->
-              [%{date: Calendar.strftime(kday_date, "%B %d %Y"), starttime: t.starttimereadable, audio_url: audio_url}]
+              [%{date: Calendar.strftime(kday_date, "%B %d %Y"), starttime: "at #{t.starttimereadable}", audio_url: audio_url}]
             end
         else 
           [%{date: nil, starttime: nil, audio_url: nil}]
