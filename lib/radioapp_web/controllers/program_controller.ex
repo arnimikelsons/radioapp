@@ -46,7 +46,6 @@ defmodule RadioappWeb.ProgramController do
     else 
       {[], 0}
     end
-    dbg(length)
 
     image =
     case program.images do
