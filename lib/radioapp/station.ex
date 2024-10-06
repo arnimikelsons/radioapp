@@ -246,7 +246,7 @@ defmodule Radioapp.Station do
     today = Timex.today(stationdefaults.timezone)
     tz = Timex.now(stationdefaults.timezone)
     beginning_of_week = Date.beginning_of_week(tz)
-    all_timeslots = for x <- 0..-7 do
+    all_timeslots = for x <- 0..-16 do
       timeslot_date = beginning_of_week |> Timex.shift(weeks: x)
       rough_timeslots = for t <- raw_timeslots do
         kday_date = Kday.kday_on_or_after(timeslot_date,t.day)
@@ -271,8 +271,6 @@ defmodule Radioapp.Station do
 
     full_timeslots = Enum.with_index(f_timeslots, fn element, index -> Map.put(element, :id, index) end)
     length =length(full_timeslots)
-    dbg(length)
-    dbg(full_timeslots)
     {full_timeslots, length}
   end
 
