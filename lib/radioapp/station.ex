@@ -267,7 +267,13 @@ defmodule Radioapp.Station do
       end
       _timeslots = Enum.flat_map(rough_timeslots, &(&1))
     end
-    _final_timeslots = Enum.flat_map(all_timeslots, &(&1))
+    f_timeslots = Enum.flat_map(all_timeslots, &(&1))
+
+    full_timeslots = Enum.with_index(f_timeslots, fn element, index -> Map.put(element, :id, index) end)
+    length =length(full_timeslots)
+    dbg(length)
+    dbg(full_timeslots)
+    {full_timeslots, length}
   end
 
   def build_audio_url(date, starttime, tenant) do

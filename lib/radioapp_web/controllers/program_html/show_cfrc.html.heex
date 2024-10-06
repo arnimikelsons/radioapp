@@ -2,6 +2,25 @@
   <.header>
     <%= @program.name %><%= if @program.hide == true do %> (hidden)<% end %>
   </.header>
+    <script type="text/javascript">
+
+      function changeMoreAudio() {
+        const mycontent =
+          document.getElementById('more_audio');
+        const mybutton =
+          document.getElementById('moreaudiobutton');
+
+        if (mycontent.style.display === 'none'
+          || mycontent.style.display === '') {
+          mycontent.style.display = 'block';
+          mybutton.textContent = 'Read Less';
+        } else {
+          mycontent.style.display = 'none';
+          mybutton.textContent = 'Read More';
+        }
+      }
+    </script>
+
   
   <div class="flex flex-wrap">
     <div class="md:w-2/3 w-full">
@@ -67,14 +86,36 @@
         <div><h3 id="archivesTitle" class="text-center">No archives available</h3></div>
       <% else %>
         <div><h3 id="archivesTitle" class="text-center"><%= @program.name %> Archives</h3></div>
+
         <%= for t <- @list_timeslots do %>
-          <%= if t.date != nil do %>
-            <div class="audio-wrapper">
-              <%= t.date %> <%= t.starttime %> &nbsp;&nbsp;&nbsp;<a href={t.audio_url}><i class="fa-solid fa-download fa-lg"></i></a><br>
-              <audio class="controls" controls="controls"><source src={t.audio_url} type="audio/mpeg"></audio>
+          <%= if t.id == 8 do %>
+            <div class = "text-center">
+              <button id="moreaudiobutton" onclick="changeMoreAudio()"  class="bg-zinc-900 hover:bg-zinc-700 py-2 px-3 text-sm font-semibold leading-6 text-white active:text-white/80 ">
+                See more
+              </button>
             </div>
-          <% end %> 
-        <% end %> 
+          <% end %>
+          <%= if t.id <= 7 do %>
+            <%= if t.date != nil do %>
+              <div class="audio-wrapper">
+                <%= t.date %> <%= t.starttime %> &nbsp;&nbsp;&nbsp;<a href={t.audio_url}><i class="fa-solid fa-download fa-lg"></i></a><br>
+                <audio class="controls" controls="controls"><source src={t.audio_url} type="audio/mpeg"></audio>
+              </div>
+            <% end %> 
+          <% end %>
+        <% end %>
+        <div id="more_audio">
+          <%= for t <- @list_timeslots do %>
+            <%= if t.id > 7 do %>
+              <%= if t.date != nil do %>
+                <div class="audio-wrapper">
+                  <%= t.date %> <%= t.starttime %> &nbsp;&nbsp;&nbsp;<a href={t.audio_url}><i class="fa-solid fa-download fa-lg"></i></a><br>
+                  <audio class="controls" controls="controls"><source src={t.audio_url} type="audio/mpeg"></audio>
+                </div>
+              <% end %> 
+            <% end %>
+          <% end %>
+        </div>
       <% end %>
     </div> 
   </div>

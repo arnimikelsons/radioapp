@@ -33,6 +33,10 @@ p {
   font-weight: bold;
 }
 
+#more_audio {
+  display: none;
+}
+
 /* @media (min-width: 765px) {
   .audio-wrapper {
     border: 1px solid black;

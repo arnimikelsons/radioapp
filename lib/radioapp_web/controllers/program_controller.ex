@@ -41,11 +41,12 @@ defmodule RadioappWeb.ProgramController do
     timeslots = Station.list_timeslots_for_program(program, tenant)
     stationdefaults = Admin.get_stationdefaults!(tenant)
     enable_archives = stationdefaults.enable_archives
-    list_timeslots = if enable_archives == "enabled" do
+    {list_timeslots, length} = if enable_archives == "enabled" do
       Station.list_timeslots_for_archives(program, tenant)
     else 
-      []
+      {[], 0}
     end
+    dbg(length)
 
     image =
     case program.images do

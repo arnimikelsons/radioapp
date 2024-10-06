@@ -178,9 +178,9 @@ defmodule Radioapp.StationTest do
 
       
       assert Enum.any?(final_timeslots,
-      fn timeslot -> timeslot.starttime == "9:00 am" end)
+      fn timeslot -> timeslot.starttime == "at 9:00 am" end)
       refute Enum.any?(final_timeslots,
-      fn timeslot -> timeslot.starttime == "6:00 am" end)
+      fn timeslot -> timeslot.starttime == "at 6:00 am" end)
 
       assert Enum.any?(final_timeslots,
       fn timeslot -> timeslot.date == test_date end)
