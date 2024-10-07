@@ -176,7 +176,6 @@ defmodule Radioapp.StationTest do
 
       audio_url = Station.build_audio_url(get_date, timeslot2.starttime, @tenant)
 
-      
       assert Enum.any?(final_timeslots,
       fn timeslot -> timeslot.starttime == "at 9:00 am" end)
       refute Enum.any?(final_timeslots,
@@ -187,8 +186,6 @@ defmodule Radioapp.StationTest do
 
       assert Enum.any?(final_timeslots,
       fn timeslot -> timeslot.audio_url == audio_url end)
-
-
     end
 
     # test "build_audio_url/3 for archive player" do
@@ -196,12 +193,6 @@ defmodule Radioapp.StationTest do
     #   starttime = ~T[10:00:00]
     #   
     # end
-
-
-
-
-
-
 
     test "get_timeslot!/1 returns the timeslot with given id" do
       program = Factory.insert(:program, [], prefix: @prefix)

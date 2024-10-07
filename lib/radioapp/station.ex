@@ -280,6 +280,10 @@ defmodule Radioapp.Station do
         {:ok, datetime} = NaiveDateTime.new(date, starttime)
         audio_datetime = Calendar.strftime(datetime, "%Y-%m-%d-%H")
         _audio_url = "https://audio.cfrc.ca/archives/#{audio_datetime}.mp3"
+      "radio" -> 
+        {:ok, datetime} = NaiveDateTime.new(date, starttime)
+        audio_datetime = Calendar.strftime(datetime, "%Y-%m-%d-%H")
+        _audio_url = "https://audio.cfrc.ca/archives/#{audio_datetime}.mp3"
       "sample" -> 
         # for tests
         {:ok, datetime} = NaiveDateTime.new(date, starttime)
