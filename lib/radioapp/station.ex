@@ -31,7 +31,7 @@ defmodule Radioapp.Station do
   end
 
   def list_all_programs(tenant) do
-    from(p in Program, order_by: [asc: :name])
+    program = from(p in Program, order_by: [asc: :name])
     |> Repo.all(prefix: Triplex.to_prefix(tenant))
     |> Repo.preload([
       :timeslots,
@@ -40,7 +40,24 @@ defmodule Radioapp.Station do
       :link2,
       :link3
     ])
+
+    for p <- program do 
+      %{p | timeslot_count: Enum.count(p.timeslots)} 
+    end
   end
+
+  def list_programs_with_timeslot(program) do
+    for p when p.timeslot_count > 0 <- program do
+       p
+    end
+  end
+  def list_programs_not_hidden(program) do
+    for p when p.hide == false <- program do
+       p
+    end
+  end
+
+
 
   @doc """
   Gets a single program.
@@ -216,6 +233,7 @@ defmodule Radioapp.Station do
         link3: []
       ]
     )
+
   end
 
   def list_timeslots_for_program(program, tenant) do
@@ -223,6 +241,31 @@ defmodule Radioapp.Station do
     |> Repo.all(prefix: Triplex.to_prefix(tenant))
     |> Repo.preload(program: [link1: [], link2: [], link3: []])
   end
+
+
+  # def list_timeslots_for_archives_from_logs(program, tenant) do
+  #   raw_logs =
+  #   from(l in Log, 
+  #     where: [program_id: ^program.id], 
+  #     order_by: [desc: :date]
+  #     select: %{l.date, 
+  #     starttime: l.start_time,
+  #     startdatetime: l.start_datetime, 
+  #     enddatetime: l.end_datetime})
+  #     # could use runtime, but end_time might be just as useful
+  #     # need to have starttimereadable and starttime
+  #   |> Repo.all(prefix: Triplex.to_prefix(tenant))
+
+  #   stationdefaults = Admin.get_stationdefaults!(tenant)
+
+  #   today = Timex.today(stationdefaults.timezone)
+  #   tz = Timex.now(stationdefaults.timezone)
+  #   beginning_of_week = Date.beginning_of_week(tz)
+  #   rough_logs = for t <- raw_logs do
+      
+
+  #   end
+  # end
 
   def list_timeslots_for_archives(program, tenant) do
     # from timeslots, loop over the last 8 weeks to output the archives that can be played

@@ -13,6 +13,7 @@ defmodule Radioapp.Station.Program do
     field :link1_url, :string
     field :link2_url, :string
     field :link3_url, :string
+    field :timeslot_count, :integer, virtual: true
 
     has_many :timeslots, Timeslot
     has_one :images, Image
@@ -27,7 +28,7 @@ defmodule Radioapp.Station.Program do
   @doc false
   def changeset(program, attrs) do
     program
-    |> cast(attrs, [:name, :description, :genre, :short_description, :hide, :link1_url, :link2_url, :link3_url, :link1_id, :link2_id, :link3_id])
+    |> cast(attrs, [:name, :description, :genre, :short_description, :hide, :link1_url, :link2_url, :link3_url, :link1_id, :link2_id, :link3_id, :timeslot_count])
     |> validate_required([:name, :description, :genre, :short_description])
   end
 end

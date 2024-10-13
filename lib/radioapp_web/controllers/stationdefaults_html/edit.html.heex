@@ -33,6 +33,7 @@
       <.input field={{f, :socan_permission}} options={( [ "none", "admin", "user" ] )} type="select" label="Grant access to access SOCAN dropdown" />
       <.input field={{f, :export_log_permission}} options={( [ "none", "admin", "user" ] )} type="select" label="Grant access to access to export Log" />
       <.input field={{f, :enable_archives}} options={( [ "none", "enabled" ] )} type="select" label="Enable archive access (needs setup)" />
+      <.input field={{f, :program_show}} options={( [ "all", "programs with timeslots", "use hidden checkbox" ] )} type="select" label="Default program show" />
       <:actions>
         <.button>Save station defaults</.button>
       </:actions>

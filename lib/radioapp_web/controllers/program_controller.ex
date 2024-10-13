@@ -8,9 +8,25 @@ defmodule RadioappWeb.ProgramController do
   def index(conn, _params) do
     tenant = RadioappWeb.get_tenant(conn)
     programs = Station.list_programs(tenant)
-    all_programs = Station.list_all_programs(tenant)
+    raw_programs = Station.list_all_programs(tenant)
+
+    program_show = Admin.get_stationdefaults!(tenant).program_show
+
     current_user = conn.assigns.current_user
-    render(conn, :index, programs: programs, all_programs: all_programs, current_user: current_user)
+    
+    all_programs = if current_user == nil do
+      raw_programs
+    else
+      # if not logged in
+      case program_show do
+        "programs with timeslots" -> Station.list_programs_with_timeslot(raw_programs)
+        "use hidden checkbox" -> Station.list_programs_not_hidden(raw_programs)
+        _ -> raw_programs
+      end   
+    end
+    
+    
+    render(conn, :index, programs: programs, all_programs: all_programs, current_user: current_user, all_programs: all_programs)
   end
 
   def new(conn, _params) do

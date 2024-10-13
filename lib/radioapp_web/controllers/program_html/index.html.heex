@@ -9,8 +9,8 @@
       <% end %>
     </:actions>
   </.header>
-  <%= if @current_user do %> 
-    <%= if @current_user.role == :user or @current_user.role == :admin do %>
+  <%!-- <%= if @current_user do %>  --%>
+    <%!-- <%= if @current_user.role == :user or @current_user.role == :admin do %> --%>
       <.table id="programs" rows={@all_programs} row_click={&JS.navigate(~p"/programs/#{&1}")}> 
         <:col :let={program} label="Name"><%= program.name %></:col>
         <:col :let={program} label="Description"><%= program.short_description %></:col>
@@ -35,8 +35,8 @@
           <% end %>
         </:action>
       </.table>
-    <% end %>
-  <% else %>
+    <%!-- <% end %> --%>
+  <%!-- <% else %>
     <.table id="programs" rows={@programs} row_click={&JS.navigate(~p"/programs/#{&1}")}> 
       <:col :let={program} label="Name"><%= program.name %></:col>
       <:col :let={program} label="Description"><%= program.short_description %></:col>
@@ -60,5 +60,5 @@
         <% end %>
       </:action>
     </.table> 
-  <% end %>
+  <% end %> --%>
 </div>
