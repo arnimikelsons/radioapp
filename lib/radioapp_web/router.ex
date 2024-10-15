@@ -144,6 +144,7 @@ defmodule RadioappWeb.Router do
     post "/programs", ProgramController, :create
     patch "/programs/:id", ProgramController, :update
     put "/programs/:id", ProgramController, :update
+    post "/programs/search", ProgramController, :search
 
 
     get "/timeslots", TimeslotController, :index

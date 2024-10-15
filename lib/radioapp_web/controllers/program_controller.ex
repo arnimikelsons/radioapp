@@ -5,7 +5,39 @@ defmodule RadioappWeb.ProgramController do
   alias Radioapp.Station.{Program, Image}
   alias Radioapp.Admin
 
-  def index(conn, _params) do
+  defmodule SearchParams do
+    use Ecto.Schema
+    import Ecto.Changeset
+
+    @primary_key false
+    embedded_schema do
+      field :select_filter, :string
+    end
+
+    def new(%{} = params) do
+      sort_order = "all"
+
+      changeset(
+        %__MODULE__{
+          select_filter: sort_order
+        },
+        params
+      )
+    end
+
+    def changeset(search, %{} = params) do
+      search
+      |> cast(params, [:select_filter])
+      |> validate_required([:select_filter])
+    end
+
+    def apply(search) do
+      apply_changes(search)
+    end
+  end
+
+  def index(conn, params) do
+    search = SearchParams.new(params)
     tenant = RadioappWeb.get_tenant(conn)
     programs = Station.list_programs(tenant)
     raw_programs = Station.list_all_programs(tenant)
@@ -14,19 +46,36 @@ defmodule RadioappWeb.ProgramController do
 
     current_user = conn.assigns.current_user
     
-    all_programs = if current_user == nil do
-      raw_programs
-    else
-      # if not logged in
-      case program_show do
-        "programs with timeslots" -> Station.list_programs_with_timeslot(raw_programs)
-        "use hidden checkbox" -> Station.list_programs_not_hidden(raw_programs)
-        _ -> raw_programs
-      end   
-    end
-    
-    
-    render(conn, :index, programs: programs, all_programs: all_programs, current_user: current_user, all_programs: all_programs)
+    all_programs = 
+      if current_user != nil do
+        raw_programs
+      else
+        # if not logged in
+        case program_show do
+          "programs with timeslots" -> Station.list_programs_with_timeslot(raw_programs)
+          "use hidden checkbox" -> Station.list_programs_not_hidden(raw_programs)
+          _ -> raw_programs
+        end   
+      end
+    search = SearchParams.new(%{})
+    render(conn, :index, programs: programs, all_programs: all_programs, current_user: current_user, all_programs: all_programs, search: search)
+  end
+
+  def search(conn, %{"search_params" => params}) do
+    search = SearchParams.new(params)
+    tenant = RadioappWeb.get_tenant(conn)
+    programs = Station.list_programs(tenant)
+    raw_programs = Station.list_all_programs(tenant)
+    current_user = conn.assigns.current_user
+    #user_role=Admin.get_user_role(current_user, tenant)
+
+    all_programs = 
+      if search.valid? do
+        Station.select_programs(SearchParams.apply(search), raw_programs, tenant)
+      else
+        []
+      end
+    render(conn, :index, programs: programs, all_programs: all_programs, current_user: current_user, all_programs: all_programs, search: search)
   end
 
   def new(conn, _params) do

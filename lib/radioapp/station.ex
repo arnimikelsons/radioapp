@@ -51,13 +51,33 @@ defmodule Radioapp.Station do
        p
     end
   end
+  def list_programs_with_no_timeslots(program) do
+    for p when p.timeslot_count == 0 <- program do
+       p
+    end
+  end
   def list_programs_not_hidden(program) do
     for p when p.hide == false <- program do
        p
     end
   end
+  def list_programs_hidden(program) do
+    for p when p.hide == true <- program do
+       p
+    end
+  end
+  def select_programs(params, raw_programs, _tenant) do
+     dbg(params) 
+    _list_programs = case params.select_filter do
+        "programs with timeslots" -> list_programs_with_timeslot(raw_programs)
+        "programs with no timeslots" -> list_programs_with_no_timeslots(raw_programs)
+        "use hidden checkbox" -> list_programs_not_hidden(raw_programs)
+        "show hidden programs" -> list_programs_hidden(raw_programs)
+        _ -> raw_programs
+      end   
+    
 
-
+  end
 
   @doc """
   Gets a single program.

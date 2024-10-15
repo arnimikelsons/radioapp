@@ -9,56 +9,52 @@
       <% end %>
     </:actions>
   </.header>
-  <%!-- <%= if @current_user do %>  --%>
-    <%!-- <%= if @current_user.role == :user or @current_user.role == :admin do %> --%>
-      <.table id="programs" rows={@all_programs} row_click={&JS.navigate(~p"/programs/#{&1}")}> 
-        <:col :let={program} label="Name"><%= program.name %></:col>
-        <:col :let={program} label="Description"><%= program.short_description %></:col>
-        <:col :let={program} label="Genre"><%= program.genre %></:col>
-        <:col :let={program} label="Hidden"><%= program.hide %></:col>
-        <:col :let={program} label="Timeslots">
-          <%= for timeslot <- program.timeslots do %>
-            <%= "#{Timex.day_shortname(timeslot.day)}:  #{timeslot.starttimereadable}" %><br>
-          <% end %>
-        </:col>
-        
-        <:col :let={program} label="Links">
-          <%= if program.link1 != nil do %><.link navigate={"#{program.link1_url}"}><%= program.link1.type %></.link><% end %>
-          <%= if program.link2 != nil do %><.link navigate={"#{program.link2_url}"}><%= program.link2.type %></.link><% end %>
-          <%= if program.link3 != nil do %><.link navigate={"#{program.link2_url}"}><%= program.link3.type %></.link><% end %>
-        </:col>
-        
-        <:action :let={program}>
-          <%= if @current_user do %>
-            <.link navigate={~p"/programs/#{program}"}>Show</.link>
-            <.link navigate={~p"/programs/#{program}/edit"}>Edit</.link>
-          <% end %>
-        </:action>
-      </.table>
-    <%!-- <% end %> --%>
-  <%!-- <% else %>
-    <.table id="programs" rows={@programs} row_click={&JS.navigate(~p"/programs/#{&1}")}> 
-      <:col :let={program} label="Name"><%= program.name %></:col>
-      <:col :let={program} label="Description"><%= program.short_description %></:col>
-      <:col :let={program} label="Genre"><%= program.genre %></:col>
-      <:col :let={program} label="Timeslots">
-        <%= for timeslot <- program.timeslots do %>
-          <%= "#{Timex.day_shortname(timeslot.day)}:  #{timeslot.starttimereadable}" %><br>
-        <% end %>
-      </:col>
-      
-      <:col :let={program} label="Links">
-        <%= if program.link1 != nil do %><.link navigate={"#{program.link1_url}"}><%= program.link1.type %></.link><% end %>
-        <%= if program.link2 != nil do %><.link navigate={"#{program.link2_url}"}><%= program.link2.type %></.link><% end %>
-        <%= if program.link3 != nil do %><.link navigate={"#{program.link2_url}"}><%= program.link3.type %></.link><% end %>
-      </:col>
-      
-      <:action :let={program}>
-        <%= if @current_user do %>
-          <.link navigate={~p"/programs/#{program}"}>Show</.link>
-          <.link navigate={~p"/programs/#{program}/edit"}>Edit</.link>
-        <% end %>
-      </:action>
-    </.table> 
-  <% end %> --%>
+  <%= if @current_user do %>
+    <%= if @current_user.role == :user or @current_user.role == :admin do %>
+      <.simple_form :let={f} for={@search} action={~p"/programs/search"}>
+        <.error :if={ !@search.valid? }>
+          Oops, something went wrong! Please check the errors below.
+        </.error>
+        <div class="row">
+          <div class="grid md:grid-cols-4 date-field">
+            <.input
+              field={{f, :select_filter}}
+              type="select"
+              label="Select Progarm Filter"
+              options={["All": "", "Programs with Timeslots": "programs with timeslots", "Programs No Timeslots": "programs with no timeslots", "Programs not Hidden": "use hidden checkbox", "Hidden Programs": "show hidden programs"]}
+            />
+
+          </div>
+        </div>
+        <:actions>
+          <.button>Filter</.button>
+          <%!-- <.button formaction={~p"/admin/logs/export"}>Download CSV</.button> --%>
+        </:actions>
+      </.simple_form>
+    <% end %>
+  <% end %>
+  <.table id="programs" rows={@all_programs} row_click={&JS.navigate(~p"/programs/#{&1}")}> 
+    <:col :let={program} label="Name"><%= program.name %></:col>
+    <:col :let={program} label="Description"><%= program.short_description %></:col>
+    <:col :let={program} label="Genre"><%= program.genre %></:col>
+    <:col :let={program} label="Hidden"><%= program.hide %></:col>
+    <:col :let={program} label="Timeslots">
+      <%= for timeslot <- program.timeslots do %>
+        <%= "#{Timex.day_shortname(timeslot.day)}:  #{timeslot.starttimereadable}" %><br>
+      <% end %>
+    </:col>
+    
+    <:col :let={program} label="Links">
+      <%= if program.link1 != nil do %><.link navigate={"#{program.link1_url}"}><%= program.link1.type %></.link><% end %>
+      <%= if program.link2 != nil do %><.link navigate={"#{program.link2_url}"}><%= program.link2.type %></.link><% end %>
+      <%= if program.link3 != nil do %><.link navigate={"#{program.link2_url}"}><%= program.link3.type %></.link><% end %>
+    </:col>
+    
+    <:action :let={program}>
+      <%= if @current_user do %>
+        <.link navigate={~p"/programs/#{program}"}>Show</.link>
+        <.link navigate={~p"/programs/#{program}/edit"}>Edit</.link>
+      <% end %>
+    </:action>
+  </.table>
 </div>
