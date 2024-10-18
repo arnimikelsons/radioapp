@@ -28,6 +28,7 @@ defmodule Radioapp.Station do
       :link2,
       :link3
     ])
+    
   end
 
   def list_all_programs(tenant) do
@@ -67,7 +68,6 @@ defmodule Radioapp.Station do
     end
   end
   def select_programs(params, raw_programs, _tenant) do
-     dbg(params) 
     _list_programs = case params.select_filter do
         "programs with timeslots" -> list_programs_with_timeslot(raw_programs)
         "programs with no timeslots" -> list_programs_with_no_timeslots(raw_programs)
@@ -94,7 +94,7 @@ defmodule Radioapp.Station do
 
   """
   def get_program!(id, tenant) do
-    Program
+    p = Program
     |> Repo.get!(id, prefix: Triplex.to_prefix(tenant))
     |> Repo.preload([
       :timeslots,
@@ -103,6 +103,7 @@ defmodule Radioapp.Station do
       :link2,
       :link3
     ])
+    %{p | timeslot_count: Enum.count(p.timeslots)} 
   end
 
   def get_program_from_time(weekday, time_now, tenant) do
@@ -287,9 +288,22 @@ defmodule Radioapp.Station do
   #   end
   # end
 
+  
+  # def list_archives_by_log(program, tenant) do
+  #   # calculate end date
+  #   #end_date = today + number of weeks
+  # end_date = Date.utc_today
+  #   raw_logs = from(l in Log, 
+  #     where: [program_id: ^program.id], 
+  #     where: l.startdatetime < end_date,
+  #     order_by: [desc: :date])
+
+    
+  # end
+
+
   def list_timeslots_for_archives(program, tenant) do
     # from timeslots, loop over the last 8 weeks to output the archives that can be played
-    
 
     raw_timeslots = from(t in Timeslot, 
       where: [program_id: ^program.id],
@@ -312,17 +326,20 @@ defmodule Radioapp.Station do
     all_timeslots = for x <- 0..-16 do
       timeslot_date = beginning_of_week |> Timex.shift(weeks: x)
       rough_timeslots = for t <- raw_timeslots do
-        kday_date = Kday.kday_on_or_after(timeslot_date,t.day)
-        audio_url = build_audio_url(kday_date, t.starttime, tenant)
+        kday_date = Kday.kday_on_or_before(timeslot_date,t.day)
+        #audio_url = build_audio_url(kday_date, t.starttime, tenant)
         t_date = kday_date |> Timex.shift(days: 1)
         if Timex.before?(t_date, today) do
           cond do
+            t.runtime > 120 ->
+              [%{date: Calendar.strftime(kday_date, "%B %d %Y"), starttime: "at #{t.starttimereadable}", audio_url: build_audio_url(kday_date, t.starttime, tenant)}] ++
+              [%{date: Calendar.strftime(kday_date, "%B %d %Y"), starttime: "Hour 2", audio_url: build_audio_url(kday_date, Time.add(t.starttime, 3600), tenant)}] ++
+              [%{date: Calendar.strftime(kday_date, "%B %d %Y"), starttime: "Hour 3", audio_url: build_audio_url(kday_date, Time.add(t.starttime, 7200), tenant)}]
             t.runtime > 60 ->
-              _hour2 = Time.to_string(Time.add(t.starttime, 3600))
-              [%{date: Calendar.strftime(kday_date, "%B %d %Y"), starttime: "at #{t.starttimereadable}", audio_url: audio_url}] ++
-              [%{date: Calendar.strftime(kday_date, "%B %d %Y"), starttime: "Hour 2", audio_url: audio_url}]
+              [%{date: Calendar.strftime(kday_date, "%B %d %Y"), starttime: "at #{t.starttimereadable}", audio_url: build_audio_url(kday_date, t.starttime, tenant)}] ++
+              [%{date: Calendar.strftime(kday_date, "%B %d %Y"), starttime: "Hour 2", audio_url: build_audio_url(kday_date, Time.add(t.starttime, 3600), tenant)}]
             true ->
-              [%{date: Calendar.strftime(kday_date, "%B %d %Y"), starttime: "at #{t.starttimereadable}", audio_url: audio_url}]
+              [%{date: Calendar.strftime(kday_date, "%B %d %Y"), starttime: "at #{t.starttimereadable}", audio_url: build_audio_url(kday_date, t.starttime, tenant)}]
             end
         else 
           [%{date: nil, starttime: nil, audio_url: nil}]
@@ -331,10 +348,8 @@ defmodule Radioapp.Station do
       _timeslots = Enum.flat_map(rough_timeslots, &(&1))
     end
     f_timeslots = Enum.flat_map(all_timeslots, &(&1))
-
     full_timeslots = Enum.with_index(f_timeslots, fn element, index -> Map.put(element, :id, index) end)
-    length =length(full_timeslots)
-    {full_timeslots, length}
+    {full_timeslots}
   end
 
   def build_audio_url(date, starttime, tenant) do

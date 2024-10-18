@@ -36,8 +36,7 @@ defmodule RadioappWeb.ProgramController do
     end
   end
 
-  def index(conn, params) do
-    search = SearchParams.new(params)
+  def index(conn, _params) do
     tenant = RadioappWeb.get_tenant(conn)
     programs = Station.list_programs(tenant)
     raw_programs = Station.list_all_programs(tenant)
@@ -45,7 +44,11 @@ defmodule RadioappWeb.ProgramController do
     program_show = Admin.get_stationdefaults!(tenant).program_show
 
     current_user = conn.assigns.current_user
-    
+    role = if current_user != nil do
+      Admin.get_user_role(current_user, tenant)
+    else 
+      nil
+    end
     all_programs = 
       if current_user != nil do
         raw_programs
@@ -58,7 +61,7 @@ defmodule RadioappWeb.ProgramController do
         end   
       end
     search = SearchParams.new(%{})
-    render(conn, :index, programs: programs, all_programs: all_programs, current_user: current_user, all_programs: all_programs, search: search)
+    render(conn, :index, programs: programs, all_programs: all_programs, current_user: current_user, role: role, all_programs: all_programs, search: search)
   end
 
   def search(conn, %{"search_params" => params}) do
@@ -67,15 +70,20 @@ defmodule RadioappWeb.ProgramController do
     programs = Station.list_programs(tenant)
     raw_programs = Station.list_all_programs(tenant)
     current_user = conn.assigns.current_user
-    #user_role=Admin.get_user_role(current_user, tenant)
+    role = if current_user != nil do
+      Admin.get_user_role(current_user, tenant)
+    else 
+      nil
+    end
 
     all_programs = 
       if search.valid? do
+        
         Station.select_programs(SearchParams.apply(search), raw_programs, tenant)
       else
         []
       end
-    render(conn, :index, programs: programs, all_programs: all_programs, current_user: current_user, all_programs: all_programs, search: search)
+    render(conn, :index, programs: programs, all_programs: all_programs, current_user: current_user, role: role, all_programs: all_programs, search: search)
   end
 
   def new(conn, _params) do
@@ -106,10 +114,10 @@ defmodule RadioappWeb.ProgramController do
     timeslots = Station.list_timeslots_for_program(program, tenant)
     stationdefaults = Admin.get_stationdefaults!(tenant)
     enable_archives = stationdefaults.enable_archives
-    {list_timeslots, _length} = if enable_archives == "enabled" do
+    {list_timeslots} = if enable_archives == "enabled" do
       Station.list_timeslots_for_archives(program, tenant)
     else 
-      {[], 0}
+      {[]}
     end
 
     image =

@@ -10,7 +10,7 @@
     </:actions>
   </.header>
   <%= if @current_user do %>
-    <%= if @current_user.role == :user or @current_user.role == :admin do %>
+    <%= if @role == "super_admin" or @role == "admin" do %>
       <.simple_form :let={f} for={@search} action={~p"/programs/search"}>
         <.error :if={ !@search.valid? }>
           Oops, something went wrong! Please check the errors below.
@@ -21,14 +21,14 @@
               field={{f, :select_filter}}
               type="select"
               label="Select Program Filter"
-              options={["All": "", "Programs with Timeslots": "programs with timeslots", "Programs No Timeslots": "programs with no timeslots", "Programs not Hidden": "use hidden checkbox", "Hidden Programs": "show hidden programs"]}
+              options={["All": "all", "Programs with Timeslots": "programs with timeslots", "Programs No Timeslots": "programs with no timeslots", "Programs not Hidden": "use hidden checkbox", "Hidden Programs": "show hidden programs"]}
             />
 
           </div>
         </div>
         <:actions>
           <.button>Filter</.button>
-          <%!-- <.button formaction={~p"/admin/logs/export"}>Download CSV</.button> --%>
+          
         </:actions>
       </.simple_form>
     <% end %>
@@ -37,7 +37,7 @@
     <:col :let={program} label="Name"><%= program.name %></:col>
     <:col :let={program} label="Description"><%= program.short_description %></:col>
     <:col :let={program} label="Genre"><%= program.genre %></:col>
-    <:col :let={program} label="Hidden"><%= program.hide %></:col>
+    <%!-- <:col :let={program} label="Hidden"><%= program.hide %></:col> --%>
     <:col :let={program} label="Timeslots">
       <%= for timeslot <- program.timeslots do %>
         <%= "#{Timex.day_shortname(timeslot.day)}:  #{timeslot.starttimereadable}" %><br>

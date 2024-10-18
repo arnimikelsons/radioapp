@@ -12,11 +12,62 @@ defmodule RadioappWeb.ProgramControllerTest do
 
   describe "index" do
     test "lists all programs", %{conn: conn} do
+       _stationdefaults = Factory.insert(:stationdefaults, [], prefix: @prefix)
+      program = Factory.insert(:program, [], prefix: @prefix)
       conn = get(conn, ~p"/programs")
       assert html_response(conn, 200) =~ "RadioApp Programs"
+      assert html_response(conn, 200) =~ program.name
+      refute html_response(conn, 200) =~ "Select Program Filter"
+    end
+
+    test "lists all programs with timeslots setting", %{conn: conn} do
+       _stationdefaults = Factory.insert(:stationdefaults, [program_show: "programs with timeslots"], prefix: @prefix)
+       program1 = Factory.insert(:program, [timeslot_count: 1], prefix: @prefix)
+       _timeslot1 = Factory.insert(:timeslot, [program: program1], prefix: @prefix)
+       program2 = Factory.insert(:program, [timeslot_count: 0], prefix: @prefix)
+       conn = get(conn, ~p"/programs")
+       assert html_response(conn, 200) =~ "RadioApp Programs"
+       assert html_response(conn, 200) =~ program1.name
+       refute html_response(conn, 200) =~ program2.name
+     end
+     test "lists all programs with no hidden setting", %{conn: conn} do
+      _stationdefaults = Factory.insert(:stationdefaults, [program_show: "use hidden checkbox"], prefix: @prefix)
+      program1 = Factory.insert(:program, [hide: false], prefix: @prefix)
+      _timeslot1 = Factory.insert(:timeslot, [program: program1], prefix: @prefix)
+      program2 = Factory.insert(:program, [hide: true], prefix: @prefix)
+      conn = get(conn, ~p"/programs")
+      assert html_response(conn, 200) =~ "RadioApp Programs"
+      assert html_response(conn, 200) =~ program1.name
+      refute html_response(conn, 200) =~ program2.name
     end
   end
 
+  # describe "index when logged in" do
+  #   setup %{conn: conn} do
+  #     user = Factory.insert(:user, roles: %{@tenant => "admin"}, full_name: "Some Full Name")
+  #     conn = log_in_user(conn, user)
+  #     %{conn: conn, user: user}
+  #   end
+  #   test "lists all programs on initial load", %{conn: conn} do
+  #      _stationdefaults = Factory.insert(:stationdefaults, [], prefix: @prefix)
+  #     program = Factory.insert(:program, [], prefix: @prefix)
+  #     conn = get(conn, ~p"/programs")
+  #     assert html_response(conn, 200) =~ "RadioApp Programs"
+  #     assert html_response(conn, 200) =~ program.name
+  #   end
+  #   test "search programs on initial load", %{conn: conn} do
+  #     _stationdefaults = Factory.insert(:stationdefaults, [], prefix: @prefix)
+  #     program1 = Factory.insert(:program, [timeslot_count: 1], prefix: @prefix)
+  #     _timeslot1 = Factory.insert(:timeslot, [program: program1], prefix: @prefix)
+  #     program2 = Factory.insert(:program, [timeslot_count: 0], prefix: @prefix)
+
+  #     conn = get(conn, ~p"/programs/search", %{"select_filter" => "programs with timeslots"})
+  #     assert html_response(conn, 200) =~ "RadioApp Programs"
+  #     assert html_response(conn, 200) =~ program1.name
+  #     refute html_response(conn, 200) =~ program2.name
+  #  end
+
+  # end
   describe "manage programs" do
     setup %{conn: conn} do
       user = Factory.insert(:user, roles: %{@tenant => "user"}, full_name: "Some Full Name")

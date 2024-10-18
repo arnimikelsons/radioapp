@@ -23,6 +23,7 @@ end
       name: Faker.Company.name() |> String.replace("'", ""),
       description: Faker.Lorem.Shakespeare.as_you_like_it() |> String.replace("'", ""),
       timeslots: [],
+      timeslot_count: 0,
       hide: false,
       images: nil,
       link1: nil,
@@ -190,7 +191,8 @@ end
       intro_email_body: "Some intro email body",
       intro_email_subject: "some intro email subject",
       socan_permission: "user", 
-      enable_archives: "none"
+      enable_archives: "none",
+      program_show: "all"
     }
   end
 end

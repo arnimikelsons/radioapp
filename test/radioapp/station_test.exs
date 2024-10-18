@@ -31,21 +31,48 @@ defmodule Radioapp.StationTest do
       name: nil
     }
 
-
-
     test "list_programs/0 returns all programs" do
-      program = Factory.insert(:program, [], prefix: @prefix)
-      assert Station.list_programs(@tenant) == [program]
+      program = Factory.insert(:program, [timeslot_count: 0], prefix: @prefix)
+      raw_programs = Station.list_programs(@tenant)
+      programs = for p <- raw_programs do 
+        %{p | timeslot_count: Enum.count(p.timeslots)} 
+      end
+      assert programs == [program]
     end
+
     test "list_programs/0 with hide flag returns no programs" do
       _program = Factory.insert(:program, [hide: true], prefix: @prefix)
       assert Station.list_programs(@tenant) == []
     end
 
     test "list_all_programs/0 with hide flag returns all programs" do
-      program = Factory.insert(:program, [hide: true], prefix: @prefix)
+      program = Factory.insert(:program, [hide: true, timeslot_count: 0], prefix: @prefix)
       assert Station.list_all_programs(@tenant) == [program]
     end
+
+    test "list_programs_not_hidden/0 / list_programs_hidden show correct files" do
+      program1 = Factory.insert(:program, [hide: true, timeslot_count: 0], prefix: @prefix)
+      program2 = Factory.insert(:program, [hide: false, timeslot_count: 0], prefix: @prefix)
+      programs =  Station.list_all_programs(@tenant)
+      assert Station.list_programs_hidden(programs) == [program1]
+      assert Station.list_programs_not_hidden(programs) == [program2]
+      refute Station.list_programs_hidden(programs) == [program2]
+      refute Station.list_programs_not_hidden(programs) == [program1]
+    end
+
+    test "list_programs_with_timeslots/0 / list_programs_with_no_timeslots show correct files" do
+      program1 = Factory.insert(:program, [name: "Program 1", hide: true, timeslot_count: 1], prefix: @prefix)
+      
+      _timeslot = Factory.insert(:timeslot, [program: program1], prefix: @prefix)
+      program2 = Factory.insert(:program, [name: "Program 2", hide: false, timeslot_count: 0], prefix: @prefix)
+      programs =  Station.list_all_programs(@tenant)
+      expected1 = [program1.id]
+      expected2 = [program2.id]
+      assert expected1 == Enum.map(Station.list_programs_with_timeslot(programs), fn t -> t.id end)
+      assert Station.list_programs_with_no_timeslots(programs) == [program2]
+      refute expected2 == Enum.map(Station.list_programs_with_timeslot(programs), fn t -> t.id end)
+      refute Station.list_programs_with_no_timeslots(programs) == [program1]
+    end 
 
     test "get_program!/1 returns the program with given id" do
       program = Factory.insert(:program, [], prefix: @prefix)
@@ -150,7 +177,7 @@ defmodule Radioapp.StationTest do
     test "list_timeslots_for_archives" do
       stationdefaults = Factory.insert(:stationdefaults, [timezone: "Canada/Atlantic"], prefix: @prefix)
       program1 = Factory.insert(:program, [], prefix: @prefix)
-      timeslot1 = Factory.insert(:timeslot, [
+      _timeslot1 = Factory.insert(:timeslot, [
         day: 4, 
         runtime: 60, 
         starttime: ~T[10:00:00], 
@@ -165,34 +192,23 @@ defmodule Radioapp.StationTest do
         program: program1], 
         prefix: @prefix)
         
-      final_timeslots = Station.list_timeslots_for_archives(program1, @tenant)
+      {final_timeslots} = Station.list_timeslots_for_archives(program1, @tenant)
 
       # this is working because day 1 in timeslot2 == beginning_of_week
-      today = Timex.today(stationdefaults.timezone)
+      _today = Timex.today(stationdefaults.timezone)
       tz = Timex.now(stationdefaults.timezone)
       beginning_of_week = Date.beginning_of_week(tz)
       get_date = beginning_of_week |> Timex.shift(weeks: -2)
       test_date = Calendar.strftime(get_date, "%B %d %Y")
-
       audio_url = Station.build_audio_url(get_date, timeslot2.starttime, @tenant)
+        
+      assert Enum.any?(final_timeslots, fn timeslot -> timeslot.starttime == "at 9:00 am" end)
+      refute Enum.any?(final_timeslots, fn timeslot -> timeslot.starttime == "at 6:00 am" end)
 
-      assert Enum.any?(final_timeslots,
-      fn timeslot -> timeslot.starttime == "at 9:00 am" end)
-      refute Enum.any?(final_timeslots,
-      fn timeslot -> timeslot.starttime == "at 6:00 am" end)
+      assert Enum.any?(final_timeslots, fn timeslot -> timeslot.date == test_date end)
 
-      assert Enum.any?(final_timeslots,
-      fn timeslot -> timeslot.date == test_date end)
-
-      assert Enum.any?(final_timeslots,
-      fn timeslot -> timeslot.audio_url == audio_url end)
+      assert Enum.any?(final_timeslots, fn timeslot -> timeslot.audio_url == audio_url end)
     end
-
-    # test "build_audio_url/3 for archive player" do
-    #   date = ~D[2024-08-12]
-    #   starttime = ~T[10:00:00]
-    #   
-    # end
 
     test "get_timeslot!/1 returns the timeslot with given id" do
       program = Factory.insert(:program, [], prefix: @prefix)
@@ -237,7 +253,7 @@ defmodule Radioapp.StationTest do
     end
 
     test "update_timeslot/2 with invalid data returns error changeset" do
-      program = Factory.insert(:program, [], prefix: @prefix)
+      program = Factory.insert(:program, [timeslot_count: 1], prefix: @prefix)
       timeslot = Factory.insert(:timeslot, [program: program], prefix: @prefix)
       assert {:error, %Ecto.Changeset{}} = Station.update_timeslot(timeslot, @invalid_attrs)
       get_timeslot = Station.get_timeslot!(timeslot.id, @tenant)

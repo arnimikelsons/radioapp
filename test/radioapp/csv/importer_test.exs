@@ -16,9 +16,10 @@ defmodule Radioapp.CSV.ImporterTest do
       ["ben"]
     ]
 
-    Importer.csv_row_to_table_record(data, log, @tenant)
+    import = Importer.csv_row_to_table_record(data, log, @tenant)
 
-    # TODO assert on the error
+    assert import = {:error, "The CSV file contained error(s) in the column names."}
+
   end
 
   test "Uploading a CSV that has both required columns" do
