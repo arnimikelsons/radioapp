@@ -192,6 +192,7 @@ end
       intro_email_subject: "some intro email subject",
       socan_permission: "user", 
       enable_archives: "none",
+      weeks_of_archives: 8,
       program_show: "all"
     }
   end

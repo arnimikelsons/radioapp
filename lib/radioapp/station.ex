@@ -254,7 +254,6 @@ defmodule Radioapp.Station do
         link3: []
       ]
     )
-
   end
 
   def list_timeslots_for_program(program, tenant) do
@@ -263,47 +262,60 @@ defmodule Radioapp.Station do
     |> Repo.preload(program: [link1: [], link2: [], link3: []])
   end
 
+  def list_timeslots_for_archives_from_logs(program, tenant) do
+    stationdefaults = Admin.get_stationdefaults!(tenant)
+    now = Timex.now(stationdefaults.timezone)
+    log_start = Timex.shift(now, weeks: -stationdefaults.weeks_of_archives)
+    raw_logs =
+    from(l in Log, 
+      where: l.program_id  == ^program.id, 
+      where: l.start_datetime >= ^log_start,
+      order_by: [desc: :date],
 
-  # def list_timeslots_for_archives_from_logs(program, tenant) do
-  #   raw_logs =
-  #   from(l in Log, 
-  #     where: [program_id: ^program.id], 
-  #     order_by: [desc: :date]
-  #     select: %{l.date, 
-  #     starttime: l.start_time,
-  #     startdatetime: l.start_datetime, 
-  #     enddatetime: l.end_datetime})
-  #     # could use runtime, but end_time might be just as useful
-  #     # need to have starttimereadable and starttime
-  #   |> Repo.all(prefix: Triplex.to_prefix(tenant))
+      select: %{ 
+        startdatetime: l.start_datetime, 
+        enddatetime: l.end_datetime
+      }
+      # l.date, 
+      # starttime: l.start_time,
+      # enddatetime: l.end_datetime}
+      # could use runtime, but end_time might be just as useful
+      # need to have starttimereadable and starttime
+    )
+    |> Repo.all(prefix: Triplex.to_prefix(tenant))
 
-  #   stationdefaults = Admin.get_stationdefaults!(tenant)
+    stationdefaults = Admin.get_stationdefaults!(tenant)
 
-  #   today = Timex.today(stationdefaults.timezone)
-  #   tz = Timex.now(stationdefaults.timezone)
-  #   beginning_of_week = Date.beginning_of_week(tz)
-  #   rough_logs = for t <- raw_logs do
-      
-
-  #   end
-  # end
-
-  
-  # def list_archives_by_log(program, tenant) do
-  #   # calculate end date
-  #   #end_date = today + number of weeks
-  # end_date = Date.utc_today
-  #   raw_logs = from(l in Log, 
-  #     where: [program_id: ^program.id], 
-  #     where: l.startdatetime < end_date,
-  #     order_by: [desc: :date])
-
+    _today = Timex.today(stationdefaults.timezone)
     
-  # end
+    rough_timeslots =
+      for l <- raw_logs do
+        kday_date = Timex.to_date(l.startdatetime)
+        runtime = DateTime.diff(l.startdatetime, l.enddatetime)*60
+        starttime = DateTime.to_time(l.startdatetime)
+        starttimereadable = Timex.format!(l.startdatetime, "{h12}:{0m} {am}")
 
+        cond do
+          runtime > 120 ->
+            [%{date: Calendar.strftime(kday_date, "%B %d %Y"), starttime: "at #{starttimereadable}", audio_url: build_audio_url(kday_date, starttime, tenant)}] ++
+            [%{date: Calendar.strftime(kday_date, "%B %d %Y"), starttime: "Hour 2", audio_url: build_audio_url(kday_date, Time.add(starttime, 3600), tenant)}] ++
+            [%{date: Calendar.strftime(kday_date, "%B %d %Y"), starttime: "Hour 3", audio_url: build_audio_url(kday_date, Time.add(starttime, 7200), tenant)}]
+          runtime > 60 ->
+            [%{date: Calendar.strftime(kday_date, "%B %d %Y"), starttime: "at #{starttimereadable}", audio_url: build_audio_url(kday_date, starttime, tenant)}] ++
+            [%{date: Calendar.strftime(kday_date, "%B %d %Y"), starttime: "Hour 2", audio_url: build_audio_url(kday_date, Time.add(starttime, 3600), tenant)}]
+          true ->
+            [%{date: Calendar.strftime(kday_date, "%B %d %Y"), starttime: "at #{starttimereadable}", audio_url: build_audio_url(kday_date, starttime, tenant)}]
+        end
+      end
+
+    all_logs = Enum.flat_map(rough_timeslots, &(&1))
+
+    full_timeslots = Enum.with_index(all_logs, fn element, index -> Map.put(element, :id, index) end)
+    {full_timeslots}
+  end
 
   def list_timeslots_for_archives(program, tenant) do
-    # from timeslots, loop over the last 8 weeks to output the archives that can be played
+    # from timeslots, loop over the last x weeks to output the archives that can be played
 
     raw_timeslots = from(t in Timeslot, 
       where: [program_id: ^program.id],
@@ -323,11 +335,10 @@ defmodule Radioapp.Station do
     today = Timex.today(stationdefaults.timezone)
     tz = Timex.now(stationdefaults.timezone)
     beginning_of_week = Date.beginning_of_week(tz)
-    all_timeslots = for x <- 0..-16 do
+    all_timeslots = for x <- 0..-stationdefaults.weeks_of_archives do
       timeslot_date = beginning_of_week |> Timex.shift(weeks: x)
       rough_timeslots = for t <- raw_timeslots do
         kday_date = Kday.kday_on_or_before(timeslot_date,t.day)
-        #audio_url = build_audio_url(kday_date, t.starttime, tenant)
         t_date = kday_date |> Timex.shift(days: 1)
         if Timex.before?(t_date, today) do
           cond do
@@ -340,7 +351,7 @@ defmodule Radioapp.Station do
               [%{date: Calendar.strftime(kday_date, "%B %d %Y"), starttime: "Hour 2", audio_url: build_audio_url(kday_date, Time.add(t.starttime, 3600), tenant)}]
             true ->
               [%{date: Calendar.strftime(kday_date, "%B %d %Y"), starttime: "at #{t.starttimereadable}", audio_url: build_audio_url(kday_date, t.starttime, tenant)}]
-            end
+          end
         else 
           [%{date: nil, starttime: nil, audio_url: nil}]
         end
