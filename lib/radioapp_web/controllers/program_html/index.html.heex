@@ -16,15 +16,25 @@
           Oops, something went wrong! Please check the errors below.
         </.error>
         <div class="row">
-          <div class="grid md:grid-cols-4 date-field">
+          <div class="grid md:grid-cols-4">
             <.input
               field={{f, :select_filter}}
               type="select"
               label="Select Program Filter"
-              options={["All": "all", "Programs with Timeslots": "programs with timeslots", "Programs No Timeslots": "programs with no timeslots", "Programs not Hidden": "use hidden checkbox", "Hidden Programs": "show hidden programs"]}
-            />
-
+              options={[
+                "All": "all", 
+                "Programs with Timeslots": "programs with timeslots", 
+                "Programs No Timeslots": "programs with no timeslots"
+                #, "Programs not Hidden": "use hidden checkbox"
+                #, "Hidden Programs": "show hidden programs"
+              ]} />
           </div>
+          <%!-- <div class="grid md:grid-cols-4">
+            <.input
+              field={{f, :name_filter}}
+              type="text"
+              label="Program Name" />
+          </div> --%>
         </div>
         <:actions>
           <.button>Filter</.button>

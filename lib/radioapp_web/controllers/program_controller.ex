@@ -119,7 +119,7 @@ defmodule RadioappWeb.ProgramController do
       "log based" -> Station.list_timeslots_for_archives_from_logs(program, tenant)
       "none" -> {[]}
     end
-
+dbg(list_timeslots)
     image =
     case program.images do
       %Image{} = image ->

@@ -34,8 +34,16 @@
       <.input field={{f, :export_log_permission}} options={( [ "none", "admin", "user" ] )} type="select" label="Grant access to access to export Log" />
       <.input field={{f, :enable_archives}} options={( [ "none", "enabled", "log based" ] )} type="select" label="Enable archive access (needs setup)" />
       <.input field={{f, :weeks_of_archives}} type="number" label="Weeks of Archives" />
-      <.input field={{f, :program_show}} options={( [ "all", "programs with timeslots", "use hidden checkbox" ] )} type="select" label="Default program show" />
-      <:actions>
+      <.input field={{f, :program_show}} 
+          type="select" 
+          label="Default program show" 
+          options={( [ 
+            "all", 
+            "programs with timeslots"
+            #, "use hidden checkbox" 
+            ] )}  
+        />
+<:actions>
         <.button>Save station defaults</.button>
       </:actions>
     </.simple_form>
