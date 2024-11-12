@@ -339,7 +339,7 @@ defmodule Radioapp.Station do
       timeslot_date = beginning_of_week |> Timex.shift(weeks: x)
       
       rough_timeslots = for t <- raw_timeslots do
-        kday_date = Kday.kday_on_or_before(timeslot_date,t.day)
+        kday_date = Kday.kday_on_or_after(timeslot_date,t.day)
         t_date = kday_date |> Timex.shift(days: -1)
         if Timex.before?(t_date, today) do
           cond do
@@ -357,10 +357,12 @@ defmodule Radioapp.Station do
           [%{date: nil, starttime: nil, audio_url: nil}]
         end
       end
-      _timeslots = Enum.flat_map(rough_timeslots, &(&1))
+      timeslots = Enum.flat_map(rough_timeslots, &(&1))
     end
     f_timeslots = Enum.flat_map(all_timeslots, &(&1))
+
     full_timeslots = Enum.with_index(f_timeslots, fn element, index -> Map.put(element, :id, index) end)
+    
     {full_timeslots}
   end
 

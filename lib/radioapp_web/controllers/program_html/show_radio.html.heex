@@ -91,14 +91,14 @@
         <div><h3 id="archivesTitle" class="text-center"><%= @program.name %> Archives</h3></div>
 
         <%= for t <- @list_timeslots do %>
-          <%= if t.id == 8 do %>
+          <%= if t.id == 12 do %>
             <div class = "text-center">
               <button id="moreaudiobutton" onclick="changeMoreAudio()"  class="bg-zinc-900 hover:bg-zinc-700 py-2 px-3 text-sm font-semibold leading-6 text-white active:text-white/80 ">
                 See more
               </button>
             </div>
           <% end %>
-          <%= if t.id <= 7 do %>
+          <%= if t.id <= 11 do %>
             <%= if t.date != nil do %>
               <div class="audio-wrapper">
                 <%= t.date %> <%= t.starttime %> &nbsp;&nbsp;&nbsp;<a href={t.audio_url}><i class="fa-solid fa-download fa-lg"></i></a><br>
