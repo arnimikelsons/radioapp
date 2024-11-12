@@ -319,7 +319,7 @@ defmodule Radioapp.Station do
 
     raw_timeslots = from(t in Timeslot, 
       where: [program_id: ^program.id],
-      order_by: [asc: t.day, asc: t.starttime],
+      order_by: [desc: t.day, asc: t.starttime],
       select: %{
       day: t.day,
       starttime: t.starttime, 
@@ -335,7 +335,6 @@ defmodule Radioapp.Station do
     today = Timex.today(stationdefaults.timezone)
     tz = Timex.now(stationdefaults.timezone)
     beginning_of_week = Date.beginning_of_week(tz)
-    dbg(beginning_of_week)
     all_timeslots = for x <- 0..-stationdefaults.weeks_of_archives do
       timeslot_date = beginning_of_week |> Timex.shift(weeks: x)
       
