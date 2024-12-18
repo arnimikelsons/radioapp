@@ -169,7 +169,7 @@ defmodule RadioappWeb.TimeslotControllerTest do
       assert redirected_to(conn) == ~p"/programs/#{program}"
 
       assert_error_sent 404, fn ->
-        get(conn, ~p"/programs/#{program}/timeslots/#{timeslot}")
+        get(conn, ~p"/programs/#{program}/timeslots/#{timeslot}/edit")
       end
     end
   end
