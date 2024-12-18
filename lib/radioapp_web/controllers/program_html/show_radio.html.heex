@@ -59,9 +59,12 @@
             <.link class="m-2" href={~p"/programs/#{@program}/logs"}><strong>Edit Your Logs</strong></.link>
         </div>
       <% end %>
+      <%= if @program.images != nil do %>
+        <img id="program-image" src={~p"/programs/#{@program}/images/#{@program.images.id}"} />
+      <% end %>
       <%= if @current_user do%>
         <%= if @program.images != nil do %>
-          <div  class="text-right">
+          <div  class="text-right pt-3">
           <.link href={~p"/programs/#{@program}/images/#{@program.images.id}"} method="delete" data-confirm="Are you sure?">
             <.button>Delete Image</.button>
           </.link></div>
@@ -78,7 +81,9 @@
           </.simple_form>
         <% end %>
       <% end %>
+
     </div>
+
     <div class="md:w-1/3 w-full" id="programArchivesContainer">
       <%= if @list_timeslots == [] do %>
         <div><h3 id="archivesTitle" class="text-center">No archives available</h3></div>
@@ -86,14 +91,14 @@
         <div><h3 id="archivesTitle" class="text-center"><%= @program.name %> Archives</h3></div>
 
         <%= for t <- @list_timeslots do %>
-          <%= if t.id == 8 do %>
+          <%= if t.id == 12 do %>
             <div class = "text-center">
               <button id="moreaudiobutton" onclick="changeMoreAudio()"  class="bg-zinc-900 hover:bg-zinc-700 py-2 px-3 text-sm font-semibold leading-6 text-white active:text-white/80 ">
                 See more
               </button>
             </div>
           <% end %>
-          <%= if t.id <= 7 do %>
+          <%= if t.id <= 11 do %>
             <%= if t.date != nil do %>
               <div class="audio-wrapper">
                 <%= t.date %> <%= t.starttime %> &nbsp;&nbsp;&nbsp;<a href={t.audio_url}><i class="fa-solid fa-download fa-lg"></i></a><br>
@@ -117,8 +122,6 @@
       <% end %>
     </div> 
   </div>
-  <%= if @program.images != nil do %>
-    <img id="program-image" src={~p"/programs/#{@program}/images/#{@program.images.id}"} />
-  <% end %>
+
 </div>
 

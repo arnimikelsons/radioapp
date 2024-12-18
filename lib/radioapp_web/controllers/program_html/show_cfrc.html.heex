@@ -2,28 +2,26 @@
   <.header>
     <%= @program.name %><%= if @program.hide == true do %> (hidden)<% end %>
   </.header>
-    <script type="text/javascript">
+  <script type="text/javascript">
 
-      function changeMoreAudio() {
-        const mycontent =
-          document.getElementById('more_audio');
-        const mybutton =
-          document.getElementById('moreaudiobutton');
+    function changeMoreAudio() {
+      const mycontent =
+        document.getElementById('more_audio');
+      const mybutton =
+        document.getElementById('moreaudiobutton');
 
-        if (mycontent.style.display === 'none'
-          || mycontent.style.display === '') {
-          mycontent.style.display = 'block';
-          mybutton.textContent = 'Read Less';
-        } else {
-          mycontent.style.display = 'none';
-          mybutton.textContent = 'Read More';
-        }
+      if (mycontent.style.display === 'none'
+        || mycontent.style.display === '') {
+        mycontent.style.display = 'block';
+        mybutton.textContent = 'Read Less';
+      } else {
+        mycontent.style.display = 'none';
+        mybutton.textContent = 'Read More';
       }
-    </script>
-
-  
-  <div class="flex flex-wrap">
-    <div class="md:w-2/3 w-full">
+    }
+  </script>
+  <div class="flex">
+    <div class="md:w-2/3">
       <div class="show-description p-2 px-4">
         <h3 class="pt-3"><strong>Show Description</strong></h3>
         <%= raw(Earmark.as_html!(@program.description)) %>
@@ -36,7 +34,7 @@
       <%= for timeslot <- @timeslots do %>
         <%= #Link only when logged in %>
         <p><%= Timex.day_name(timeslot.day) %>, <%= timeslot.starttimereadable %> for <%= timeslot.runtime %> minutes.
-        <%= if @current_user do%><%= if @current_user.role == :admin or @user_role == "super_admin" do %>
+        <%= if @current_user do%><%= if @current_user.role == :admin or @current_user.role == "super_admin" do %>
           <.link href={~p"/programs/#{@program}/timeslots/#{timeslot}/edit"}>Edit</.link>    
           <.link href={~p"/programs/#{@program}/timeslots/#{timeslot}"} method="delete" data-confirm="Are you sure?">
             Delete
@@ -61,26 +59,31 @@
             <.link class="m-2" href={~p"/programs/#{@program}/logs"}><strong>Edit Your Logs</strong></.link>
         </div>
       <% end %>
+      <%= if @program.images != nil do %>
+        <img id="program-image" src={~p"/programs/#{@program}/images/#{@program.images.id}"} />
+      <% end %>
       <%= if @current_user do%>
-    <%= if @program.images != nil do %>
-      <div  class="text-right">
-      <.link href={~p"/programs/#{@program}/images/#{@program.images.id}"} method="delete" data-confirm="Are you sure?">
-        <.button>Delete Image</.button>
-      </.link></div>
+        <%= if @program.images != nil do %>
+          <div  class="text-right pt-3">
+          <.link href={~p"/programs/#{@program}/images/#{@program.images.id}"} method="delete" data-confirm="Are you sure?">
+            <.button>Delete Image</.button>
+          </.link></div>
 
-    <% else %>
+        <% else %>
 
-      <.simple_form :let={f} for={@conn} action={~p"/programs/#{@program}/images"} multipart>
+          <.simple_form :let={f} for={@conn} action={~p"/programs/#{@program}/images"} multipart>
 
-        <.input field={{f, :image}} type="file" label="Image" required />
+            <.input field={{f, :image}} type="file" label="Image" required />
 
-        <:actions>
-          <.button>Upload Image</.button>
-        </:actions>
-      </.simple_form>
-    <% end %>
-  <% end %>
+            <:actions>
+              <.button>Upload Image</.button>
+            </:actions>
+          </.simple_form>
+        <% end %>
+      <% end %>
+
     </div>
+
     <div class="md:w-1/3 w-full" id="programArchivesContainer">
       <%= if @list_timeslots == [] do %>
         <div><h3 id="archivesTitle" class="text-center">No archives available</h3></div>
@@ -119,8 +122,6 @@
       <% end %>
     </div> 
   </div>
-  <%= if @program.images != nil do %>
-    <img id="program-image" src={~p"/programs/#{@program}/images/#{@program.images.id}"} />
-  <% end %>
+
 </div>
 
