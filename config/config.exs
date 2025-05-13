@@ -89,7 +89,7 @@ config :phoenix, :json_library, Jason
 
 # Configure the CORS plugin
 config :cors_plug,
-  origin: ["http://localhost:4000/", "https://demo.radioapp.ca/", "https://cfrc.editmy.website", "https://cfrc.ca", "https://www.cfrc.ca", "https://radio.fly.dev/", "https://radio.cfrc.ca/", "https://audio.cfrc.ca/"]
+  origin: ["http://localhost:4000/", "https://demo.radioapp.ca/", "https://cfrc.editmy.website", "https://cfrc.ca", "https://www.cfrc.ca", "https://radio.fly.dev/", "https://radio.cfrc.ca/", "https://audio.cfrc.ca/"],
   max_age: 86400,
   methods: ["GET"],
   send_preflight_response?: false
