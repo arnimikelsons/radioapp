@@ -139,11 +139,12 @@
                       id="dropdown-button-5" 
                       style="display: none;"
                   >  
-                      <li class="m-2"><a class="text-black text-base" href="https://cfrc.ca/about/about-cfrc">About CFRC</a></li>
-                      <li class="m-2"><a class="text-black text-base" href="https://cfrc.ca/about/our-strategic-plan">Our Strategic Plan</a></li>
-                      <li class="m-2"><a class="text-black text-base"href="https://cfrc.ca/about/accessibility">Accessibility</a></li>
-                      <li class="m-2"><a class="text-black text-base"href="https://cfrc.ca/about/site-map">Site Map</a></li>
-                      <li class="m-2"><a class="text-black text-base"href="https://cfrc.ca/about/centennial-photo-gallery">Centennial Photo Gallery</a></li>
+                      <li class="m-2"><a class="text-black text-base" href="https://www.cfrc.ca/about/about-cfrc">About CFRC</a></li>
+                      <li class="m-2"><a class="text-black text-base" href="https://www.cfrc.ca/about/our-strategic-plan">Our Strategic Plan</a></li>
+                      <li class="m-2"><a class="text-black text-base"href="https://www.cfrc.ca/about/accessibility">Accessibility</a></li>
+                      <li class="m-2"><a class="text-black text-base"href="https://www.cfrc.ca/about/site-map">Site Map</a></li>
+                      <li class="m-2"><a class="text-black text-base"href="https://www.cfrc.ca/about/centennial-photo-gallery">Centennial Photo Gallery</a></li>
+                      <li class="m-2"><a class="text-black text-base"href="https://www.cfrc.ca/about/our-partners">Partners</a></li>
                   </ul>
                 </li>  
                 <li class="li-backdrop nav-item dropdown relative my-1"
@@ -188,12 +189,15 @@
                     id="dropdown-button-6" 
                     style="display: none;"
                   >  
-                    <li class="m-2"><a class="text-black text-base" href="https://cfrc.ca/news-events/news">News</a></li>   
-                    <li class="m-2"><a class="text-black text-base" href="https://cfrc.ca/news-events/events-calendar">Events Calendar</a></li>
+                    <li class="m-2"><a class="text-black text-base" href="https://www.cfrc.ca/news-events/events">Events</a></li>
+                    <li class="m-2"><a class="text-black text-base" href="https://www.cfrc.ca/news-events/concerts">Concerts</a></li>  
+                    <li class="m-2"><a class="text-black text-base" href="https://www.cfrc.ca/news-events/cfrc-studio-sessions">CFRC Studio Sessions</a></li>  
+                    <li class="m-2"><a class="text-black text-base" href="https://www.cfrc.ca/news-events/news">News</a></li>   
+
                   </ul>
                 </li>
                 <li class="li-backdrop nav-item my-1 text-[18px]">
-                  <a class="nav-link" href="https://cfrc.ca/services">Services</a>
+                  <a class="nav-link" href="https://www.cfrc.ca/services">Services</a>
                 </li>
                 <li class="li-backdrop nav-item dropdown active relative bg-black my-1"
                   x-data="{ 
@@ -247,16 +251,69 @@
                   </ul>
                 </li>
                 <li class="li-backdrop nav-item my-1">
-                  <a class="nav-link text-[18px]" href="https://cfrc.ca/merchandise">Merchandise</a>
+                  <a class="nav-link text-[18px]" href="https://www.cfrc.ca/merchandise">Merchandise</a>
                 </li>
-                <li class="li-backdrop nav-item my-1">
-                  <a class="nav-link text-[18px]" href="https://cfrc.ca/volunteer">Volunteer</a>
+                <!--<li class="li-backdrop nav-item my-1">
+                  <a class="nav-link text-[18px]" href="https://www.cfrc.ca/volunteer">Volunteer</a>
+                </li>-->
+
+
+                <li class="li-backdrop nav-item dropdown active relative bg-black my-1"
+                  x-data="{ 
+                        open: false,
+                        toggle() {
+                          if (this.open) {
+                            return this.close()
+                          }
+                          this.$refs.button.focus()
+                          this.open = true
+                        },
+                        close(focusAfter) {
+                          if (! this.open) return
+                          this.open = false
+                          focusAfter && focusAfter.focus()
+                        }
+                      }" 
+                  x-on:keydown.escape.prevent.stop="close($refs.button)"
+                  x-on:focusin.window="! $refs.panel.contains($event.target) && close()"
+                  x-id="dropdown-button-8"
+                  @click.away="close()"
+                >
+                  <a href="#" class="text-white btn dropdown-toggle nav-link text-[18px]"  
+                    role="button" 
+                    x-ref="button"
+                    x-on:click="toggle()"
+                    type="button" 
+                    aria-controls="dropdown-button-8" 
+                    aria-label="Volunteer Menu"
+                  >
+                  Volunteer
+                  </a>
+                  <ul 
+                    x-ref="panel"
+                    x-show="open"
+                    x-transition.origin.top.right
+                    x-on:click.outside="close($refs.button)"
+                    class="absolute top-0 bg-white rounded p-2 w-52 border-[1px] border-slate-400 left-36" 
+                    id="dropdown-button-8" 
+                    style="display: none;"
+                  >
+                    <li class="m-2"><a class="text-black text-base" href="https://www.cfrc.ca/volunteer/join-our-team">Join Our Team</a></li>
+                    <li class="m-2"><a class="text-black text-base" href="https://www.cfrc.ca/volunteer/volunteer-roles">Volunteer Roles</a></li>  
+                    <li class="m-2"><a class="text-black text-base" href="https://www.cfrc.ca/volunteer/membership-sign-up">Membership Sign Up</a></li>  
+                    <li class="m-2"><a class="text-black text-base" href="https://www.cfrc.ca/volunteer/volunteer-resources">Volunteer Resources</a></li>   
+                  </ul>
                 </li>
+
+
+
+
+                
                 <li class="li-backdrop nav-item my-1">
-                  <a class="nav-link text-[18px]" href="https://cfrc.ca/donate">Donate</a>
+                  <a class="nav-link text-[18px]" href="https://www.cfrc.ca/donate">Donate</a>
                 </li>
                 <li class="li-backdrop nav-item my-1"> 
-                  <a class="nav-link text-[18px]" href="https://cfrc.ca/contact">Contact</a> 
+                  <a class="nav-link text-[18px]" href="https://www.cfrc.ca/contact">Contact</a> 
                 </li> 
               </ul>
             </nav>
@@ -434,11 +491,12 @@
                   id="dropdown-button-2" 
                   style="display: none;"
               >  
-                  <li class="m-2"><a class="text-black text-base" href="https://cfrc.ca/about/about-cfrc">About CFRC</a></li>
-                  <li class="m-2"><a class="text-black text-base" href="https://cfrc.ca/about/our-strategic-plan">Our Strategic Plan</a></li>
-                  <li class="m-2"><a class="text-black text-base"href="https://cfrc.ca/about/accessibility">Accessibility</a></li>
-                  <li class="m-2"><a class="text-black text-base"href="https://cfrc.ca/about/site-map">Site Map</a></li>
-                  <li class="m-2"><a class="text-black text-base"href="https://cfrc.ca/about/centennial-photo-gallery">Centennial Photo Gallery</a></li>
+                  <li class="m-2"><a class="text-black text-base" href="https://www.cfrc.ca/about/about-cfrc">About CFRC</a></li>
+                  <li class="m-2"><a class="text-black text-base" href="https://www.cfrc.ca/about/our-strategic-plan">Our Strategic Plan</a></li>
+                  <li class="m-2"><a class="text-black text-base"href="https://www.cfrc.ca/about/accessibility">Accessibility</a></li>
+                  <li class="m-2"><a class="text-black text-base"href="https://www.cfrc.ca/about/site-map">Site Map</a></li>
+                  <li class="m-2"><a class="text-black text-base"href="https://www.cfrc.ca/about/centennial-photo-gallery">Centennial Photo Gallery</a></li>
+                  <li class="m-2"><a class="text-black text-base"href="https://www.cfrc.ca/about/our-partners">Partners</a></li>
               </ul>
             </li>  
             <li class="li-backdrop nav-item dropdown relative"
@@ -483,12 +541,14 @@
                 id="dropdown-button-3" 
                 style="display: none;"
               >  
-                <li class="m-2"><a class="text-black text-base" href="https://cfrc.ca/news-events/news">News</a></li>   
-                <li class="m-2"><a class="text-black text-base" href="https://cfrc.ca/news-events/events-calendar">Events Calendar</a></li>
+                <li class="m-2"><a class="text-black text-base" href="https://www.cfrc.ca/news-events/events">Events</a></li>
+                <li class="m-2"><a class="text-black text-base" href="https://www.cfrc.ca/news-events/concerts">Concerts</a></li>  
+                <li class="m-2"><a class="text-black text-base" href="https://www.cfrc.ca/news-events/cfrc-studio-sessions">CFRC Studio Sessions</a></li>  
+                <li class="m-2"><a class="text-black text-base" href="https://www.cfrc.ca/news-events/news">News</a></li>   
               </ul>
             </li>
             <li class="li-backdrop nav-item">
-              <a class="nav-link uppercase hover:text-red-400" href="https://cfrc.ca/services">Services</a>
+              <a class="nav-link uppercase hover:text-red-400" href="https://www.cfrc.ca/services">Services</a>
             </li>
             <li class="li-backdrop nav-item dropdown active relative bg-black"
               x-data="{ 
@@ -534,7 +594,7 @@
                 <li class="m-2"><a class="text-black text-base" href="/programs">Programs</a></li>
                 <li class="m-2"><a class="text-black text-base" href="/archives">Archives</a></li>
                 <li class="m-2"><a class="text-black text-base" href="https://podcast.cfrc.ca">Podcasts</a></li>
-                <li class="m-2"><a class="text-black text-base" href="https://cfrc.ca/services">Book a Studio</a></li>
+                <li class="m-2"><a class="text-black text-base" href="https://www.cfrc.ca/services">Book a Studio</a></li>
                 <%= if @current_user do%>
                   <li class=" m-2">   
                     <a class="text-black text-base" href="/admin/logs">Admin</a>
@@ -543,16 +603,71 @@
               </ul>
             </li>
             <li class="li-backdrop nav-item">
-              <a class="nav-link active uppercase" href="https://cfrc.ca/merchandise">Merchandise</a>
+              <a class="nav-link active uppercase" href="https://www.cfrc.ca/merchandise">Merchandise</a>
             </li>
-            <li class="li-backdrop nav-item">
-              <a class="nav-link uppercase" href="https://cfrc.ca/volunteer">Volunteer</a>
+            <!--<li class="li-backdrop nav-item">
+              <a class="nav-link uppercase" href="https://www.cfrc.ca/volunteer">Volunteer</a>
+            </li>-->
+            <li class="li-backdrop nav-item dropdown relative my-1"
+                x-data="{ 
+                  open: false,
+                  toggle() {
+                    if (this.open) {
+                      return this.close()
+                    }
+                    this.$refs.button.focus()
+                    this.open = true
+                  },
+                  close(focusAfter) {
+                    if (! this.open) return
+                    this.open = false
+                    focusAfter && focusAfter.focus()
+                  }
+                }" 
+                x-on:keydown.escape.prevent.stop="close($refs.button)"
+                x-on:focusin.window="! $refs.panel.contains($event.target) && close()"
+                x-id="dropdown-button-8"
+                @click.away="close()"
+              >
+              <a href="#" class="btn dropdown-toggle nav-link uppercase text-[18px]"   
+                role="button" 
+                aria-expanded="false"
+                x-ref="button"
+                x-on:click="toggle()"
+                type="button" 
+                aria-controls="dropdown-button-8" 
+                aria-expanded="false" 
+                aria-label="Volunteer Menu"
+              >
+              Volunteer &#9660;
+              </a>
+              <ul 
+                x-ref="panel"
+                x-show="open"
+                x-transition.origin.top.right
+                x-on:click.outside="close($refs.button)"
+                class="z-50 top-10 left-0 absolute bg-white rounded p-2 w-52 border-[1px] border-slate-400" 
+                id="dropdown-button-6" 
+                style="display: none;"
+              >  
+                <li class="m-2"><a class="text-black text-base" href="https://www.cfrc.ca/volunteer/join-our-team">Join Our Team</a></li>
+                <li class="m-2"><a class="text-black text-base" href="https://www.cfrc.ca/volunteer/volunteer-roles">Volunteer Roles</a></li>  
+                <li class="m-2"><a class="text-black text-base" href="https://www.cfrc.ca/volunteer/membership-sign-up">Membership Sign Up</a></li>  
+                <li class="m-2"><a class="text-black text-base" href="https://www.cfrc.ca/volunteer/volunteer-resources">Volunteer Resources</a></li>   
+              </ul>
             </li>
+
+
+
+
+
+
+
             <li class="li-backdrop nav-item">
-              <a class="nav-link uppercase" href="https://cfrc.ca/donate">Donate</a>
+              <a class="nav-link uppercase" href="https://www.cfrc.ca/donate">Donate</a>
             </li>
             <li class="li-backdrop nav-item"> 
-              <a class="nav-link uppercase" href="https://cfrc.ca/contact">Contact</a> 
+              <a class="nav-link uppercase" href="https://www.cfrc.ca/contact">Contact</a> 
             </li>    
           </ul>
         </div>
