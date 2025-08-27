@@ -200,6 +200,8 @@ defmodule RadioappWeb.SegmentLive.Index do
       csv = path
         |> Path.expand(__DIR__)
         |> File.stream!()
+        |> Stream.reject(&blank_line?/1)
+        |> convert_to_utf8()
         |> CSV.decode!()
         |> Enum.take_while(fn _x -> true end)
       {:ok, csv}
@@ -231,6 +233,18 @@ defmodule RadioappWeb.SegmentLive.Index do
 
     playout_segments = Station.list_playout_segments_by_log_and_filter(filter, socket.assigns.log, socket.assigns.tenant)
     {:noreply, assign(socket, playout_segments: playout_segments, filter: filter)}
+  end
+
+  # --- Helper ---
+  defp convert_to_utf8(binary) do
+    # Convert from Latin-1 (covers most Excel/Windows CSVs) into UTF-8
+    :unicode.characters_to_binary(binary, :latin1, :utf8)
+  rescue
+    _ -> binary
+  end
+
+  defp blank_line?(line) do
+    String.trim(line) == ""
   end
 
   defp list_segments(tenant) do
