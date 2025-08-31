@@ -28,7 +28,7 @@ defmodule Radioapp.Station do
       :link2,
       :link3
     ])
-    
+
   end
 
   def list_all_programs(tenant) do
@@ -42,8 +42,8 @@ defmodule Radioapp.Station do
       :link3
     ])
 
-    for p <- program do 
-      %{p | timeslot_count: Enum.count(p.timeslots)} 
+    for p <- program do
+      %{p | timeslot_count: Enum.count(p.timeslots)}
     end
   end
 
@@ -74,8 +74,8 @@ defmodule Radioapp.Station do
         "use hidden checkbox" -> list_programs_not_hidden(raw_programs)
         "show hidden programs" -> list_programs_hidden(raw_programs)
         _ -> raw_programs
-      end   
-    
+      end
+
 
   end
 
@@ -103,7 +103,7 @@ defmodule Radioapp.Station do
       :link2,
       :link3
     ])
-    %{p | timeslot_count: Enum.count(p.timeslots)} 
+    %{p | timeslot_count: Enum.count(p.timeslots)}
   end
 
   def get_program_from_time(weekday, time_now, tenant) do
@@ -267,16 +267,16 @@ defmodule Radioapp.Station do
     now = Timex.now(stationdefaults.timezone)
     log_start = Timex.shift(now, weeks: -stationdefaults.weeks_of_archives)
     raw_logs =
-    from(l in Log, 
-      where: l.program_id  == ^program.id, 
+    from(l in Log,
+      where: l.program_id  == ^program.id,
       where: l.start_datetime >= ^log_start,
       order_by: [desc: :date],
 
-      select: %{ 
-        startdatetime: l.start_datetime, 
+      select: %{
+        startdatetime: l.start_datetime,
         enddatetime: l.end_datetime
       }
-      # l.date, 
+      # l.date,
       # starttime: l.start_time,
       # enddatetime: l.end_datetime}
       # could use runtime, but end_time might be just as useful
@@ -287,7 +287,7 @@ defmodule Radioapp.Station do
     stationdefaults = Admin.get_stationdefaults!(tenant)
 
     _today = Timex.today(stationdefaults.timezone)
-    
+
     rough_timeslots =
       for l <- raw_logs do
         kday_date = Timex.to_date(l.startdatetime)
@@ -317,12 +317,12 @@ defmodule Radioapp.Station do
   def list_timeslots_for_archives(program, tenant) do
     # from timeslots, loop over the last x weeks to output the archives that can be played
 
-    raw_timeslots = from(t in Timeslot, 
+    raw_timeslots = from(t in Timeslot,
       where: [program_id: ^program.id],
       order_by: [desc: t.day, asc: t.starttime],
       select: %{
       day: t.day,
-      starttime: t.starttime, 
+      starttime: t.starttime,
       starttimereadable: t.starttimereadable,
       runtime: t.runtime
     })
@@ -337,7 +337,7 @@ defmodule Radioapp.Station do
     beginning_of_week = Date.beginning_of_week(tz)
     all_timeslots = for x <- 0..-stationdefaults.weeks_of_archives do
       timeslot_date = beginning_of_week |> Timex.shift(weeks: x)
-      
+
       rough_timeslots = for t <- raw_timeslots do
         kday_date = Kday.kday_on_or_after(timeslot_date,t.day)
         t_date = kday_date |> Timex.shift(days: -1)
@@ -353,7 +353,7 @@ defmodule Radioapp.Station do
             true ->
               [%{date: Calendar.strftime(kday_date, "%B %d %Y"), starttime: "at #{t.starttimereadable}", audio_url: build_audio_url(kday_date, t.starttime, tenant)}]
           end
-        else 
+        else
           [%{date: nil, starttime: nil, audio_url: nil}]
         end
       end
@@ -362,25 +362,25 @@ defmodule Radioapp.Station do
     f_timeslots = Enum.flat_map(all_timeslots, &(&1))
 
     full_timeslots = Enum.with_index(f_timeslots, fn element, index -> Map.put(element, :id, index) end)
-    
+
     {full_timeslots}
   end
 
   def build_audio_url(date, starttime, tenant) do
     case tenant do
-      "cfrc" -> 
+      "cfrc" ->
         {:ok, datetime} = NaiveDateTime.new(date, starttime)
         audio_datetime = Calendar.strftime(datetime, "%Y-%m-%d-%H")
         _audio_url = "https://audio.cfrc.ca/archives/#{audio_datetime}.mp3"
-      "radio" -> 
+      "radio" ->
         {:ok, datetime} = NaiveDateTime.new(date, starttime)
         audio_datetime = Calendar.strftime(datetime, "%Y-%m-%d-%H")
         _audio_url = "https://audio.cfrc.ca/archives/#{audio_datetime}.mp3"
-      "sample" -> 
+      "sample" ->
         # for tests
         {:ok, datetime} = NaiveDateTime.new(date, starttime)
         audio_datetime = Calendar.strftime(datetime, "%Y-%m-%d-%H")
-        _audio_url = "https://someurl.ca/archives/#{audio_datetime}.mp3"  
+        _audio_url = "https://someurl.ca/archives/#{audio_datetime}.mp3"
       _ ->
         _audio_url = nil
     end
@@ -565,7 +565,30 @@ defmodule Radioapp.Station do
 
     Repo.all(charts_query, prefix: Triplex.to_prefix(tenant))
   end
-  
+
+    def list_charts_for_export(params, tenant) do
+    charts_query =
+      from(s in Segment,
+        inner_join: l in assoc(s, :log),
+        join: p in assoc(l, :program),
+        inner_join: c in assoc(s, :category),
+        where: l.date >= ^params.start_date,
+        where: l.date <= ^params.end_date,
+        where: fragment("CAST(?.code as integer) between 20 and 39", c),
+        group_by: [s.artist, s.song_title, p.name, l.host_name, l.date],
+        order_by: [desc: count(s.song_title)],
+        select: %{
+          program_name: p.name,
+          host_name: l.host_name,
+          date: l.date,
+          artist: s.artist,
+          song_title: s.song_title,
+          count: count(s.song_title)
+        }
+      )
+
+    Repo.all(charts_query, prefix: Triplex.to_prefix(tenant))
+  end
 
   def previous_month(%Date{day: day} = date) do
     days = max(day, Date.add(date, -day).day)
@@ -719,7 +742,7 @@ defmodule Radioapp.Station do
 
   """
   def add_utc_to_attrs(%{"date" => date, "start_time" => start_time, "end_time" => end_time } = attrs, tenant) do
-    
+
     case add_utc(date, start_time, end_time, tenant) do
       {:ok, start_datetime, end_datetime} ->
         attrs =
@@ -761,7 +784,7 @@ defmodule Radioapp.Station do
         start_datetime = nil
         end_datetime = nil
         {:ok, start_datetime, end_datetime}
-        
+
       false ->
         case not is_nil(date) and not is_nil(start_time) and not is_nil(end_time) do
           true ->
@@ -854,7 +877,7 @@ defmodule Radioapp.Station do
       where: l.date <= ^end_date,
       order_by: [asc: :start_time],
       select: %{
-        start_time: s.start_time, 
+        start_time: s.start_time,
         end_time: s.end_time,
         program_name: p.name,
         host_name: l.host_name,
@@ -889,9 +912,9 @@ defmodule Radioapp.Station do
   end
 
   def list_segments_for_log_export(log, tenant) do
-    _segments = from(s in Segment, 
+    _segments = from(s in Segment,
       left_join: c in assoc(s, :category),
-      where: s.log_id == ^log.id, 
+      where: s.log_id == ^log.id,
       order_by: [asc: :start_time],
       select: %{
         start_time: s.start_time,
@@ -1265,7 +1288,7 @@ defmodule Radioapp.Station do
       where: s.inserted_at >= ^start_datetime,
       where: s.inserted_at <= ^end_datetime,
       order_by: [desc: s.inserted_at]
-      
+
     )
     |> Repo.all(prefix: Triplex.to_prefix(tenant))
     |> Repo.preload(category: [])
@@ -1314,7 +1337,7 @@ defmodule Radioapp.Station do
       select: ps.source,
       order_by: [desc: :inserted_at],
       distinct: ps.source,
-      where: not is_nil(ps.source), 
+      where: not is_nil(ps.source),
       where: ps.inserted_at >= ^log.start_datetime,
       where: ps.inserted_at <= ^log.end_datetime
       )
