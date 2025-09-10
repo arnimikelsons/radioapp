@@ -590,6 +590,32 @@ defmodule Radioapp.Station do
     Repo.all(charts_query, prefix: Triplex.to_prefix(tenant))
   end
 
+    def list_chart_detail(params, tenant) do
+    charts_query =
+      from(s in Segment,
+        inner_join: l in assoc(s, :log),
+        join: p in assoc(l, :program),
+        inner_join: c in assoc(s, :category),
+        where: s.artist == ^params.artist,
+        where: s.song_title == ^params.song_title,
+        where: l.date >= ^params.start_date,
+        where: l.date <= ^params.end_date,
+        where: fragment("CAST(?.code as integer) between 20 and 39", c),
+        group_by: [s.artist, s.song_title, p.name, l.host_name, l.date],
+        order_by: [desc: count(s.song_title)],
+        select: %{
+          program_name: p.name,
+          host_name: l.host_name,
+          date: l.date,
+          artist: s.artist,
+          song_title: s.song_title,
+          count: count(s.song_title)
+        }
+      )
+
+    Repo.all(charts_query, prefix: Triplex.to_prefix(tenant))
+  end
+
   def previous_month(%Date{day: day} = date) do
     days = max(day, Date.add(date, -day).day)
     Date.add(date, -days)

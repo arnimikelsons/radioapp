@@ -86,6 +86,13 @@ defmodule RadioappWeb.LogController do
     render(conn, "charts.html", search: search, charts: charts, user_role: user_role)
   end
 
+  def chart_detail(conn, params) do
+    dbg(params)
+    tenant = RadioappWeb.get_tenant(conn)
+    details = Station.list_chart_detail({artist: artist, })
+    render(conn, "charts_detail.html", details: details)
+  end
+
 
   def export(conn, %{"search_params" => params}) do
     tenant = RadioappWeb.get_tenant(conn)
