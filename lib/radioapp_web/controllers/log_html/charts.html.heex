@@ -3,7 +3,6 @@
     <.header>
       Charts
     </.header>
-
     <.simple_form :let={f} for={@search} action={~p"/admin/search_charts"}>
       <.error :if={ !@search.valid? }>
         Oops, something went wrong! Please check the errors below.
@@ -18,7 +17,7 @@
       </div>
       <:actions>
         <.button>Get charts</.button>
-        <.button formaction={~p"/admin/export-charts"}>Download Charts CSV</.button>
+        <.button formaction={~p"/admin/export_charts"}>Download Charts CSV</.button>
       </:actions>
     </.simple_form>
     <div id="timeslot-header" class="flex flex-wrap schedule-border text-sm mt-5">
@@ -33,7 +32,9 @@
         <div class="w-1/3 p-2"><%= chart.song_title %></div>
         <div class="w-1/6 p-2"><%= chart.count %></div>
         <div class="w-1/6 p-2">
-          <.link navigate={~p"/admin/charts/chart-detail"} artist={chart.artist} song_title={chart.song_title}>More Info</.link>
+          <%!-- <.link navigate={~p"/admin/charts/chart-detail"} artist={chart.artist} song_title={chart.song_title}>More Info</.link> --%>
+          <.link navigate={~p"/admin/charts/chart_detail?#{[chart: chart]}"}>More info</.link>
+
         </div>
       </div>
     </div>

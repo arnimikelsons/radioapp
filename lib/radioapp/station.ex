@@ -547,6 +547,10 @@ defmodule Radioapp.Station do
   end
 
   def list_charts(params, tenant) do
+  
+  %RadioappWeb.LogController.SearchParams{start_date: startdate, end_date: enddate} = params
+    startdatetext = Date.to_iso8601(startdate)
+    enddatetext = Date.to_iso8601(enddate)
     charts_query =
       from(s in Segment,
         inner_join: l in assoc(s, :log),
@@ -557,6 +561,8 @@ defmodule Radioapp.Station do
         group_by: [s.artist, s.song_title],
         order_by: [desc: count(s.song_title)],
         select: %{
+          start_date: ^startdatetext,
+          end_date: ^enddatetext,
           artist: s.artist,
           song_title: s.song_title,
           count: count(s.song_title)

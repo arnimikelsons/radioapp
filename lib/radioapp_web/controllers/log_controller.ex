@@ -87,10 +87,18 @@ defmodule RadioappWeb.LogController do
   end
 
   def chart_detail(conn, params) do
-    dbg(params)
+      %{"chart" => %{
+        "artist" => artist,
+        "count" => count,
+        "end_date" => end_date,
+        "song_title" => song_title,
+        "start_date" => start_date
+      }} = params
     tenant = RadioappWeb.get_tenant(conn)
-    details = Station.list_chart_detail({artist: artist, })
-    render(conn, "charts_detail.html", details: details)
+    current_user = conn.assigns.current_user
+    user_role=Admin.get_user_role(current_user, tenant)
+    #details = Station.list_chart_detail({artist: artist, })
+    render(conn, "charts_detail.html", artist: artist, song_title: song_title, count: count, start_date: start_date, end_date: end_date, user_role: user_role)
   end
 
 
@@ -190,7 +198,6 @@ defmodule RadioappWeb.LogController do
     search = SearchParams.new(params)
     tenant = RadioappWeb.get_tenant(conn)
     charts = Station.list_charts_for_export(SearchParams.apply(search), tenant)
-
     csv =
       Builder.to_csv2(
         [

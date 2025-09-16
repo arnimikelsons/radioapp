@@ -1,10 +1,19 @@
 <div class="row">
   <div class="md:w-3/4">
     <.header>
-      Charts
+      Charts Detail
     </.header>
+    <div class="timeslot-cover">
+      <div id="timeslots" class="flex flex-wrap schedule-border text-sm even:bg-slate-100">
+        <p>Artist: <%= @artist %><br>
+        Song Title:<%= @song_title %><br>
+        Count:<%= @count %><br>
+        Start Date:<%= @start_date %><br>
+        End Date:<%= @end_date %></p>
+      </div>
+    </div>
 
-    <.simple_form :let={f} for={@search} action={~p"/admin/search_charts"}>
+    <%!-- <.simple_form :let={f} for={@search} action={~p"/admin/search_charts"}>
       <.error :if={ !@search.valid? }>
         Oops, something went wrong! Please check the errors below.
       </.error>
@@ -18,7 +27,7 @@
       </div>
       <:actions>
         <.button>Get charts</.button>
-        <.button formaction={~p"/admin/export-charts"}>Download Charts CSV</.button>
+        <.button formaction={~p"/admin/export_charts"}>Download Charts CSV</.button>
       </:actions>
     </.simple_form>
     <div id="timeslot-header" class="flex flex-wrap schedule-border text-sm mt-5">
@@ -36,7 +45,7 @@
           <.link navigate={~p"/admin/charts/chart-detail"} artist={chart.artist} song_title={chart.song_title}>More Info</.link>
         </div>
       </div>
-    </div>
+    </div> --%>
   </div>
   <div class="md:w-1/4">
     <.admin_menu user_role={@user_role} />
