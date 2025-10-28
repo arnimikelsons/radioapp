@@ -597,15 +597,23 @@ defmodule Radioapp.Station do
   end
 
     def list_chart_detail(params, tenant) do
+      cd = %{"chart" => %{
+        "artist" => artist,
+        "count" => count,
+        "end_date" => end_date,
+        "song_title" => song_title,
+        "start_date" => start_date
+      }} = params
+      dbg(artist)
     charts_query =
       from(s in Segment,
         inner_join: l in assoc(s, :log),
         join: p in assoc(l, :program),
         inner_join: c in assoc(s, :category),
-        where: s.artist == ^params.artist,
-        where: s.song_title == ^params.song_title,
-        where: l.date >= ^params.start_date,
-        where: l.date <= ^params.end_date,
+        where: s.artist == ^artist,
+        where: s.song_title == ^song_title,
+        where: l.date >= ^start_date,
+        where: l.date <= ^end_date,
         where: fragment("CAST(?.code as integer) between 20 and 39", c),
         group_by: [s.artist, s.song_title, p.name, l.host_name, l.date],
         order_by: [desc: count(s.song_title)],
