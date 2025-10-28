@@ -604,7 +604,6 @@ defmodule Radioapp.Station do
         "song_title" => song_title,
         "start_date" => start_date
       }} = params
-      dbg(artist)
     charts_query =
       from(s in Segment,
         inner_join: l in assoc(s, :log),
