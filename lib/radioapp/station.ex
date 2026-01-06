@@ -357,7 +357,7 @@ defmodule Radioapp.Station do
           [%{date: nil, starttime: nil, audio_url: nil}]
         end
       end
-      timeslots = Enum.flat_map(rough_timeslots, &(&1))
+      _timeslots = Enum.flat_map(rough_timeslots, &(&1))
     end
     f_timeslots = Enum.flat_map(all_timeslots, &(&1))
 
@@ -597,9 +597,8 @@ defmodule Radioapp.Station do
   end
 
     def list_chart_detail(params, tenant) do
-      cd = %{"chart" => %{
+      %{"chart" => %{
         "artist" => artist,
-        "count" => count,
         "end_date" => end_date,
         "song_title" => song_title,
         "start_date" => start_date

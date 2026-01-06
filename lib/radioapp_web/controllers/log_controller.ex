@@ -97,8 +97,9 @@ defmodule RadioappWeb.LogController do
     tenant = RadioappWeb.get_tenant(conn)
     current_user = conn.assigns.current_user
     user_role=Admin.get_user_role(current_user, tenant)
-    #details = Station.list_chart_detail({artist: artist, })
-    render(conn, "charts_detail.html", artist: artist, song_title: song_title, count: count, start_date: start_date, end_date: end_date, user_role: user_role)
+    details = Station.list_chart_detail(params, tenant)
+
+    render(conn, "charts_detail.html", artist: artist, song_title: song_title, count: count, start_date: start_date, end_date: end_date, user_role: user_role, details: details)
   end
 
 

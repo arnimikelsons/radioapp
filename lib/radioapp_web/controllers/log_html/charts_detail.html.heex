@@ -3,7 +3,7 @@
     <.header>
       Charts Detail
     </.header>
-    <div class="timeslot-cover">
+    <%!-- <div class="timeslot-cover">
       <div id="timeslots" class="flex flex-wrap schedule-border text-sm even:bg-slate-100">
         <p>Artist: <%= @artist %><br>
         Song Title:<%= @song_title %><br>
@@ -11,41 +11,26 @@
         Start Date:<%= @start_date %><br>
         End Date:<%= @end_date %></p>
       </div>
-    </div>
+    </div> --%>
 
-    <%!-- <.simple_form :let={f} for={@search} action={~p"/admin/search_charts"}>
-      <.error :if={ !@search.valid? }>
-        Oops, something went wrong! Please check the errors below.
-      </.error>
-      <div class="row">
-        <div class="grid md:grid-cols-4 date-field">
-          <.input field={{f, :start_date}} type="date" label="Start Date" />
-        </div>
-        <div class="grid md:grid-cols-4 date-field">
-          <.input field={{f, :end_date}} type="date" label="End Date" />
-        </div>
-      </div>
-      <:actions>
-        <.button>Get charts</.button>
-        <.button formaction={~p"/admin/export_charts"}>Download Charts CSV</.button>
-      </:actions>
-    </.simple_form>
-    <div id="timeslot-header" class="flex flex-wrap schedule-border text-sm mt-5">
-      <div class="w-1/3 p-2">Artist</div>
-      <div class="w-1/3 p-2">Song</div>
+    <h2 class="mt-5"><%= @artist %>: <%= @song_title %></h2>
+    <p>From <%= @start_date %> to <%= @end_date %>, this song was played <%= @count %> times in total.</p>
+    <div id="timeslot-header" class="flex flex-wrap schedule-border text-sm font-bold">
+      
+      <div class="w-1/3 p-2">Program Name</div>
+      <div class="w-1/3 p-2">Host Name</div>
+      <div class="w-1/6 p-2">Date</div>
       <div class="w-1/6 p-2">Count</div>
 
     </div>
     <div class="timeslot-cover">
-      <div :for={chart <- @charts} id="timeslots" class="flex flex-wrap schedule-border text-sm even:bg-slate-100">
-        <div class="w-1/3 p-2"><%= chart.artist %></div>
-        <div class="w-1/3 p-2"><%= chart.song_title %></div>
-        <div class="w-1/6 p-2"><%= chart.count %></div>
-        <div class="w-1/6 p-2">
-          <.link navigate={~p"/admin/charts/chart-detail"} artist={chart.artist} song_title={chart.song_title}>More Info</.link>
-        </div>
+      <div :for={detail <- @details} id="details" class="flex flex-wrap schedule-border text-sm even:bg-slate-100">
+        <div class="w-1/3 p-2"><%= detail.program_name %></div>
+        <div class="w-1/3 p-2"><%= detail.host_name %></div>
+        <div class="w-1/6 p-2"><%= detail.date %></div>
+        <div class="w-1/6 p-2"><%= detail.count %></div>
       </div>
-    </div> --%>
+    </div> 
   </div>
   <div class="md:w-1/4">
     <.admin_menu user_role={@user_role} />
