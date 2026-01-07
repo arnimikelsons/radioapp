@@ -12,8 +12,11 @@ defmodule Radioapp.Accounts.UserNotifier do
       |> subject(subject)
       |> text_body(body)
 
-    with {:ok, _metadata} <- Mailer.deliver(email) do
-      {:ok, email}
+    # with {:ok, _metadata} <- Mailer.deliver(email) do
+      # {:ok, email}
+    case Mailer.deliver(email) do
+      {:ok, _metadata} -> {:ok, email}
+      {:error, reason} -> {:error, reason}
     end
   end
 
@@ -44,6 +47,7 @@ defmodule Radioapp.Accounts.UserNotifier do
 
   def deliver_reset_password_instructions(user, tenant, url) do
     url = String.replace(url, "://", "://#{tenant}.")
+    dbg(url)
     deliver(user.email, "Reset password instructions", """
 
     ==============================

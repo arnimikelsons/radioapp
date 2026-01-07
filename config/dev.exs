@@ -30,7 +30,10 @@ config :radioapp, RadioappWeb.Endpoint,
     demo: {Tailwind, :install_and_run, [:demo, ~w(--watch)]},
     crfc: {Tailwind, :install_and_run, [:cfrc, ~w(--watch)]}
   ]
-
+  # Add mailer configuration
+  config :radioapp, Radioapp.Mailer,
+    adapter: Swoosh.Adapters.Local
+  
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed
