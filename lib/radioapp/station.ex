@@ -546,9 +546,8 @@ defmodule Radioapp.Station do
 
   end
 
-  def list_charts(params, tenant) do
-  
-  %RadioappWeb.LogController.SearchParams{start_date: startdate, end_date: enddate} = params
+  def list_charts(params, filter, tenant) do
+    %RadioappWeb.LogController.SearchParams{start_date: startdate, end_date: enddate} = params
     startdatetext = Date.to_iso8601(startdate)
     enddatetext = Date.to_iso8601(enddate)
     charts_query =
@@ -558,21 +557,24 @@ defmodule Radioapp.Station do
         where: l.date >= ^params.start_date,
         where: l.date <= ^params.end_date,
         where: fragment("CAST(?.code as integer) between 20 and 39", c),
-        group_by: [s.artist, s.song_title],
+        group_by: [s.artist, s.song_title, c.code],
         order_by: [desc: count(s.song_title)],
         select: %{
           start_date: ^startdatetext,
           end_date: ^enddatetext,
           artist: s.artist,
           song_title: s.song_title,
+          category: c.code,
           count: count(s.song_title)
         }
       )
 
-    Repo.all(charts_query, prefix: Triplex.to_prefix(tenant))
+    charts_query
+    |> apply_chart_filter(filter)
+    |> Repo.all(prefix: Triplex.to_prefix(tenant))
   end
 
-    def list_charts_for_export(params, tenant) do
+  def list_charts_for_export(params, filter, tenant) do
     charts_query =
       from(s in Segment,
         inner_join: l in assoc(s, :log),
@@ -581,7 +583,7 @@ defmodule Radioapp.Station do
         where: l.date >= ^params.start_date,
         where: l.date <= ^params.end_date,
         where: fragment("CAST(?.code as integer) between 20 and 39", c),
-        group_by: [s.artist, s.song_title, p.name, l.host_name, l.date],
+        group_by: [s.artist, s.song_title, c.code, p.name, l.host_name, l.date],
         order_by: [desc: count(s.song_title)],
         select: %{
           program_name: p.name,
@@ -589,12 +591,19 @@ defmodule Radioapp.Station do
           date: l.date,
           artist: s.artist,
           song_title: s.song_title,
+          category: c.code,
           count: count(s.song_title)
         }
       )
 
-    Repo.all(charts_query, prefix: Triplex.to_prefix(tenant))
+    charts_query
+    |> apply_chart_filter(filter)
+    |> Repo.all(prefix: Triplex.to_prefix(tenant))
   end
+
+  defp apply_chart_filter(query, "new_music"), do: where(query, [s], s.new_music == true)
+  defp apply_chart_filter(query, "local"), do: where(query, [s], s.local == true)
+  defp apply_chart_filter(query, _), do: query
 
     def list_chart_detail(params, tenant) do
       %{"chart" => %{
@@ -933,6 +942,7 @@ defmodule Radioapp.Station do
         catalogue_number: s.catalogue_number,
         socan_type: s.socan_type,
         new_music: s.new_music,
+        local: s.local,
         instrumental: s.instrumental,
         can_con: s.can_con,
         hit: s.hit,
@@ -964,6 +974,7 @@ defmodule Radioapp.Station do
         catalogue_number: s.catalogue_number,
         socan_type: s.socan_type,
         new_music: s.new_music,
+        local: s.local,
         instrumental: s.instrumental,
         can_con: s.can_con,
         hit: s.hit,
@@ -1128,7 +1139,24 @@ defmodule Radioapp.Station do
         _ -> Decimal.round(Decimal.from_float(emerging_tracks / count_music_tracks * 100))
       end
 
-    [new_music, can_con_music, instrumental_music, hit_music, indigenous_artist, emerging_artist]
+    [local_tracks] =
+      from(s in Segment,
+        left_join: c in assoc(s, :category),
+        where: [log_id: ^log.id],
+        where: s.local == true,
+        where: c.code >= "20",
+        where: c.code <= "39",
+        select: count(s.id)
+      )
+      |> Repo.all(prefix: Triplex.to_prefix(tenant))
+
+    local =
+      case count_music_tracks do
+        0 -> 0
+        _ -> Decimal.round(Decimal.from_float(local_tracks / count_music_tracks * 100))
+      end
+
+    [new_music, can_con_music, instrumental_music, hit_music, indigenous_artist, emerging_artist, local]
   end
 
   @doc """

@@ -44,6 +44,7 @@
   <:col :let={playout_segment} label="SOCAN"><%= playout_segment.socan_type %></:col>
   <:col :let={playout_segment} label="Catalogue #"><%= playout_segment.catalogue_number %></:col>
   <:col :let={playout_segment} label="New"><%= if playout_segment.new_music do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+  <:col :let={playout_segment} label="Local"><%= if playout_segment.local do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
   <:col :let={playout_segment} label="Inst"><%= if playout_segment.instrumental do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
   <:col :let={playout_segment} label="Can"><%= if playout_segment.can_con do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
   <:col :let={playout_segment} label="Indg"><%= if playout_segment.indigenous_artist do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>

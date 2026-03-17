@@ -63,10 +63,11 @@ if config_env() == :prod do
     ],
     secret_key_base: secret_key_base
 
-  config :appsignal, :config,
-    active: true,
-    push_api_key: System.fetch_env!("APPSIGNAL_PUSH_API_KEY")
-
+  if key = System.get_env("APPSIGNAL_PUSH_API_KEY") do
+    config :appsignal, :config,
+      active: true,
+      push_api_key: System.fetch_env!("APPSIGNAL_PUSH_API_KEY")
+  end
   # ## SSL Support
   #
   # To get SSL working, you will need to add the `https` key

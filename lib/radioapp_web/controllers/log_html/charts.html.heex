@@ -15,23 +15,39 @@
           <.input field={{f, :end_date}} type="date" label="End Date" />
         </div>
       </div>
+      <div class="flex gap-6 mt-2">
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input type="radio" name="search_params[filter]" value="all" checked={Phoenix.HTML.Form.input_value(f, :filter) in ["all", nil, ""]} />
+          All Music
+        </label>
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input type="radio" name="search_params[filter]" value="new_music" checked={Phoenix.HTML.Form.input_value(f, :filter) == "new_music"} />
+          New Music
+        </label>
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input type="radio" name="search_params[filter]" value="local" checked={Phoenix.HTML.Form.input_value(f, :filter) == "local"} />
+          Local
+        </label>
+      </div>
       <:actions>
         <.button>Get charts</.button>
         <.button formaction={~p"/admin/export_charts"}>Download Charts CSV</.button>
       </:actions>
     </.simple_form>
     <div id="timeslot-header" class="flex flex-wrap schedule-border text-sm mt-5">
-      <div class="w-1/3 p-2">Artist</div>
-      <div class="w-1/3 p-2">Song</div>
+      <div class="w-1/4 p-2">Artist</div>
+      <div class="w-1/4 p-2">Song</div>
+      <div class="w-1/6 p-2">Category</div>
       <div class="w-1/6 p-2">Count</div>
 
     </div>
     <div class="timeslot-cover">
       <div :for={chart <- @charts} id="timeslots" class="flex flex-wrap schedule-border text-sm even:bg-slate-100">
-        <div class="w-1/3 p-2"><%= chart.artist %></div>
-        <div class="w-1/3 p-2"><%= chart.song_title %></div>
+        <div class="w-1/4 p-2"><%= chart.artist %></div>
+        <div class="w-1/4 p-2"><%= chart.song_title %></div>
+        <div class="w-1/6 p-2"><%= chart.category %></div>
         <div class="w-1/6 p-2"><%= chart.count %></div>
-        <%= if @user_role == "super_admin" do %>
+        <%= if @user_role == "super_admin" or @user_role == "admin" do %>
           <div class="w-1/6 p-2">
             <%!-- <.link navigate={~p"/admin/charts/chart-detail"} artist={chart.artist} song_title={chart.song_title}>More Info</.link> --%>
             <.link navigate={~p"/admin/charts/chart_detail?#{[chart: chart]}"}>More info</.link>

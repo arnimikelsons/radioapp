@@ -35,7 +35,7 @@ defmodule RadioappWeb.SegmentLive.Index do
     talking_seconds = Station.talking_segments(log, tenant)
     talking = Station.formatted_length(talking_seconds)
     segments = Station.list_segments_for_log(log, tenant)
-    [new_music, can_con_music, instrumental_music, hit_music, indigenous_artist, emerging_artist] = Station.track_minutes(log, tenant)
+    [new_music, can_con_music, instrumental_music, hit_music, indigenous_artist, emerging_artist, local] = Station.track_minutes(log, tenant)
 
     %{csv_permission: csv_permission, api_permission: api_permission, socan_permission: socan_permission, export_log_permission: export_log_permission} = Admin.get_stationdefaults!(tenant)
     csv_permission = Admin.get_permission(csv_permission, user_role)
@@ -51,6 +51,7 @@ defmodule RadioappWeb.SegmentLive.Index do
        talking: talking,
        segments: segments,
        new_music: new_music,
+       local: local,
        hit_music: hit_music,
        instrumental_music: instrumental_music,
        can_con_music: can_con_music,

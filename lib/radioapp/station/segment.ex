@@ -13,6 +13,7 @@ defmodule Radioapp.Station.Segment do
     field :hit, :boolean
     field :instrumental, :boolean
     field :new_music, :boolean
+    field :local, :boolean
     field :indigenous_artist, :boolean
     field :emerging_artist, :boolean
     field :start_time, :time
@@ -40,6 +41,7 @@ defmodule Radioapp.Station.Segment do
       :hit,
       :instrumental,
       :new_music,
+      :local,
       :indigenous_artist,
       :emerging_artist,
       :start_time,
@@ -65,6 +67,7 @@ defmodule Radioapp.Station.Segment do
       :hit,
       :instrumental,
       :new_music,
+      :local,
       :indigenous_artist,
       :emerging_artist,
       :start_time,

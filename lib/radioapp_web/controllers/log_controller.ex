@@ -12,6 +12,7 @@ defmodule RadioappWeb.LogController do
     embedded_schema do
       field :start_date, :date
       field :end_date, :date
+      field :filter, :string, default: "all"
     end
 
     def new(%{} = params) do
@@ -30,7 +31,7 @@ defmodule RadioappWeb.LogController do
 
     def changeset(search, %{} = params) do
       search
-      |> cast(params, [:start_date, :end_date])
+      |> cast(params, [:start_date, :end_date, :filter])
       |> validate_required([:start_date, :end_date])
     end
 
@@ -63,7 +64,7 @@ defmodule RadioappWeb.LogController do
   end
 
   def charts(conn, _params) do
-    search = SearchParams.new(%{})
+    search = SearchParams.new(%{"filter" => "all"})
     tenant = RadioappWeb.get_tenant(conn)
     current_user = conn.assigns.current_user
     user_role=Admin.get_user_role(current_user, tenant)
@@ -74,15 +75,15 @@ defmodule RadioappWeb.LogController do
     search = SearchParams.new(params)
     tenant = RadioappWeb.get_tenant(conn)
     current_user = conn.assigns.current_user
+    applied = SearchParams.apply(search)
     charts =
       if search.valid? do
-        Station.list_charts(SearchParams.apply(search), tenant)
+        Station.list_charts(applied, applied.filter, tenant)
       else
         []
       end
 
     user_role=Admin.get_user_role(current_user, tenant)
-      # pass charts into Builder csv2 function
     render(conn, "charts.html", search: search, charts: charts, user_role: user_role)
   end
 
@@ -126,6 +127,7 @@ defmodule RadioappWeb.LogController do
           :socan_type,
           :catalogue_number,
           :new_music,
+          :local,
           :instrumental,
           :can_con,
           :hit,
@@ -175,6 +177,7 @@ defmodule RadioappWeb.LogController do
           :socan_type,
           :catalogue_number,
           :new_music,
+          :local,
           :instrumental,
           :can_con,
           :hit,
@@ -198,7 +201,8 @@ defmodule RadioappWeb.LogController do
   def export_charts(conn, %{"search_params" => params}) do
     search = SearchParams.new(params)
     tenant = RadioappWeb.get_tenant(conn)
-    charts = Station.list_charts_for_export(SearchParams.apply(search), tenant)
+    applied = SearchParams.apply(search)
+    charts = Station.list_charts_for_export(applied, applied.filter, tenant)
     csv =
       Builder.to_csv2(
         [
@@ -207,6 +211,7 @@ defmodule RadioappWeb.LogController do
           :date,
           :artist,
           :song_title,
+          :category,
           :count
         ],
         charts
@@ -214,12 +219,18 @@ defmodule RadioappWeb.LogController do
     |> Enum.join()
 
 
+    filename = case applied.filter do
+      "new_music" -> "charts-new-music.csv"
+      "local" -> "charts-local.csv"
+      _ -> "charts-all.csv"
+    end
+
     conn
     |> send_download(
       {:binary, csv},
       content_type: "application/csv",
       disposition: :attachment,
-      filename: "charts-download.csv"
+      filename: filename
     )
   end
 

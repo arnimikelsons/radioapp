@@ -25,6 +25,7 @@
     <%!-- <:col :let={segment} label="Start DateTime"><%= segment.start_datetime %></:col>
     <:col :let={segment} label="End DateTime"><%= segment.end_datetime %></:col> --%>
     <:col :let={segment} label="New"><%= if segment.new_music do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+    <:col :let={segment} label="Local"><%= if segment.local do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
     <:col :let={segment} label="Inst"><%= if segment.instrumental do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
     <:col :let={segment} label="Can"><%= if segment.can_con do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
     <:col :let={segment} label="Indg"><%= if segment.indigenous_artist do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
@@ -44,13 +45,13 @@
     </:action> --%>
   </.table>
 <% else %>
-   <.table id="segments" rows={@segments}> 
+   <.table id="segments" rows={@segments}>
     <%!-- <:col :let={segment} label="Date"><%= Date.to_string(DateTime.to_date(DateTime.shift_zone!(segment.start_datetime, @timezone))) %></:col> --%>
     <:col :let={segment} label="Start Time">
       <%= if segment.start_datetime != nil do
-        Time.to_string(DateTime.to_time(DateTime.shift_zone!(segment.start_datetime, @timezone))) 
+        Time.to_string(DateTime.to_time(DateTime.shift_zone!(segment.start_datetime, @timezone)))
       end %>
-    </:col>  
+    </:col>
     <:col :let={segment} label="End Time">
       <%= if segment.end_datetime != nil do
         Time.to_string(DateTime.to_time(DateTime.shift_zone!(segment.end_datetime, @timezone)))
@@ -63,6 +64,7 @@
     <%!-- <:col :let={segment} label="Start DateTime"><%= segment.start_datetime %></:col>
     <:col :let={segment} label="End DateTime"><%= segment.end_datetime %></:col> --%>
     <:col :let={segment} label="New"><%= if segment.new_music do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
+    <:col :let={segment} label="Local"><%= if segment.local do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
     <:col :let={segment} label="Inst"><%= if segment.instrumental do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
     <:col :let={segment} label="Can"><%= if segment.can_con do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
     <:col :let={segment} label="Indg"><%= if segment.indigenous_artist do %><i class="fa-solid fa-check pl-2"></i><% end %></:col>
@@ -93,6 +95,7 @@
   <div class="row justify-around">
     <p>Talking Segments: <%= @talking %></p>
     <p>New Music: <%= @new_music %>%</p>
+    <p>Local: <%= @local %>%</p>
     <p>Instrumental Music: <%= @instrumental_music %>%</p>
     <p>Canadian Content: <%= @can_con_music %>%</p>
     <p>Hit Music: <%= @hit_music %>%</p>
