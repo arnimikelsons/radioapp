@@ -38,15 +38,18 @@
       <div class="w-1/4 p-2">Artist</div>
       <div class="w-1/4 p-2">Song</div>
       <div class="w-1/6 p-2">Category</div>
-      <div class="w-1/6 p-2">Count</div>
-
+      <div class="w-1/12 p-2">New</div>
+      <div class="w-1/12 p-2">Local</div>
+      <div class="w-1/12 p-2">Count</div>
     </div>
     <div class="timeslot-cover">
       <div :for={chart <- @charts} id="timeslots" class="flex flex-wrap schedule-border text-sm even:bg-slate-100">
         <div class="w-1/4 p-2"><%= chart.artist %></div>
         <div class="w-1/4 p-2"><%= chart.song_title %></div>
         <div class="w-1/6 p-2"><%= chart.category %></div>
-        <div class="w-1/6 p-2"><%= chart.count %></div>
+        <div class="w-1/12 p-2"><%= if chart.new_music do %><i class="fa-solid fa-check pl-2"></i><% end %></div>
+        <div class="w-1/12 p-2"><%= if chart.local do %><i class="fa-solid fa-check pl-2"></i><% end %></div>
+        <div class="w-1/12 p-2"><%= chart.count %></div>
         <%= if @user_role == "super_admin" or @user_role == "admin" do %>
           <div class="w-1/6 p-2">
             <%!-- <.link navigate={~p"/admin/charts/chart-detail"} artist={chart.artist} song_title={chart.song_title}>More Info</.link> --%>

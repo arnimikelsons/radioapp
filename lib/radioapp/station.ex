@@ -557,7 +557,7 @@ defmodule Radioapp.Station do
         where: l.date >= ^params.start_date,
         where: l.date <= ^params.end_date,
         where: fragment("CAST(?.code as integer) between 20 and 39", c),
-        group_by: [s.artist, s.song_title, c.code],
+        group_by: [s.artist, s.song_title, c.code, s.new_music, s.local],
         order_by: [desc: count(s.song_title)],
         select: %{
           start_date: ^startdatetext,
@@ -565,6 +565,8 @@ defmodule Radioapp.Station do
           artist: s.artist,
           song_title: s.song_title,
           category: c.code,
+          new_music: s.new_music,
+          local: s.local,
           count: count(s.song_title)
         }
       )
@@ -583,7 +585,7 @@ defmodule Radioapp.Station do
         where: l.date >= ^params.start_date,
         where: l.date <= ^params.end_date,
         where: fragment("CAST(?.code as integer) between 20 and 39", c),
-        group_by: [s.artist, s.song_title, c.code, p.name, l.host_name, l.date],
+        group_by: [s.artist, s.song_title, c.code, s.new_music, s.local, p.name, l.host_name, l.date],
         order_by: [desc: count(s.song_title)],
         select: %{
           program_name: p.name,
@@ -592,6 +594,8 @@ defmodule Radioapp.Station do
           artist: s.artist,
           song_title: s.song_title,
           category: c.code,
+          new_music: s.new_music,
+          local: s.local,
           count: count(s.song_title)
         }
       )

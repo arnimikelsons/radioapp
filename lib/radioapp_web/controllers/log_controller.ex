@@ -212,6 +212,8 @@ defmodule RadioappWeb.LogController do
           :artist,
           :song_title,
           :category,
+          :new_music,
+          :local,
           :count
         ],
         charts
