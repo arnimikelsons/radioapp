@@ -68,6 +68,16 @@ if config_env() == :prod do
       active: true,
       push_api_key: System.fetch_env!("APPSIGNAL_PUSH_API_KEY")
   end
+
+  # Mailtrap API key (adapter/api_client are set in config/prod.exs)
+  config :radioapp, Radioapp.Mailer,
+    api_key:
+      System.get_env("MAILTRAP_API_KEY") ||
+        raise("""
+        environment variable MAILTRAP_API_KEY is missing.
+        Set it to your Mailtrap Sending API token.
+        """)
+
   # ## SSL Support
   #
   # To get SSL working, you will need to add the `https` key
