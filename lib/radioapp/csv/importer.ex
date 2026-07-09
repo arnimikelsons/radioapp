@@ -13,6 +13,7 @@ defmodule Radioapp.CSV.Importer do
     "hit",
     "instrumental",
     "new_music",
+    "local",
     "socan_type",
     "song_title",
     "indigenous_artist",

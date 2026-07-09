@@ -207,9 +207,11 @@ defmodule RadioappWeb.Router do
       get "/admin/logs", LogController, :index
       post "/admin/logs/search", LogController, :search
       post "/admin/logs/export", LogController, :export
-      
+
       get "/admin/charts", LogController, :charts
       post "/admin/search_charts", LogController, :search_charts
+      post "/admin/export_charts", LogController, :export_charts
+      get "/admin/charts/chart_detail", LogController, :chart_detail
 
           # Add PlayoutSegment resources
       get "/playout_segments", PlayoutSegmentController, :index
