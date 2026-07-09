@@ -38,8 +38,8 @@ config :radioapp, Radioapp.Mailer, adapter: Swoosh.Adapters.Local
 
 # in case want to test on dev
 # config :radioapp, Radioapp.Mailer,
-# adapter: Swoosh.Adapters.Sendgrid,
-# api_key: {:system, "SENDGRID_API_KEY"}
+# adapter: Swoosh.Adapters.Mailtrap,
+# api_key: {:system, "MAILTRAP_API_KEY"}
 
 # Configure esbuild (the version is required)
 config :esbuild,

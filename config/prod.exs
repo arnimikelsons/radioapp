@@ -13,12 +13,13 @@ config :radioapp, RadioappWeb.Endpoint,
   cache_static_manifest: "priv/static/cache_manifest.json",
   url: [host: "radioapp.ca"]
 
-# Configures Swoosh API Client
-#config :swoosh, :api_client, Radioapp.Finch
+# Configures Swoosh API Client to reuse the app's Finch instance
+config :swoosh,
+  api_client: Swoosh.ApiClient.Finch,
+  finch_name: Radioapp.Finch
 
-config :radioapp, Radioapp.Mailer,
-  adapter: Swoosh.Adapters.Sendgrid,
-  api_key: {:system, "SENDGRID_API_KEY"}
+# The Mailtrap API key is read at runtime in config/runtime.exs
+config :radioapp, Radioapp.Mailer, adapter: Swoosh.Adapters.Mailtrap
 
 # Do not print debug messages in production
 config :logger, level: :info
